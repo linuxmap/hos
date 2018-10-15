@@ -1,0 +1,22 @@
+[
+  {
+    "title": "menu.user",
+    "router": "/user",
+    "icon": "h-icon-user"
+  },
+  {
+    "title": "menu.space",
+    "router": "/space",
+    "icon": "h-icon-menu_app"
+  },
+  {
+    "title": "menu.userCount",
+    "router": "/census",
+    "icon": "h-icon-pie_chart"
+  },
+  {
+    "title":"menu.log",
+    "router":"/log",
+    "icon": "h-icon-copy"
+  }
+]

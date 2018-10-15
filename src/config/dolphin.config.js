@@ -15,45 +15,17 @@ module.exports = {
     'languageId': 'zh_CN',
     'skin': 'redblack',
     'breadcrumb': {
-      '001': [{
-        'title':'menu.cloud',
-        'router': '/cloud'
-      }],
-      '002': [{
-        'title':'menu.cluster',
-        'router': '/cluster/list'
-      }],
-      '003': [{
-        'title': 'menu.virtual',
-        'router': '/domain'
-      }],
-      '004': [{
-        'title': 'menu.user',
+      '010': [{
+        'title':'menu.user',
         'router': '/user'
       }],
-      '005': [{
-        'title': 'menu.storage',
-        'router': '/osdNode'
+      '012': [{
+        'title':'menu.bucket',
+        'router': '/space'
       }],
-      '006': [{
-        'title': 'menu.cva',
-        'router': '/cva'
-      }],
-      '007': [{
-        'title': 'menu.plan',
-        'router': '/cameraReal'
-      }],
-      '008': [{
-        'title': 'menu.network',
-        'router': '/network'
-      }],
-      '009': [{
-        'title': 'menu.upgrade',
-        'router': '/upgrade'
-      }],
-      '010': [{
-        'title': 'menu.log',
-        'router': '/log'
+      '013': [{
+        'title':'menu.userCount',
+        'router': '/census'
       }]
     }
   }

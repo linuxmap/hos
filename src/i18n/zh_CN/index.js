@@ -129,6 +129,11 @@ menu.delete = '删除';
 menu.view = '查看';
 menu.detail = '详情';
 
+menu.user = '用户中心';
+menu.space = '存储空间';
+menu.userCount = '用户统计';
+
+
 let iconCollection = {};
 iconCollection.table = '表格'
 iconCollection.manage = '图标库管理'
