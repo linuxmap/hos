@@ -1,0 +1,30 @@
+[
+  {
+    "path": "",
+    "redirect": "/domain"
+  },
+  {
+    "path": "/selectSubsys",
+    "component": "select/selectSubsys",
+    "breadcrumb": [],
+    "meuCode": "001"
+  },
+  {
+    "path": "/domain",
+    "component": "virtual/domain",
+    "breadcrumb": ["menu.domainSet"],
+    "menuCode": "003"
+  },
+  {
+    "path": "/user",
+    "component": "user/list",
+    "breadcrumb": [],
+    "memuCode": "004"
+  },
+  {
+    "path": "/user/detail/:userId",
+    "component": "user/detail",
+    "breadcrumb": [],
+    "menuCode": "004"
+  }
+]

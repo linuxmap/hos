@@ -1,0 +1,331 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-size: @font-size-base;
+}
+
+body {
+    position: relative;
+    min-width:1300px;
+    height: 100%;
+    background:#fff;
+  //  font-family: @font-family;
+    font-family: 'segoe UI',sans-serif;
+    font-size: @font-size-normal;
+    color: @font-color-normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y:hidden;
+}
+.page-body-wrap{
+  padding-top:35px!important;
+}
+
+input,
+textarea,
+select,
+button {
+    font-family: @font-family;
+}
+
+textarea{
+    resize: none;
+}
+.abs{
+  position:absolute;
+}
+a {
+    cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 1.1rem;
+    line-height: 1.8rem;
+    margin-bottom: @padding-normal;
+}
+
+ul {
+    list-style: none;
+}
+
+blockquote {
+    margin-bottom: @padding-normal;
+    padding: 1rem 1.5rem;
+    border-left: 3px solid #e0e0e0;
+    background: #f9f9f9;
+}
+.mt10{
+  margin-top:10px;
+}
+.mr10{
+  margin-right:10px;
+}
+.mr30{
+  margin-right:30px!important;
+}
+.left{
+  float:left;
+}
+
+.right{
+  float:right;
+}
+.rel{
+  position:relative;
+}
+.abs{
+  position:absolute;
+}
+.none{
+  display:none;
+}
+.blockline{
+  padding-bottom:15px;
+  margin-bottom:45px;
+  border-bottom:1px solid #ddd;
+}
+.clearfix:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+}
+.clear{
+  clear:both;
+}
+.aRight{
+  text-align:right;
+}
+/*英文*/
+.en_US{
+  font-family: "Segoe UI",Helvetica,Arial,sans-serif;
+  .nav *{
+    font-size:16px;
+  }
+  td *{
+    font-size:13px;
+  }
+}
+/*图标*/
+.icons{
+  display:inline-block;
+  width:16px;
+  height:16px;
+}
+.icon-close{
+  background:url(../assets/images/icon/shut.png);
+}
+.icon-reset{
+  background:url(../assets/images/icon/reset.png);
+}
+.icon-deploy{
+  background:url(../assets/images/icon/deploy.png);
+}
+.icon-cluster{
+  background:url(../assets/images/icon/cluster.png);
+}
+.icon-init{
+  background:url(../assets/images/icon/init.png);
+}
+.icon-format{
+  background:url(../assets/images/icon/format.png);
+}
+.icon-restart{
+  background:url(../assets/images/icon/restart.png);
+}
+.icon-shut{
+  background:url(../assets/images/icon/shutn.png);
+}
+.icon-restart_n{
+  background:url(../assets/images/icon/restart_n.png);
+}
+.icon-apply{
+  background:url(../assets/images/icon/apply.png);
+}
+.icon-pause{
+  background:url(../assets/images/icon/pause1.png);
+}
+.icon-recons{
+  background:url(../assets/images/icon/recons.png);
+}
+.icon-play{
+  background:url(../assets/images/icon/play1.png);
+}
+.icon-activate{
+  background:url(../assets/images/icon/activate.png);
+}
+.el-menu-icon{
+  display: inline-block;
+  position:relative;
+  width:24px;
+  height:16px;
+  background:center center no-repeat;
+}
+.icon-cus{
+  opacity:0.6;
+}
+.el-menu-item:hover .icon-cus{
+  opacity:1;
+}
+.icon-hardware{
+  background-image:url(../assets/images/icon/hardware.png);
+}
+.icon-system{
+  background-image:url(../assets/images/icon/system.png);
+}
+.icon-visual{
+  background-image:url(../assets/images/icon/visual.png);
+}
+.icon-topo{
+  background-image:url(../assets/images/icon/topo.png);
+}
+.icon-cluster1{
+  background-image:url(../assets/images/icon/cluster1.png);
+}
+.icon-camera{
+  background-image:url(../assets/images/icon/camera.png);
+}
+.icon-storage{
+  background-image:url(../assets/images/icon/storage.png);
+}
+.icon-device{
+  background-image:url(../assets/images/icon/device.png);
+}
+.icon-user{
+  background-image:url(../assets/images/icon/user.png);
+}
+.icon-plan{
+  background-image:url(../assets/images/icon/plan.png);
+}
+.icon-batchPro{
+  background-image:url(../assets/images/icon/batchPro.png);
+}
+.icon-cloud{
+  top:-3px!important;
+  background-image:url(../assets/images/icon/cloudm.png);
+}
+.icon-key{
+  background-image:url(../assets/images/icon/key.png);
+}
+.icon-clouds{
+  background-image:url(../assets/images/icon/iclouds.png);
+}
+.icon-resetKey{
+  background:url(../assets/images/icon/resetKey.png);
+}
+.is-disabled {
+  .icon-init{
+    background:url(../assets/images/icon/initd.png);
+  }
+  .icon-restart{
+    background:url(../assets/images/icon/restartd.png);
+  }
+  .icon-restart_n{
+    background:url(../assets/images/icon/restart_nd.png);
+  }
+  .icon-shut{
+    background:url(../assets/images/icon/shutd.png);
+  }
+  .icon-format{
+    background:url(../assets/images/icon/formatn.png);
+  }
+  .icon-key{
+    background-image:url(../assets/images/icon/keyn.png);
+  }
+  .icon-clouds{
+    background-image:url(../assets/images/icon/icloudsn.png);
+  }
+  .icon-activate{
+    background:url(../assets/images/icon/activaten.png);
+  }
+  .icon-pause{
+    background:url(../assets/images/icon/pause1n.png);
+  }
+  .icon-recons{
+    background:url(../assets/images/icon/reconsn.png);
+  }
+  .icon-play{
+    background:url(../assets/images/icon/play1n.png);
+  }
+}
+.glyphicon-display{
+  background:url(../assets/images/icon/display.png);
+}
+.cloudSpan{
+  width:115px;
+  padding-left:2px;
+  padding-right:2px;
+  word-wrap:normal;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.font40{
+  margin:0 5px;
+  font-size:30px;
+  font-family:'BebasNeue';
+  font-weight:900;
+}
+.BebasNeue{
+  font-family:'BebasNeue';
+}
+.bigIcon{
+  display:block;
+  margin: 0 auto;
+  width:32px;
+  height:32px;
+  background:url(../assets/images/icon/cloud.png) no-repeat center center;
+  background-size:100% 100%;
+}
+.cloudIcon{
+  background-image: url(../assets/images/icon/cloud.png);
+}
+.diskIcon{
+  background-image:url(../assets/images/icon/disk.png);
+}
+.rlIcon{
+  background-image:url(../assets/images/icon/rl.png);
+}
+.cameraIcon{
+  background-image:url(../assets/images/icon/cameras.png);
+}
+.userIcon{
+  background-image:url(../assets/images/icon/users.png);
+}
+.bucketIcon{
+  background-image:url(../assets/images/icon/bucket.png);
+}
+.deviceIcon{
+  background-image:url(../assets/images/icon/devices.png);
+}
+i.big{
+  margin: 0 6px;
+  font-style: normal;
+  font-family: 'BebasNeue';
+  font-size: 30px;
+  font-weight: 900;
+  &.error{
+    display: inline-block;
+    padding: 0 10px;
+    font-style: normal;
+    background: #fe5332;
+    color: #fff;
+  }
+}
+.cursor{
+  cursor:pointer;
+}
