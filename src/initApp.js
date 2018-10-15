@@ -79,9 +79,9 @@ async function initApp (Vue, config) {
     }
   } else {
     await setSkin(Utils.getStorage('skin').color)
-    let languageId = Utils.getStorage('i18n').lang || 'zh_CN'
-    let lang = await getLanguage(languageId)
-    setLanguage(lang, languageId)
+   // let languageId = Utils.getStorage('i18n').lang || 'zh_CN'
+   // let lang = await getLanguage(languageId)
+  //  setLanguage(lang, languageId)
     store.commit('SET_USER_INFO', dolphinConfig.userInfo)
     mountVueIntance(Vue, config)
   }

@@ -7,10 +7,10 @@
       </transition>
     </page>
   </div>
-  
+
 </template>
 <script>
-  import navList from '@/nav.config.json'
+  import navList from '@/nav.config1.json'
   import { mapState } from 'vuex'
   import vHeader from 'index@/components/header.vue'
 
@@ -71,7 +71,7 @@
         userName: 'admin',
         password: this.encrypt.encrypt('whhik_88075998')
       }
-      
+
       http.getRequest('/platform/login', 'post', params).then(res => {
         if (res.status) {
           token.set(res.data)

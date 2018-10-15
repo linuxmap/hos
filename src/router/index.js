@@ -9,7 +9,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import store from '@/store'
 
-import routes from '../router.config.json'
+import routes from '../router.config1.json'
 // import config from '../config/dolphin.config'
 
 Vue.use(Router)
