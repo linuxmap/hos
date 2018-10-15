@@ -11,7 +11,7 @@
   {
     "title": "menu.node",
     "router": "/node",
-    "icon": "icon-cus icon-node"
+    "icon": "h-icon-control_pole"
   },
   {
     "title": "menu.virtual",
