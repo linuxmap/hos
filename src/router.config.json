@@ -26,5 +26,24 @@
     "breadcrumb": ["menu.logInfo"],
     "router": ["/log"],
     "menuCode": "013"
+  },
+  {
+    "path": "/cluster",
+    "component": "cluster/list",
+    "breadcrumb": ["menu.cluster", "menu.custerList"],
+    "router": ["/cluster"],
+    "menuCode": "001"
+  },
+  {
+    "path": "/cluster/group",
+    "component": "cluster/group",
+    "breadcrumb": [],
+    "menuCode": "001"
+  },
+  {
+    "path": "/node",
+    "component": "node/node",
+    "breadcrumb": [],
+    "menuCode": "001"
   }
 ]

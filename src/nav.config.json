@@ -1,10 +1,9 @@
 [
   {
     "title": "menu.cluster",
-    "router": "/cluster",
     "icon": "icon-cus icon-cluster1",
     "children": [
-      {"title": "menu.clusterList", "router": "/cluster/list"},
+      {"title": "menu.clusterList", "router": "/cluster"},
       {"title": "menu.clusterGroup", "router": "/cluster/group"}
     ]
   },
@@ -15,7 +14,6 @@
   },
   {
     "title": "menu.virtual",
-    "router": "/domain",
     "icon": "h-icon-menu_app",
     "children": [
       {"title": "menu.domainSet", "router": "/domain"},

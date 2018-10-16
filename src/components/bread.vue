@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item  @click.native="refRoute(path[index])" :to="path[index]" v-for="(text,index) in bread">{{text}}</el-breadcrumb-item>
+      <el-breadcrumb-item  @click.native="refRoute(path[index])" :to="path[index]" v-for="(text,index) in bread" :key="index">{{text}}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-button v-show="cShowBack" class="backBtn" type="iconButton" icon="h-icon-arrow_left_circle" @click="backToPrev($event)"></el-button>
   </div>
