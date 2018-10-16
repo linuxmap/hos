@@ -9,15 +9,6 @@
         trigger="hover">
         <cloud-list :noDlg="true" :cloudId="cloudId" @chooseCloud="chooseCloud" @exitCloudDlg="showCloud = false"></cloud-list>
       </el-popover>
-
-      <el-form-item v-if="!$route.query.cloudId" ref="cloudItem" v-show="showCloudList" label="" class="cloudlist" prop="cloudId">
-        <el-button class="moreBtn" type="text" v-popover:popover1>{{$t('common.allCloud')}}</el-button>
-        <el-button v-if="!isSet" :type="cloudId ? '' : 'primary'" size="small" class="mr10 abs" @click="changeList('')">{{$t('common.nolim')}}</el-button>
-        <div class="inline-group" :style="isSet ? 'margin-left:10px' : 'margin-left:60px'">
-          <el-button  :title="cloud.name" v-if="index <= cloudNo"  v-for="(cloud,index) in clouds" :key="index" :type="setSelCloud(cloud.id,index)" size="small" class="mr10 cloudSpan" @click="changeList(cloud.id,cloud.mode)">{{cloud.name}}</el-button>
-          <span v-show="false" v-for="(cloud,index) in cloudDefault" :key="index"></span>
-        </div>
-      </el-form-item>
       <div v-show="queryTag && tags.length" class="queryMeta" v-if="!onlyCloud">
         <el-tag
           v-for="tag in tags"
@@ -42,11 +33,6 @@
         <el-tooltip effect="dark" :content="$t('common.more')" placement="top" style="position:relative;top:-2px;">
           <el-button v-if="!noMore" type="iconButton" icon="h-icon-filter" @click="moreSearch(true)"></el-button>
         </el-tooltip>
-        <!--   <el-tooltip v-if="!collTags && !isExport" class="item" effect="dark" content="实时刷新" placement="top" style="position:relative;top:-2px;margin-left:0;margin-right:-14px;">
-             <el-button type="iconButton" icon="h-icon-flash" @click="reltimeRef" :disabled="configRefBtn" style="position:relative;top:-2px;"></el-button>
-           </el-tooltip>-->
-        <!-- <el-button v-show="!more" type="iconButton" icon="h-icon-flash" @click="resetList">重置</el-button>
-         <el-button v-show="!more" type="iconButton" icon="h-icon-angle_down" @click="moreSearch(true)">展开</el-button>-->
       </div>
       <el-tooltip v-if="isExport && !onlyCloud" class="item collRefExp" effect="dark" :content="$t('config.log.export')" placement="top" style="position:absolute;right:-7px;top:-45px;">
         <el-button type="iconButton" icon="h-icon-export" @click="exportLog" style="position:relative;top:-2px;"></el-button>
@@ -333,7 +319,7 @@
       moreSearch (tag, result) {
         this.$store.dispatch('setQuery', tag);
         this.queryTag = !tag;
-        this.$parent.$parent.$refs[this.table].setHeight();
+        this.$parent.$parent.$children[2].setHeight();
 
         if (result){
           this.queryList(true);
@@ -390,9 +376,7 @@
           this.$emit('queryList',[]);
         }
 
-        this.$parent.$parent.$refs.alarmTree && this.$parent.$parent.resetTree();
-
-        this.$parent.$parent.$refs[this.table].setHeight();
+        this.$parent.$parent.$children[2].setHeight();
 
       },
       /**

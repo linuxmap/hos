@@ -80,6 +80,15 @@
         }
       })
     },
+    mounted () {
+      let that = this;
+      that.$store.dispatch('setHeight', document.body.clientHeight - 45);
+
+      window.onresize = function(){
+        that.$store.dispatch('setHeight', document.body.clientHeight - 45);
+        that.$store.dispatch('setResize', !that.$store.state.resize);
+      };
+    },
     methods: {
       reload () {
         if (!this.reloadAnyway) {
