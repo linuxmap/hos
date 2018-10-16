@@ -3,25 +3,25 @@
     "path": "/user",
     "component": "user/userInfo",
     "breadcrumb": [],
-    "meuCode": "001"
+    "menuCode": "010"
   },
   {
     "path": "/space",
     "component": "bucket/index",
     "breadcrumb": [],
-    "meuCode": "001"
+    "menuCode": "012"
   },
   {
     "path": "/census",
     "component": "user/census",
     "breadcrumb": [],
-    "meuCode": "001"
+    "menuCode": "013"
   },
   {
     "path": "/log",
     "component": "log",
     "breadcrumb": [],
-    "meuCode": "001"
+    "menuCode": "013"
   },
   {
     "path": "/cluster/list",

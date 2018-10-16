@@ -44,7 +44,7 @@ let methods = {
             callback)
     },
     telephone (rule, value, callback) {
-      return addMethod(/^[0-9_ -]+$/.test(value),
+      return addMethod(/^[0-9_ -]+$/.test(value) || (value == ''),
         '请输入数字、下划线、中划线',
         callback)
     },
@@ -64,10 +64,28 @@ let methods = {
         callback);
     },
     email (rule, value, callback) {
-        return addMethod(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(value),
+        return addMethod(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(value)  || (value == ''),
             '请输入合法邮箱地址',
             callback)
     },
+    user_name (rule, value, callback) {
+        return addMethod(/^[0-9a-zA-Z\u4e00-\u9fa5\_-]+$/.test(value),
+          '仅支持中英文，数字，下划线',
+          callback)
+    },
+
+    mobile_phone (rule, value, callback) {
+      return addMethod(/^(1\d{10})|(0\d{2,3}-?\d{7,8})$/.test(value) || (value == ''),
+        '请输入合法的联系电话，例如：027-8888888',
+        callback)
+    },
+
+    utils_string (rule, value, callback) {
+      return addMethod(/^[0-9a-zA-Z\u4e00-\u9fa5\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\{\}\[\]\;\|\<\>\,\.\?\/\:]+$/.test(value),
+        '存在不支持的特殊字符(例如空格，转义符，单双引号等)。',
+        callback)
+    },
+
     //字符串长度及数值大小判断
     range (value, begin, end) {
         if (typeof(value) == 'number') {
