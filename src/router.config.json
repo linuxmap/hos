@@ -22,5 +22,24 @@
     "component": "log",
     "breadcrumb": [],
     "meuCode": "001"
+  },
+  {
+    "path": "/cluster/list",
+    "component": "cluster/list",
+    "breadcrumb": ["menu.cluster", "menu.custerList"],
+    "router": ["/cluster", "/custer/list"],
+    "menuCode": "001"
+  },
+  {
+    "path": "/cluster/group",
+    "component": "cluster/group",
+    "breadcrumb": [],
+    "menuCode": "001"
+  },
+  {
+    "path": "/node",
+    "component": "node/node",
+    "breadcrumb": [],
+    "menuCode": "001"
   }
 ]
