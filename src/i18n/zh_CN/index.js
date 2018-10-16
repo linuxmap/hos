@@ -58,11 +58,15 @@ menu.countInfo = '基础数据';
 menu.log = '日志管理';
 menu.logInfo = '操作日志';
 
+let common = {};
+common.index = '序号';
+
 let data = {
   config,
   el,
   login,
   pass,
-  menu
+  menu,
+  common
 };
 export default  data;

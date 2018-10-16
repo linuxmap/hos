@@ -20,12 +20,16 @@ module.exports = {
         'router': '/user'
       }],
       '012': [{
-        'title':'menu.bucket',
+        'title':'menu.space',
         'router': '/space'
       }],
       '013': [{
         'title':'menu.userCount',
         'router': '/census'
+      }],
+      '014': [{
+        'title':'menu.log',
+        'router': '/log'
       }]
     }
   }

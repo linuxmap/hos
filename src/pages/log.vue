@@ -44,20 +44,10 @@
       </el-form>
       <!--日志列表-->
       <page-table ref="logTable" :url="logUrl" :queryForm="queryForm">
-        <el-table-column prop="cloud_name" :label="$t('common.cloudName')" width="140">
-          <template slot-scope="scope">
-            {{util.isStrNull(scope.row.cloud_name)}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="username" :label="$t('config.log.username')" width="100">
-          <template slot-scope="scope">
-            {{util.isStrNull(scope.row.username)}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="client_ip" :label="$t('config.log.client_ip')" width="130"></el-table-column>
-        <el-table-column prop="server_ip" :label="$t('config.log.server_ip')" width="130"></el-table-column>
-        <el-table-column prop="create_time" :label="$t('config.log.create_time')" width="150"></el-table-column>
-        <el-table-column prop="describe" :label="$t('config.log.describe')"  :show-overflow-title="true"></el-table-column>
+        <el-table-column prop="client_ip" label="用户" width="130"></el-table-column>
+        <el-table-column prop="server_ip" label="用户IP" width="130"></el-table-column>
+        <el-table-column prop="create_time" label="操作时间" width="150"></el-table-column>
+        <el-table-column prop="describe" label="内容"  :show-overflow-title="true"></el-table-column>
       </page-table>
   </page-container>
 </template>

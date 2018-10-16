@@ -126,7 +126,7 @@
           this.multipleSelection = []
         } else {
           this.multipleSelection = selection
-        } 
+        }
         this.$emit('select-all', this.multipleSelection)
       },
 
@@ -241,12 +241,7 @@
           //含有tab页的表格自适应
           tableTab && (top = tableTab.$el.offsetTop + 60);
 
-          //针对云列表中的表格高度特殊处理
-          if ( that.$route.path.indexOf('cloud/view/') != -1 &&  that.$route.query.cloudId){
-            that.height = document.body.clientHeight - 150 - top - 50;
-          } else {
-            that.height = document.body.clientHeight - 60 - top - 50;
-          }
+          that.height = document.body.clientHeight - 95 - top - 50;
 
           (that.Dheight > 400 ) && (that.resizeH = that.height);
         });
