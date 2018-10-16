@@ -10,19 +10,22 @@ const http = axios.create({
   headers: {'X-Requested-With': 'XMLHttpRequest'}
 })
 
-// 相应拦截器
+// 添加响应拦截器
 http.interceptors.response.use(function (response) {
-  // 请求多语言的json文件
-  if (response.config.url.includes('json')) {
-    return response
+  // 系统未登录判断，跳转到登录页
+  if (response.data.data === 'noLogin') {
+    window.localStorage.removeItem('accessToken');
+    window.localStorage.removeItem('gCloudId');
+    window.localStorage.removeItem('gDeployMode');
+    window.localStorage.removeItem('gCloudType');
+    window.sessionStorage.removeItem('clouds');
+    vm.$store.dispatch('setToken', null);
+    vm.$store.dispatch('setMask', false);
+    router.push({ path: '/login' });
   }
-
-  // 根据响应数据判断是否登录过期
-  if (response.data.success === false && response.data.errorCode === 'pleaseRefreshByHeader') {
-    let refreshUrl = response.headers['refresh-url'].split('?')[0]
-    refreshUrl = refreshUrl + '?service=' + location.protocol + '//' + location.host + '/ecs/ui/redirect' + location.pathname + encodeURIComponent(location.search)
-    location.href = refreshUrl
-    return response.data
+  //没有权限
+  if (response.data.data === 'noPermission' ){
+    HUI.Message.error('没有权限');
   }
 
   let url = response.request.responseURL;
@@ -33,18 +36,48 @@ http.interceptors.response.use(function (response) {
     token.set(response.headers.token);
   }
 
-  // 对错误进行统一处理
-  if (response.data.code !== '0' && response.data.msg) {
-    if (!response.config.noMsg && response.data.msg) {
-      Message.error(i18n.t(response.data.msg, response.data.data))
+  //对错误的处理
+  if (response.data.status == false) {
+    vm.$store.dispatch('setMask', false);
+    if ( response.data.alert ) {
+      if (response.data.data == 'noLogin')
+        HUI.Message.error('登录超时');
+      else
+        HUI.Message.error(response.data.data);
     }
-    return Promise.reject(response)
   }
+
+  //登录时的验证码传值
+  if (response.headers.vcode) {
+    response.data.vcode = response.headers.vcode;
+  }
+
   return response.data;
-}, function (error) {
+}, function (err) {
+  vm.$store.dispatch('setMask', false);
+  vm.loadingUsergroupList = false;
   // 对响应错误做点什么
-  return Promise.reject(error)
-})
+  if (err.response) {
+    if (err.response.data.alert){ //添加鉴权失效 500错误异常抛出显示
+      HUI.Message.error(err.response.data.data == 'noLogin' ? '登录超时' : err.response.data.data);
+    } else {
+      if (err.response.data.err)
+        HUI.Message.error(err.response.data.err);
+    }
+  } else if (err.request) {
+    if (!window.localStorage.ipModify)
+    //超时判断
+      HUI.Message.error('请求超时');
+
+    if(err.request.readyState == 4 && err.request.status == 0){
+
+    }
+  } else {
+    console.log('Error', error.message);
+  }
+
+  return Promise.reject(err);
+});
 
 // 请求拦截器
 http.interceptors.request.use(function (config) {
