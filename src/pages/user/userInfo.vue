@@ -32,8 +32,9 @@
         <el-form-item label="Access Key ID" prop="accessKey">
           <el-input v-model="keyForm.accessKey"></el-input>
         </el-form-item>
-        <el-form-item label="Access Key Secret" prop="secretKey">
-          <el-input type="password" v-model="keyForm.secretKey"></el-input>
+        <el-form-item label="Access Key Secret" prop="secretKey" class="secret">
+          <el-input :type="textType" v-model="keyForm.secretKey"></el-input>
+          <i class="h-icon-eye_open showPass" @mousedown="textType='text'" @mouseup="textType='password'"></i>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="download('keyForm')">下载</el-button>
@@ -52,6 +53,7 @@
     props: ['breadcrumbObj'],
     data() {
       return {
+        textType:'password',
         userForm: {
           userName: 'testwj',
           customerName:'',
@@ -143,3 +145,15 @@
     }
   }
 </script>
+<style scoped>
+  .showPass{
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor:pointer;
+    font-size:16px;
+  }
+  .secret /deep/ .el-form-item__content{
+    position:relative;
+  }
+</style>

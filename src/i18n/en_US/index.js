@@ -49,9 +49,13 @@ pass.success = 'Edited.';
 
 let menu = {};
 menu.user = '用户中心';
+menu.userInfo = '用户信息';
 menu.space = '存储空间';
+menu.spaceInfo = 'Bucket';
 menu.userCount = '用户统计';
+menu.countInfo = '基础数据';
 menu.log = '日志管理';
+menu.logInfo = '操作日志';
 
 let data = {
   config,
