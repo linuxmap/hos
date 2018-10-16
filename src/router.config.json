@@ -30,9 +30,9 @@
   {
     "path": "/cluster",
     "component": "cluster/list",
-    "breadcrumb": ["menu.cluster", "menu.custerList"],
+    "breadcrumb": ["menu.clusterList"],
     "router": ["/cluster"],
-    "menuCode": "001"
+    "menuCode": "110"
   },
   {
     "path": "/cluster/group",

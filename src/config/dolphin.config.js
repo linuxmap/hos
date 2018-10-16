@@ -26,6 +26,10 @@ module.exports = {
       '013': [{
         'title':'menu.userCount',
         'router': '/census'
+      }],
+      '110': [{
+        'title': 'menu.cluster',
+        'router': '/cluster'
       }]
     }
   }

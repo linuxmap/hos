@@ -57,6 +57,9 @@ menu.countInfo = '基础数据';
 menu.log = '日志管理';
 menu.logInfo = '操作日志';
 
+menu.cluster = '集群管理';
+menu.clusterList = '集群列表';
+
 let data = {
   config,
   el,

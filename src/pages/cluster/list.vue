@@ -40,6 +40,7 @@
   export default {
     name: 'clusterList',
     components: { pageTable },
+    props: ['breadcrumbObj'],
     data () {
       return {
         listUrl: '',
