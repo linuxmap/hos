@@ -10,7 +10,7 @@
 
 </template>
 <script>
-  import navList from '@/nav.config1.json'
+  import navList from '@/nav.config.json'
   import { mapState } from 'vuex'
   import vHeader from 'index@/components/header.vue'
 

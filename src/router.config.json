@@ -30,20 +30,50 @@
   {
     "path": "/cluster",
     "component": "cluster/list",
-    "breadcrumb": ["menu.cluster", "menu.custerList"],
+    "breadcrumb": ["menu.clusterList"],
     "router": ["/cluster"],
-    "menuCode": "001"
+    "menuCode": "110"
   },
   {
     "path": "/cluster/group",
     "component": "cluster/group",
-    "breadcrumb": [],
-    "menuCode": "001"
+    "breadcrumb": ["menu.clusterGroup"],
+    "router": ["/cluster/group"],
+    "menuCode": "110"
   },
   {
     "path": "/node",
-    "component": "node/node",
-    "breadcrumb": [],
-    "menuCode": "001"
+    "component": "node/list",
+    "breadcrumb": ["menu.nodeList"],
+    "router": ["/node"],
+    "menuCode": "111"
+  },
+  {
+    "path": "/domain",
+    "component": "domain/list",
+    "breadcrumb": ["menu.domainList"],
+    "router": ["/domain"],
+    "menuCode": "112"
+  },
+  {
+    "path": "/cloud",
+    "component": "cloud/list",
+    "breadcrumb": ["menu.cloudList"],
+    "router": ["/cloud"],
+    "menuCode": "113"
+  },
+  {
+    "path": "/network",
+    "component": "system/network",
+    "breadcrumb": ["menu.network"],
+    "router": ["/network"],
+    "menuCode": ["114"]
+  },
+  {
+    "path": "/configuration",
+    "component": "system/config",
+    "breadcrumb": ["menu.config"],
+    "router": ["/configuration"],
+    "menuCode": ["114"]
   }
 ]

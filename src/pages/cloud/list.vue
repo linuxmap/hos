@@ -2,21 +2,18 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-edit" @click="dialogVisible = true">修改虚拟IP</el-button>
+      <el-button type="iconButton" icon="h-icon-plus">创建</el-button>
+      <el-button type="iconButton" icon="h-icon-edit">修改</el-button>
+      <el-button type="iconButton" icon="h-icon-trashcan">删除</el-button>
     </div>
     <!-- 列表 -->
-    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true">
       <el-table-column prop="cloudId" label="云ID"></el-table-column>
-      <el-table-column prop="cloudType" label="云类型"></el-table-column>
-      <el-table-column prop="clusterType" label="集群类型"></el-table-column>
-      <el-table-column prop="virtualIp" label="虚拟IP"></el-table-column>
-      <el-table-column prop="serialId" label="序列号"></el-table-column>
-      <el-table-column prop="ip" label="节点IP"></el-table-column>
-      <el-table-column prop="ssDbIp" label="SSDB IP"></el-table-column>
-      <el-table-column prop="status" label="状态"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间"></el-table-column>
-      <el-table-column prop="modificationTime" label="修改时间"></el-table-column>
-      <el-table-column prop="cloudVersion" label="云版本"></el-table-column>
+      <el-table-column prop="cloudIp" label="云存储IP"></el-table-column>
+      <el-table-column prop="cloudPort" label="云存储端口"></el-table-column>
+      <el-table-column prop="cloudObjectPort" label="对象端口"></el-table-column>
+      <el-table-column prop="cloudUsername" label="用户名"></el-table-column>
+      <el-table-column prop="isCurrentCloud" label="是否本云"></el-table-column>
     </page-table>
 
     <!-- 弹出框 -->

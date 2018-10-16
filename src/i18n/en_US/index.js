@@ -57,6 +57,20 @@ menu.countInfo = '基础数据';
 menu.log = '日志管理';
 menu.logInfo = '操作日志';
 
+
+menu.cluster = '集群管理';
+menu.clusterList = '集群列表';
+menu.clusterGroup = '组管理';
+menu.node = '节点管理';
+menu.nodeList = '接入节点';
+menu.domain = '域名管理';
+menu.domainList = '域名列表';
+menu.cloud = '云存储管理';
+menu.cloudList = '云存储列表';
+menu.system = "系统管理";
+menu.network = "网络管理";
+menu.config = "配置管理"
+
 let common = {};
 common.index = 'Index';
 common.query = '查询'
@@ -64,6 +78,7 @@ common.reset = '重置'
 common.more = '更多'
 common.open = '展开'
 common.close = '收起'
+
 
 let data = {
   config,

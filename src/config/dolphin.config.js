@@ -27,9 +27,29 @@ module.exports = {
         'title':'menu.userCount',
         'router': '/census'
       }],
-      '014': [{
+	    '014': [{
         'title':'menu.log',
         'router': '/log'
+      }],	
+      '110': [{
+        'title': 'menu.cluster',
+        'router': '/cluster'
+      }],
+      '111': [{
+        'title': 'menu.node',
+        'router': '/node'
+      }],
+      '112': [{
+        'title': 'menu.domain',
+        'router': '/domain'
+      }],
+      '113': [{
+        'title': 'menu.cloud',
+        'router': '/cloud'
+      }],
+      '114': [{
+        'title': 'menu.system',
+        'router': '/network'
       }]
     }
   }
