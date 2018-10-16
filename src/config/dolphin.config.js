@@ -46,6 +46,10 @@ module.exports = {
       '113': [{
         'title': 'menu.cloud',
         'router': '/cloud'
+      }],
+      '114': [{
+        'title': 'menu.system',
+        'router': '/network'
       }]
     }
   }

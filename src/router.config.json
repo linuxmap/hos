@@ -61,5 +61,19 @@
     "breadcrumb": ["menu.cloudList"],
     "router": ["/cloud"],
     "menuCode": "113"
+  },
+  {
+    "path": "/network",
+    "component": "system/network",
+    "breadcrumb": ["menu.network"],
+    "router": ["/network"],
+    "menuCode": ["114"]
+  },
+  {
+    "path": "/configuration",
+    "component": "system/config",
+    "breadcrumb": ["menu.config"],
+    "router": ["/configuration"],
+    "menuCode": ["114"]
   }
 ]

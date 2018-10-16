@@ -67,6 +67,9 @@ menu.domain = '域名管理';
 menu.domainList = '域名列表';
 menu.cloud = '云存储管理';
 menu.cloudList = '云存储列表';
+menu.system = "系统管理";
+menu.network = "网络管理";
+menu.config = "配置管理"
 
 let common = {};
 common.index = 'Index';
