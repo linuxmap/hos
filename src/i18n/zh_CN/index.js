@@ -61,6 +61,7 @@ menu.logInfo = '操作日志';
 menu.cluster = '集群管理';
 menu.clusterList= '集群列表';
 menu.clusterGroup = '组管理';
+menu.clusterGroupAdd = '创建组';
 menu.node = '节点管理';
 menu.nodeList = '接入节点';
 menu.domain = '域名管理';
