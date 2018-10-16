@@ -24,10 +24,10 @@
     "menuCode": "013"
   },
   {
-    "path": "/cluster/list",
+    "path": "/cluster",
     "component": "cluster/list",
     "breadcrumb": ["menu.cluster", "menu.custerList"],
-    "router": ["/cluster", "/custer/list"],
+    "router": ["/cluster"],
     "menuCode": "001"
   },
   {
