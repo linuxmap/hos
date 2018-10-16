@@ -50,7 +50,7 @@ export default {
       downloadDisabled: false,    // 下载颜色
       activeName: 'skin',
       isToolsOpen: false,         // 颜色工具状态配置
-      skinRadio: this.$utils.getStorage('skin').color || 'redblack',
+      skinRadio: this.$utils.getStorage('skin').color || 'blue',
       i18nRadio: this.$utils.getStorage('i18n').lang || 'zh_CN'
     }
   },
@@ -77,8 +77,7 @@ export default {
 
       http.getRequest(`/static/skin/${skinName}/skin.json`, 'get')
         .then(res => {
-          const json = res.data
-          this.$utils.renderSkin(skinName, json.packages)
+          this.$utils.renderSkin(skinName, res.packages)
           this.$utils.setStorage('skin', {color: skinName})
         });
     },

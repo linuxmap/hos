@@ -1475,6 +1475,114 @@ let echartsUntil = {
       return myChart;
     };
     getDataFunction(setValue);
+  },
+
+  //面积图
+  createAreaLine (id,statsType, xAxisData, yAxisLabels, yAxisDatas) {
+    var optionText = '';
+    if (statsType == 'statsUploadFlow') {
+      optionText = '上传流量';
+    } else if (statsType == 'statsWriteRequest') {
+      optionText = '写入请求';
+    }
+
+    let myChart = echarts.init(document.getElementById(id));
+    let option = {
+      title: {
+        text: optionText,
+        x: 110,
+        y: 20,
+        textStyle: {
+          fontSize: 14,
+          fontWeight: 'bolder',
+          fontFamily: '微软雅黑',
+          color: '#4a8bc2'
+        }
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        selectedMode: true,
+        data: ['默认'],
+        y: 20
+      },
+      dataZoom: {
+        show: false,
+        realtime: true,
+        start: 0,
+        end: 100
+      },
+      xAxis: [{
+        axisLabel: {
+          show: true,
+          interval: 'auto'
+        },
+        axisLine: {
+          lineStyle: {
+            width: 1,
+            type: 'solid'
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            width: 1,
+            type: 'dashed'
+          }
+        },
+        type: 'category',
+        boundaryGap: false,
+        data: [ ]
+      }],
+      yAxis: [{
+        axisLine: {
+          lineStyle: {
+            width: 1,
+            type: 'solid'
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            width: 1,
+            type: 'dashed'
+          }
+        },
+        type: 'value',
+        axisLabel: {
+          formatter : '{value}'
+        }
+      }],
+      series: []
+    };
+
+    if (yAxisLabels) {
+      let colorArray = ["#00C1DE","#FF6A00","#1F77B4"];
+      for (var i = 0; i < yAxisLabels.length; i++) {
+        option.series.push({
+          name: yAxisLabels[i].toString(),
+          type: 'line',
+          smooth: true,
+          data: yAxisDatas[i].length > 0 ? yAxisDatas[i] : [0],
+          itemStyle: {
+            normal: {
+              color: colorArray[i],
+              lineStyle: {
+                color: colorArray[i]
+              },
+              areaStyle: {
+                type: 'default'
+              }
+            }
+          }
+        });
+      }
+
+      option.xAxis[0].data = xAxisData.length > 0 ? xAxisData : [""];
+      option.legend.data = yAxisLabels;
+    }
+
+    myChart.setOption(option, true);
+    return myChart;
   }
 };
 

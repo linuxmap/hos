@@ -29,7 +29,6 @@
               <el-date-picker
                 v-model="timeVal"
                 type="daterange"
-                align="right"
                 placeholder="选择日期范围"
                 @change="getDate"
                 :editable="false"
@@ -44,10 +43,10 @@
       </el-form>
       <!--日志列表-->
       <page-table ref="logTable" :url="logUrl" :queryForm="queryForm">
-        <el-table-column prop="client_ip" label="用户" width="130"></el-table-column>
-        <el-table-column prop="server_ip" label="用户IP" width="130"></el-table-column>
-        <el-table-column prop="create_time" label="操作时间" width="150"></el-table-column>
-        <el-table-column prop="describe" label="内容"  :show-overflow-title="true"></el-table-column>
+        <el-table-column prop="uid" label="用户" width="130"></el-table-column>
+        <el-table-column prop="ip" label="用户IP" width="130"></el-table-column>
+        <el-table-column prop="datetime" label="操作时间" width="150"></el-table-column>
+        <el-table-column prop="desc" label="内容"  :show-overflow-title="true"></el-table-column>
       </page-table>
   </page-container>
 </template>
