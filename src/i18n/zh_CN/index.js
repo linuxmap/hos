@@ -61,11 +61,15 @@ menu.logInfo = '操作日志';
 menu.cluster = '集群管理';
 menu.clusterList= '集群列表';
 
+let common = {};
+common.index = '序号';
+
 let data = {
   config,
   el,
   login,
   pass,
-  menu
+  menu,
+  common
 };
 export default  data;

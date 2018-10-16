@@ -25,7 +25,7 @@
     "component": "log",
     "breadcrumb": ["menu.logInfo"],
     "router": ["/log"],
-    "menuCode": "013"
+    "menuCode": "014"
   },
   {
     "path": "/cluster",

@@ -19,7 +19,7 @@
       v-loading.fullscreen.lock="loadingUsergroupList"
       element-loading-text="数据加载中，请稍等...">
       <el-table-column v-if="select" type="selection" width="40" align="center"></el-table-column>
-      <el-table-column v-if="!noIndex" type="index" width="50" label="序号" class-name="optBtn" align="center"></el-table-column>
+      <el-table-column v-if="!noIndex" type="index" width="50" :label="$t('common.index')" class-name="optBtn" align="center"></el-table-column>
       <el-table-column prop="cloud_name" v-if="cloud && !$route.query.cloudId" :label = "$t('common.cloudName')"  width="120" :show-overflow-tooltip="true" :formatter="tplDoNull"></el-table-column>
       <slot></slot>
     </el-table>
@@ -126,7 +126,7 @@
           this.multipleSelection = []
         } else {
           this.multipleSelection = selection
-        } 
+        }
         this.$emit('select-all', this.multipleSelection)
       },
 
@@ -241,12 +241,7 @@
           //含有tab页的表格自适应
           tableTab && (top = tableTab.$el.offsetTop + 60);
 
-          //针对云列表中的表格高度特殊处理
-          if ( that.$route.path.indexOf('cloud/view/') != -1 &&  that.$route.query.cloudId){
-            that.height = document.body.clientHeight - 150 - top - 50;
-          } else {
-            that.height = document.body.clientHeight - 60 - top - 50;
-          }
+          that.height = document.body.clientHeight - 95 - top - 50;
 
           (that.Dheight > 400 ) && (that.resizeH = that.height);
         });
