@@ -2,25 +2,29 @@
   {
     "path": "/user",
     "component": "user/userInfo",
-    "breadcrumb": [],
+    "breadcrumb": ["menu.userInfo"],
+    "router": ["/user"],
     "menuCode": "010"
   },
   {
     "path": "/space",
     "component": "bucket/index",
-    "breadcrumb": [],
+    "breadcrumb": ["menu.spaceInfo"],
+    "router": ["/space"],
     "menuCode": "012"
   },
   {
     "path": "/census",
     "component": "user/census",
-    "breadcrumb": [],
+    "breadcrumb": ["menu.countInfo"],
+    "router": ["/census"],
     "menuCode": "013"
   },
   {
     "path": "/log",
     "component": "log",
-    "breadcrumb": [],
+    "breadcrumb": ["menu.logInfo"],
+    "router": ["/log"],
     "menuCode": "013"
   }
 ]
