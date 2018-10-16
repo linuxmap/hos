@@ -13,7 +13,7 @@ module.exports = {
   sysPath: process.env.NODE_ENV !== 'development' ? `/${baseContext}` : '',
   userInfo: {
     'languageId': 'zh_CN',
-    'skin': 'redblack',
+    'skin': 'blue',
     'breadcrumb': {
       '010': [{
         'title':'menu.user',
