@@ -70,6 +70,11 @@ menu.cloudList = '云存储列表';
 
 let common = {};
 common.index = '序号';
+common.query = '查询'
+common.reset = '重置'
+common.more = '更多'
+common.open = '展开'
+common.close = '收起'
 
 let data = {
   config,
