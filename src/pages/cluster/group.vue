@@ -1,11 +1,38 @@
 <template>
   <page-container :breadcrumb="i18nBreadcrumb">
-    cluster group
+    <!-- 工具条 -->
+    <div class="toolbar" ref="toolbar">
+      <el-button type="iconButton" icon="h-icon-plus">创建组</el-button>
+    </div>
+    <!-- 列表 -->
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">
+      <el-table-column prop="groupName" label="组名称"></el-table-column>
+      <el-table-column prop="groupId" label="组ID"></el-table-column>
+      <el-table-column prop="serverIp" label="服务器IP"></el-table-column>
+      <el-table-column prop="serverId" label="服务器ID"></el-table-column>
+      <el-table-column prop="onlineState" label="在线状态"></el-table-column>
+    </page-table>
   </page-container>
 </template>
 <script>
+  import pageTable from '@/components/pageTable'
   export default {
-
+    name: 'clusterGroup',
+    components: {pageTable},
+    props: {
+      breadcrumbObj: {
+        type: Object
+      }
+    },
+    data () {
+      return {
+        listUrl: '',
+        queryForm: null
+      }
+    },
+    created () {
+      // console.log(this.breadcrumbObj)
+    }
   }
 </script>
 <style lang="less" scoped>

@@ -34,6 +34,18 @@ module.exports = {
       '110': [{
         'title': 'menu.cluster',
         'router': '/cluster'
+      }],
+      '111': [{
+        'title': 'menu.node',
+        'router': '/node'
+      }],
+      '112': [{
+        'title': 'menu.domain',
+        'router': '/domain'
+      }],
+      '113': [{
+        'title': 'menu.cloud',
+        'router': '/cloud'
       }]
     }
   }

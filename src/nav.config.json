@@ -13,13 +13,9 @@
     "icon": "h-icon-control_pole"
   },
   {
-    "title": "menu.virtual",
-    "icon": "h-icon-menu_app",
-    "children": [
-      {"title": "menu.domainSet", "router": "/domain"},
-      {"title": "menu.groupSet", "router": "/group"},
-      {"title": "menu.bucketSet", "router": "/bucket"}
-    ]
+    "title": "menu.domain",
+    "router": "/domain",
+    "icon": "h-icon-menu_app"
   },
   {
     "title": "menu.cloud",

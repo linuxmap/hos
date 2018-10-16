@@ -60,6 +60,13 @@ menu.logInfo = '操作日志';
 
 menu.cluster = '集群管理';
 menu.clusterList= '集群列表';
+menu.clusterGroup = '组管理';
+menu.node = '节点管理';
+menu.nodeList = '接入节点';
+menu.domain = '域名管理';
+menu.domainList = '域名列表';
+menu.cloud = '云存储管理';
+menu.cloudList = '云存储列表';
 
 let common = {};
 common.index = '序号';

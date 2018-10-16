@@ -37,13 +37,29 @@
   {
     "path": "/cluster/group",
     "component": "cluster/group",
-    "breadcrumb": [],
-    "menuCode": "001"
+    "breadcrumb": ["menu.clusterGroup"],
+    "router": ["/cluster/group"],
+    "menuCode": "110"
   },
   {
     "path": "/node",
-    "component": "node/node",
-    "breadcrumb": [],
-    "menuCode": "001"
+    "component": "node/list",
+    "breadcrumb": ["menu.nodeList"],
+    "router": ["/node"],
+    "menuCode": "111"
+  },
+  {
+    "path": "/domain",
+    "component": "domain/list",
+    "breadcrumb": ["menu.domainList"],
+    "router": ["/domain"],
+    "menuCode": "112"
+  },
+  {
+    "path": "/cloud",
+    "component": "cloud/list",
+    "breadcrumb": ["menu.cloudList"],
+    "router": ["/cloud"],
+    "menuCode": "113"
   }
 ]
