@@ -1,24 +1,26 @@
 [
   {
-    "path": "",
-    "redirect": "/domain"
-  },
-  {
-    "path": "/domain",
-    "component": "virtual/domain",
-    "breadcrumb": ["menu.domainSet"],
-    "menuCode": "003"
-  },
-  {
     "path": "/user",
-    "component": "user/list",
+    "component": "user/userInfo",
     "breadcrumb": [],
-    "memuCode": "004"
+    "meuCode": "001"
   },
   {
-    "path": "/user/detail/:userId",
-    "component": "user/detail",
+    "path": "/space",
+    "component": "bucket/index",
     "breadcrumb": [],
-    "menuCode": "004"
+    "meuCode": "001"
+  },
+  {
+    "path": "/census",
+    "component": "user/census",
+    "breadcrumb": [],
+    "meuCode": "001"
+  },
+  {
+    "path": "/log",
+    "component": "log",
+    "breadcrumb": [],
+    "meuCode": "001"
   }
 ]
