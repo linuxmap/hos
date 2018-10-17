@@ -10,8 +10,12 @@
     </div>
     <!-- 列表 -->
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true">
-      <el-table-column prop="businessDataIp" label="节点IP【业务/数据】"></el-table-column>
-      <el-table-column prop="serialId" label="节点ID"></el-table-column>
+      <el-table-column label="节点IP【业务/数据】">
+        <template slot-scope="scope">
+          {{scope.row.serverIp + '/' + scope.row.serverDataIp}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="serverId" label="节点ID"></el-table-column>
       <el-table-column prop="groupId" label="组ID"></el-table-column>
       <el-table-column prop="onlineState" label="在线状态"></el-table-column>
       <el-table-column prop="cpu" label="CPU消耗（%）"></el-table-column>
@@ -19,7 +23,7 @@
       <el-table-column prop="net" label="网络【in/out】（mbps）"></el-table-column>
       <el-table-column width="110" label="操作" align="center">
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" content="存储卷" placement="top">
+            <el-tooltip class="item" effect="dark" content="存储卷" placement="top" :enterable="false">
               <el-button type="text"><i class="h-icon-save"></i></el-button>
             </el-tooltip>
           </template>
@@ -37,7 +41,7 @@
     },
     data () {
       return {
-        listUrl: '',
+        listUrl: '/mock/node/list',
         queryForm: null
       }
     },
