@@ -17,8 +17,12 @@ token.set()
 async function setSkin (skin) {
   // 后端返回的有可能是空字符串
   skin = skin || 'redblack'
-  let skinData = await axios.get(`${path}/skin/${skin}/skin.json`)
-  return Utils.renderSkin(skin, skinData.data.packages, context)
+  // let skinData = await axios.get(`${path}/skin/${skin}/skin.json`)
+  // return Utils.renderSkin(skin, skinData.data.packages, context)
+
+  // 使用mock
+  const res = await axios.get('/mock/skin', {params: {skin: skin}})
+  return Utils.renderSkin(skin, res.data.skinJson.packages, context)
 }
 
 // 获取多语言文件

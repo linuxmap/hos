@@ -8,7 +8,7 @@ import store from './store'
 import hui from 'hui'
 import common from 'dolphin_common'
 import initApp from './initApp'
-// import '@/mock'
+import '@/mock'
 Vue.use(hui)
 Vue.use(common)
 

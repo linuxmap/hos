@@ -43,7 +43,8 @@
    </div>
 </template>
 <script>
-  // import http from 'index@/api/index'
+  import http from 'index@/api/index'
+  import mockHttp from '@/libs/mockHttp'
   import token from 'index@/libs/token'
   import { use } from 'hui/lib/locale'
   import enLocale from 'hui/lib/locale/lang/en'
@@ -87,7 +88,7 @@
     created () {
       // 测试 store 模块
       this.$store.commit('test/asignTestInfo', {age: 123})
-      console.log(this.$store.state.test.testInfo)
+      // console.log(this.$store.state.test.testInfo)
       //设置公钥
       this.encrypt = new JSEncrypt();
       let publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKZKgabcPik14D8DSWVMMNjo+08NQNxRTjH6bBlD8CaAviLdN+EVcBR4wCpSQrzd1gngafZGVzBFWKitxh5fZcAHq3BJjhtVvpsuRgxLNmgWk8Mt1nzxSkGqe5hiWZ5i2p9dN/iq6kZi0cPlkIv55D4AjD6g82durpL4qKKCVm6wIDAQAB";
@@ -114,7 +115,19 @@
       signIn (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$router.push('/home')
+            // this.$router.push('/home')
+            mockHttp.post('/mock/login', this.signin).then(res => {
+              if (res.data.code === 200) {
+                token.set(res.data.user.userName)
+                this.$router.push('/cluster')
+              } else {
+                this.$message.error({
+                  showClose: true,
+                  type: 'warning',
+                  message: '用户名或密码错误'
+                })
+              }
+            })
           } else {
             this.$message.error({
               showClose: true,

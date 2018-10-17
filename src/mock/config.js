@@ -6,6 +6,6 @@ const MockAdapter = require('axios-mock-adapter')
 export const mockAdapter = new MockAdapter(axios)
 export const MockJS = require('mockjs')
 export const userInfo = {
-  name: 'admin',
-  password: 'admin123'
+  userName: 'admin',
+  passWord: 'admin123'
 }

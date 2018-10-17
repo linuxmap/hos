@@ -7,7 +7,7 @@
  */
 import Vue from 'vue'
 import Router from 'vue-router'
-// import store from '@/store'
+import store from '@/store'
 
 import routes from '../router.config.json'
 // import config from '../config/dolphin.config'
@@ -64,15 +64,15 @@ const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.path === '/login' || store.state.accessToken) {
-//     next()
-//   } else {
-//     next({
-//       path: '/login',
-//       query: {redirect: to.fullPath}
-//     })
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login' || store.state.accessToken) {
+    next()
+  } else {
+    next({
+      path: '/login',
+      query: {redirect: to.fullPath}
+    })
+  }
+})
 
 export default router
