@@ -1,179 +1,105 @@
 <template>
-  <page-container class="logWrap" :breadcrumb="i18nBreadcrumb">
-    <!--工具栏-->
-    <!-- <div class="toolbar" ref="toolbar">
-       <el-button type="iconButton" icon="h-icon-export">{{$t("config.log.export")}}</el-button>
-     </div>-->
-    <!--查询条件-->
-    <el-form ref="logForm" :model="queryForm" class="collForm clearfix" label-width="80px">
-      <query-list
-        ref="querycol"
-        :queryForm="queryForm"
-        table="logTable"
-        form="logForm"
-        :tags="tags"
-        :isExport="true"
-        input="请输入查询字段"
-        @queryList="queryLogList">
-        <div v-show="$store.state.query">
-          <el-form-item class="inlineLabel" :label="$t('config.log.username')" prop="username">
-            <el-input v-model="queryForm.username" class="log"></el-input>
-          </el-form-item>
-          <el-form-item class="inlineLabel" :label="$t('config.log.client_ip')" prop="client_ip">
-            <el-input v-model="queryForm.client_ip" class="log"></el-input>
-          </el-form-item>
-          <el-form-item class="inlineLabel" v-bind:label="$t('config.log.server_ip')" prop="server_ip">
-            <el-input v-model="queryForm.server_ip" class="log"></el-input>
-          </el-form-item>
-          <el-form-item class="inlineLabel" style="clear:both" v-bind:label="$t('config.log.create_time')" prop="create_time">
-            <el-date-picker
-              v-model="timeVal"
-              type="daterange"
-              align="right"
-              placeholder="选择日期范围"
-              @change="getDate"
-              :editable="false"
-              :picker-options="pickerOptions2">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item class="inlineLabel" v-bind:label="$t('config.log.describe')" prop="describe">
-            <el-input v-model="queryForm.describe" class="describe"></el-input>
-          </el-form-item>
-        </div>
-      </query-list>
-    </el-form>
-    <!--日志列表-->
-    <page-table ref="logTable" :url="logUrl" :queryForm="queryForm">
-      <el-table-column prop="cloud_name" :label="$t('common.cloudName')" width="140">
-        <template slot-scope="scope">
-          {{util.isStrNull(scope.row.cloud_name)}}
-        </template>
-      </el-table-column>
-      <el-table-column prop="username" :label="$t('config.log.username')" width="100">
-        <template slot-scope="scope">
-          {{util.isStrNull(scope.row.username)}}
-        </template>
-      </el-table-column>
-      <el-table-column prop="client_ip" :label="$t('config.log.client_ip')" width="130"></el-table-column>
-      <el-table-column prop="server_ip" :label="$t('config.log.server_ip')" width="130"></el-table-column>
-      <el-table-column prop="create_time" :label="$t('config.log.create_time')" width="150"></el-table-column>
-      <el-table-column prop="describe" :label="$t('config.log.describe')"  :show-overflow-title="true"></el-table-column>
-    </page-table>
-  </page-container>
+  <div>
+    <div class="basicMes rel">
+      <el-alert
+        class="tips"
+        title="» 私有：对Object的所有访问操作，都需要进行身份验证。
+» 公共读：对Object写操作需要进行身份验证；对Object读操作无需身份验证，可直接读取。
+» 公共读写：所有人都可以对Object进行读写操作，为确保您的数据安全，不推荐此配置。"
+        type="info"
+        simple
+        :closable="false">
+      </el-alert>
+      <el-form ref="bucketForm" label-width="120px"  content-width="500px" :model="bucketForm">
+        <el-form-item label="Bucket ACL" prop="bucket_acl">
+          <el-radio-group v-model="bucketForm.bucket_acl" size="small" label-width="80px" content-width="300px">
+            <el-radio-button label="0">公共读写</el-radio-button>
+            <el-radio-button label="1">公共读</el-radio-button>
+            <el-radio-button label="2">私有</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="副本数" prop="replication">
+          <el-input :value="replication[bucketForm.replication] || '--'" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="冗余类型" prop="stripe_level_k">
+          <el-input :value="bucketForm.stripe_level_k" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="转存开关" prop="transfer_switch">
+          <el-switch
+            v-model="bucketForm.transfer_switch"
+            active-color="#3DBD7D"
+            active-text="开"
+            inactive-text="关"
+            active-value="1"
+            inactive-value="0">
+          </el-switch>
+        </el-form-item>
+        <el-form-item label="转存模式" prop="trans_mode">
+          <el-radio-group v-model="bucketForm.trans_mode" size="small" label-width="80px" content-width="300px">
+            <el-radio-button label="0">异步</el-radio-button>
+            <el-radio-button label="1">同步</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="删除缓存模式" prop="delete_ssd">
+          <el-switch
+            v-model="bucketForm.delete_ssd"
+            active-color="#3DBD7D"
+            active-text="是"
+            inactive-text="否"
+            active-value="1"
+            inactive-value="0">
+          </el-switch>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="setBucket('bucketForm')">设置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script>
-  import pageTable from 'index@/components/pageTable.vue'
-  import cBread from 'index@/components/bread.vue'
-  import http from 'index@/api/index'
-  import util from 'index@/utils/util'
-  import queryList from 'index@/components/queryList.vue'
-
+  import validate from 'index@/utils/form-validate'
   export default {
     components: {
-      pageTable,
-      queryList
     },
-    props: ['breadcrumbObj'],
-    data () {
+    data() {
       return {
-        util: util,
-        logUrl: '/platform/log/list',
-        queryForm: {
-          cloudId:'',
-          username:'',
-          client_ip: '',
-          server_ip: '',
-          create_time: '',
-          describe: ''
+        bucketForm:{
+          bucket_acl: '0',
+          replication: '2',
+          stripe_level_k: '4 + 2 : 2',
+          transfer_switch: '1',
+          trans_mode: '0',
+          delete_ssd: '1'
         },
-        tags:[],
-        timeVal:'',
-        pickerOptions2: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+        replication: {
+            '1': '单副本',
+            '2': '两副本',
+            '0': '全副本'
         }
       }
     },
-
     methods: {
-      // 表格组件更新数据
-      refreshTable () {
-        this.$refs.logTable.refresh();
-      },
-      /**
-       * @Author: wangjing9
-       * @Date: 2018-03-15
-       * @Desc: 获取日历控件的时间
-       */
-      getDate (val) {
-        this.queryForm.create_time = val;
-        console.log(val);
-      },
-      /**
-       * @Author: wangjing9
-       * @Date: 2018-03-15
-       * @Desc: 查询并生成tag
-       */
-      queryLogList (tags) {
-        let keys = ['username','client_ip','server_ip','create_time','describe'];
-        let queryTxt = {};
-        let that = this;
+      //设置bucket
+      setBucket () {
 
-        keys.forEach(function(v){
-          queryTxt[v] = that.$t('config.log.'+v);
-        });
-
-        this.tags = tags;
-        this.$refs.logTable.getData();
-        for (let p in queryTxt){
-          if (this.queryForm[p]){
-            this.tags.push({
-              name: p,
-              value: queryTxt[p] + ' : ' + (this[p] ? this[p][this.queryForm[p]] : this.queryForm[p])
-            })
-          }
-        }
       }
     }
   }
 </script>
-<style lang="less">
-  .logWrap{
-  .el-date-editor--daterange.el-input{
-    width:180px;
-  input{
-    width:180px;
+<style scoped>
+  h3 > s{
+    color:#999;
+    font-weight:100;
+    text-decoration: none;
   }
+  .tips{
+    position:relative;
+    top:-10px;
+    width:80%;
   }
-  .inlineLabel{
-  .describe input{
-    width:470px;
+  .noBorder /deep/ input{
+    border:none;
   }
-  }
-  }
-
 </style>

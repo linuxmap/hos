@@ -1,10 +1,10 @@
 <template>
   <page-sidebar>
     <template slot="sidebarToolbar" v-if="showTools">
-      <el-tooltip effect="dark" content="添加" placement="top">
-        <el-button type="iconButton" icon="h-icon-plus"></el-button>
+      <el-tooltip effect="dark" content="创建Bucket" placement="top">
+        <el-button type="iconButton" icon="h-icon-plus" @click="add">创建Bucket</el-button>
       </el-tooltip>
-      <el-tooltip effect="dark" content="编辑" placement="top">
+     <!-- <el-tooltip effect="dark" content="编辑" placement="top">
         <el-button type="iconButton" icon="h-icon-edit"></el-button>
       </el-tooltip>
       <el-tooltip effect="dark" content="删除" placement="top">
@@ -17,7 +17,7 @@
           <el-dropdown-item>导入</el-dropdown-item>
           <el-dropdown-item>导出</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown>-->
     </template>
     <template slot="sidebarSearch">
       <el-input
@@ -36,7 +36,6 @@
       :data="treeData"
       :props="defaultProps"
       node-key="id"
-      show-checkbox
       default-expand-all
       :default-checked-keys = "[1]"
       @node-click="selectTreeNode"
@@ -86,15 +85,17 @@ export default {
 
     //设置树的选中及点击--wangjing9
     setTreeChoosed(link) {
-      this.$refs.bucketTree.setCheckedKeys([link]);
-      this.$nextTick(function () {
-        document.querySelector('label.is-checked').parentNode.click();
-      });
+      this.$refs.bucketTree.setSelected(link);
     },
 
     //点击树节点触发方法
     selectTreeNode (data) {
       this.$emit('selectTreeNode',data);
+    },
+
+    //添加操作 事件透传
+    add () {
+        this.$emit('add');
     }
   }
 }
@@ -104,7 +105,7 @@ export default {
   .page-sidebar-main.show-tools {
    height: calc(~"100% - 80px");
   }
-  .buckTree /deep/ .el-checkbox{
+ /* .buckTree /deep/ .el-checkbox{
     display:none;
-  }
+  }*/
 </style>
