@@ -167,7 +167,10 @@
                 label: v.bucket_name
               });
             });
-            this.showSideBar = true;
+            this.$nextTick(function(){
+              this.showSideBar = true;
+            });
+
           }
         });
     },

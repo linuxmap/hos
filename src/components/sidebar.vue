@@ -36,7 +36,6 @@
       :data="treeData"
       :props="defaultProps"
       node-key="id"
-      show-checkbox
       default-expand-all
       :default-checked-keys = "[1]"
       @node-click="selectTreeNode"
@@ -86,10 +85,7 @@ export default {
 
     //设置树的选中及点击--wangjing9
     setTreeChoosed(link) {
-      this.$refs.bucketTree.setCheckedKeys([link]);
-      this.$nextTick(function () {
-        document.querySelector('label.is-checked').parentNode.click();
-      });
+      this.$refs.bucketTree.setSelected(link);
     },
 
     //点击树节点触发方法
@@ -109,7 +105,7 @@ export default {
   .page-sidebar-main.show-tools {
    height: calc(~"100% - 80px");
   }
-  .buckTree /deep/ .el-checkbox{
+ /* .buckTree /deep/ .el-checkbox{
     display:none;
-  }
+  }*/
 </style>
