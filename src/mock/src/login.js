@@ -17,8 +17,10 @@ mockAdapter.onPost('/mock/login').reply(config => {
       }])
     } else {
       resolve([200, {
-        code: 500,
-        msg: 'login error'
+        status: false,
+        data: {
+          msg: 'login error'
+        }
       }])
     }
   })
