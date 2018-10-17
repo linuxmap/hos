@@ -86,6 +86,12 @@ let methods = {
         callback)
     },
 
+    bucket_name (rule, value, callback) {
+      return addMethod( /^[0-9a-z]{1}[0-9a-z_-]*[0-9a-z]{1}$/.test(value),
+        '必须以小写字母或数字开头和结尾（使用小写字母、数字、下划线和中划线）。',
+        callback)
+    },
+
     //字符串长度及数值大小判断
     range (value, begin, end) {
         if (typeof(value) == 'number') {

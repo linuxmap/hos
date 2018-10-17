@@ -1,14 +1,6 @@
 <template>
   <div>
     <div style="background:#fff;overflow:hidden">
-      <el-popover
-        ref="popover1"
-        popper-class="cloudpop"
-        placement="bottom-start"
-        width="90"
-        trigger="hover">
-        <cloud-list :noDlg="true" :cloudId="cloudId" @chooseCloud="chooseCloud" @exitCloudDlg="showCloud = false"></cloud-list>
-      </el-popover>
       <div v-show="queryTag && tags.length" class="queryMeta" v-if="!onlyCloud">
         <el-tag
           v-for="tag in tags"
@@ -58,13 +50,9 @@
 <script>
   import util from 'index@/utils/util';
   import http1 from '../api/index'
-  import cloudList from 'index@/components/cloudList'
 
   export default {
     props: ['queryForm', 'table','form', 'tags','input','noMore','isExport','onlyCloud'/*仅显示云列表*/,'param'/*集群参数列表*/],
-    components: {
-      cloudList
-    },
     data () {
       return {
         configRefBtn: false, //配置模块刷新按钮不可用
@@ -358,7 +346,7 @@
        * @Desc: 重置
        */
       resetList (noTable , day) {
-        this.$parent.$parent.$refs[this.form].resetFields();
+        this.$parent.$parent.$children[1].resetFields();
         //告警特殊字段
         this.queryForm.sourceIp && (this.queryForm.sourceIp = '');
         this.queryForm.alarmTime && (this.queryForm.alarmTime = '');

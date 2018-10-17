@@ -1,7 +1,7 @@
 <template>
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 左侧树 -->
-    <sidebar slot="pageSidebar" :treeData="treeData" @selectTreeNode="getChartData"></sidebar>
+    <sidebar v-if="showSideBar" slot="pageSidebar" :treeData="treeData" @selectTreeNode="getChartData"></sidebar>
       <div class="basicMes census">
         <h3>概览</h3>
         <ul>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import sidebar from './sidebar'
+  import sidebar from 'index@/components/sidebar'
   import http from 'index@/api/index'
   import util from 'index@/utils/util'
   import echartsUtil from  'index@/utils/echartsUtil'
@@ -97,6 +97,7 @@
       return {
         util: util,
         vm:vm,
+        showSideBar: false,
         treeData:[{
           id: 1,
           label: '全部Bucket',
@@ -163,6 +164,7 @@
                 label: v.bucket_name
               });
             });
+            this.showSideBar = true;
           }
         });
     },

@@ -1,10 +1,10 @@
 <template>
   <page-sidebar>
     <template slot="sidebarToolbar" v-if="showTools">
-      <el-tooltip effect="dark" content="添加" placement="top">
-        <el-button type="iconButton" icon="h-icon-plus"></el-button>
+      <el-tooltip effect="dark" content="创建Bucket" placement="top">
+        <el-button type="iconButton" icon="h-icon-plus" @click="add">创建Bucket</el-button>
       </el-tooltip>
-      <el-tooltip effect="dark" content="编辑" placement="top">
+     <!-- <el-tooltip effect="dark" content="编辑" placement="top">
         <el-button type="iconButton" icon="h-icon-edit"></el-button>
       </el-tooltip>
       <el-tooltip effect="dark" content="删除" placement="top">
@@ -17,7 +17,7 @@
           <el-dropdown-item>导入</el-dropdown-item>
           <el-dropdown-item>导出</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown>-->
     </template>
     <template slot="sidebarSearch">
       <el-input
@@ -95,6 +95,11 @@ export default {
     //点击树节点触发方法
     selectTreeNode (data) {
       this.$emit('selectTreeNode',data);
+    },
+
+    //添加操作 事件透传
+    add () {
+        this.$emit('add');
     }
   }
 }
