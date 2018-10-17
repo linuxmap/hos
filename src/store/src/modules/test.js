@@ -10,7 +10,6 @@ export default {
   mutations: {
     'asignTestInfo' (state, res) {
       state.testInfo = Object.assign({}, state.testInfo, res)
-      console.log('testInfo', state.testInfo)
     }
   }
 }

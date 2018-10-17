@@ -43,7 +43,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
-        listUrl: '',
+        listUrl: '/mock/cluster/list',
         queryForm: null,
         dialogVisible: false,
         dataForm: {}

@@ -10,14 +10,10 @@
 
 </template>
 <script>
-  import navList from '@/nav.config1.json'
+  import navList from '@/nav.config.json'
   import { mapState } from 'vuex'
   import vHeader from 'index@/components/header.vue'
 
-  // 模拟登录
-  import http from 'index@/api/index'
-  import token from 'index@/libs/token'
-  import { JSEncrypt } from 'jsencrypt'
   export default {
     name: 'home',
     components: {vHeader},
@@ -62,23 +58,6 @@
         })
         this.menu = navList
       }
-
-      // 模拟登录
-      this.encrypt = new JSEncrypt()
-      const publicKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKZKgabcPik14D8DSWVMMNjo+08NQNxRTjH6bBlD8CaAviLdN+EVcBR4wCpSQrzd1gngafZGVzBFWKitxh5fZcAHq3BJjhtVvpsuRgxLNmgWk8Mt1nzxSkGqe5hiWZ5i2p9dN/iq6kZi0cPlkIv55D4AjD6g82durpL4qKKCVm6wIDAQAB'
-      this.encrypt.setPublicKey(publicKey)
-      const params = {
-        userName: 'admin',
-        password: this.encrypt.encrypt('whhik_88075998')
-      }
-
-      http.getRequest('/platform/login', 'post', params).then(res => {
-        if (res.status) {
-          token.set(res.data)
-        } else {
-          token.set('dHZOd3R5eEx3TGNpaFg2SkF6ZzlpZC9hK2toOG1YekFYbi84RmRLa2poUU5Wai8vbkVHQ0dMWjQ2cUFzSUcyajVJNlFCTTc5UkE1ODVaVlJNZGlOQWNJYzVpUThpVHg1SGZGWkdWYk9SYW9udTBSWE5HWklDdTZac2lvVXh0ZHZ2eGZFbE9rVzRHdGFNMVpseG1iNUZHT3gveWNlRkhLUnhNWnRnUHg1TXRNdlBwQ2xGWnNJWm83VFBNRUtnQWJDazRTQjBqczZNeWdUVHM3d1hsdERuUmQ5Y004NGtKYzV2UHJsL2ZRMHhrL1BhYmZISVFmOFhRPT0')
-        }
-      })
     },
     mounted () {
       let that = this;
