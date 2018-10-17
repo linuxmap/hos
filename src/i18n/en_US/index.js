@@ -79,7 +79,33 @@ common.reset = '重置'
 common.more = '更多'
 common.open = '展开'
 common.close = '收起'
+common.option = '操作'
 
+let iconCollection = {};
+iconCollection.table = 'Table'
+iconCollection.manage = 'Library Manage'
+iconCollection.newLib = 'New Library'
+iconCollection.allDel = 'Batch Delete'
+iconCollection.libName = 'Library Name'
+iconCollection.iconType = 'Icon Type'
+iconCollection.opration = 'Operation'
+iconCollection.del = 'Delete'
+iconCollection.name = 'Name'
+iconCollection.type = 'Type'
+iconCollection.edit = 'Modify'
+iconCollection.cancel = 'Cancel'
+iconCollection.sure = 'OK'
+iconCollection.ok = 'OK';
+iconCollection.confirm = 'OK to perform it?'
+iconCollection.inputIconName = 'Please enter icon name'
+iconCollection.choiceDelLib = 'Please choice delete library'
+iconCollection.isDelIconLib = 'Is delete library'
+iconCollection.tip = 'tip'
+iconCollection.delSuccess = 'Delete Success'
+iconCollection.delFail = 'Delete Fail'
+iconCollection.addSuccess = 'Create Success'
+iconCollection.addSuccessKeepUpload = 'Create Success, Is keeping Upload Icons'
+iconCollection.addFailTryAgain = 'Create Fail, Please try again'
 
 let data = {
   config,
@@ -87,6 +113,7 @@ let data = {
   login,
   pass,
   menu,
-  common
+  common,
+  iconCollection
 };
 export default  data;

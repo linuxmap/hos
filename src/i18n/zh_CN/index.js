@@ -79,6 +79,33 @@ common.reset = '重置'
 common.more = '更多'
 common.open = '展开'
 common.close = '收起'
+common.option = '操作'
+
+let iconCollection = {};
+iconCollection.table = '表格'
+iconCollection.manage = '图标库管理'
+iconCollection.newLib = '新建图标库'
+iconCollection.allDel = '批量删除'
+iconCollection.libName = '图标库名称'
+iconCollection.iconType = '图标类型'
+iconCollection.opration = '操作'
+iconCollection.del = '删除'
+iconCollection.name = '名称'
+iconCollection.type = '类型'
+iconCollection.edit = '修 改'
+iconCollection.cancel = '取 消'
+iconCollection.sure = '确 定'
+iconCollection.ok = '确认';
+iconCollection.confirm = '确定执行此操作？'
+iconCollection.inputIconName = '请输入图标库名称'
+iconCollection.choiceDelLib = '请选择要删除的图标库'
+iconCollection.isDelIconLib = '是否删除图标库'
+iconCollection.tip = '提示'
+iconCollection.delSuccess = '删除成功'
+iconCollection.delFail = '删除失败'
+iconCollection.addSuccess = '添加成功'
+iconCollection.addSuccessKeepUpload = '添加成功，是否继续前往上传图标'
+iconCollection.addFailTryAgain = '添加失败，请重试'
 
 let data = {
   config,
@@ -86,6 +113,7 @@ let data = {
   login,
   pass,
   menu,
-  common
+  common,
+  iconCollection
 };
 export default  data;
