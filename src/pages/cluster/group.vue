@@ -2,7 +2,7 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-plus">创建组</el-button>
+      <el-button type="iconButton" icon="h-icon-plus" @click="handleCreate">创建组</el-button>
     </div>
     <!-- 列表 -->
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">
@@ -32,6 +32,11 @@
     },
     created () {
       // console.log(this.breadcrumbObj)
+    },
+    methods: {
+      handleCreate () {
+        this.$router.push('/cluster/group/add')
+      }
     }
   }
 </script>

@@ -42,6 +42,13 @@
     "menuCode": "110"
   },
   {
+    "path": "/cluster/group/add",
+    "component": "cluster/groupAdd",
+    "breadcrumb": ["menu.clusterGroup", "menu.clusterGroupAdd"],
+    "router": ["/cluster/group", "/cluster/group/add"],
+    "menuCode": "110"
+  },
+  {
     "path": "/node",
     "component": "node/list",
     "breadcrumb": ["menu.nodeList"],
