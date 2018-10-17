@@ -26,7 +26,7 @@
     },
     data () {
       return {
-        listUrl: '',
+        listUrl: '/mock/cluster/group/list',
         queryForm: null
       }
     },
