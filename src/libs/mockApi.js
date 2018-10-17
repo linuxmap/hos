@@ -11,7 +11,7 @@ http.interceptors.response.use(function (response) {
   if (response.status === 200 && response.data.code === 200) {
     return Promise.resolve({status: true, data: response.data})
   } else {
-    return Promise.reject(response.data)
+    return Promise.resolve({status: false, data: response.data})
   }
 }, function (err) {
   return Promise.reject(err)

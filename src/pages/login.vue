@@ -117,7 +117,7 @@
           if (valid) {
             // this.$router.push('/home')
             mockHttp.getRequest('/mock/login', 'post', this.signin).then(res => {
-              if (res.data.code === 200) {
+              if (res.status === true) {
                 token.set(res.data.user.userName)
                 this.$router.push('/cluster')
               } else {
