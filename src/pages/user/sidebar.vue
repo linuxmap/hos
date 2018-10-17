@@ -31,10 +31,15 @@
         ></el-input>
     </template>
     <el-tree
+      ref="bucketTree"
+      class="buckTree"
       :data="treeData"
       :props="defaultProps"
       node-key="id"
-      :default-expanded-keys="['0']"
+      show-checkbox
+      default-expand-all
+      :default-checked-keys = "[1]"
+      @node-click="selectTreeNode"
     ></el-tree>
   </page-sidebar>
 </template>
@@ -62,22 +67,44 @@ export default {
       treeSearchKey: ''
     }
   },
+
+  mounted () {
+    this.$nextTick(function () {
+      this.setTreeChoosed(1);
+    });
+  },
+
   methods: {
     handleSearchTree () {
-      console.log('handleSearchTree')
+
     },
 
     handleClearTree () {
-      console.log('handleClearTree')
       this.treeSearchKey = ''
       this.handleSearchTree()
+    },
+
+    //设置树的选中及点击--wangjing9
+    setTreeChoosed(link) {
+      this.$refs.bucketTree.setCheckedKeys([link]);
+      this.$nextTick(function () {
+        document.querySelector('label.is-checked').parentNode.click();
+      });
+    },
+
+    //点击树节点触发方法
+    selectTreeNode (data) {
+      this.$emit('selectTreeNode',data);
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.page-sidebar-main.show-tools {
-  height: calc(~"100% - 80px");
-}
+  .page-sidebar-main.show-tools {
+   height: calc(~"100% - 80px");
+  }
+  .buckTree /deep/ .el-checkbox{
+    display:none;
+  }
 </style>

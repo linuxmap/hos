@@ -6,7 +6,7 @@ import { Utils } from 'dolphin_common'
 
 Vue.use(VueI18n)
 let default_lang = Utils.getStorage('i18n').lang || 'zh_CN';
-document.getElementsByTagName('body')[0].className=default_lang;
+document.getElementsByTagName('body')[0].className= 'dolphin ' + default_lang;
 
 const i18n = new VueI18n({
   locale: default_lang, // set locale
