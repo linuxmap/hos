@@ -34,19 +34,22 @@
       <div class="basicMes census sec">
         <h3 class="rel">
           统计明细
-          <el-tag type="success">{{vm.select || select}}</el-tag>
+          <el-tag v-if="select" type="success">{{select}}</el-tag>
           <el-form>
             <el-form-item class="datePicker" style="clear:both" prop="create_time">
               <el-date-picker
                 v-model="timeVal"
                 type="daterange"
-                @change="getStatsInfo"
+                @change="getDate"
                 placeholder="选择日期范围"
                 :editable="false"
                 :picker-options="pickerOptions2">
               </el-date-picker>
             </el-form-item>
           </el-form>
+          <el-tooltip class="item" effect="dark" content="刷新" placement="top">
+            <i class="h-icon-flash refresh" @click="getStatsInfo"></i>
+          </el-tooltip>
         </h3>
         <el-tabs v-model="activeName" type="border-card" class="tabs" @tab-click="getStatsInfo">
           <el-tab-pane label="存储容量" name="statsStorageCapacity">
@@ -81,8 +84,6 @@
   import util from 'index@/utils/util'
   import echartsUtil from  'index@/utils/echartsUtil'
 
-  vm.select = '近7天';
-
   export default {
     name: 'sidebarTree',
     components: { sidebar },
@@ -110,9 +111,8 @@
             onClick(picker) {
               const end = new Date();
               const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 6);
               picker.$emit('pick', [start, end]);
-              vm.select = '近7天';
             }
           }, {
             text: '本月',
@@ -122,7 +122,6 @@
               let day = util.format(new Date(),'yyyy-MM-dd').split('-')[2] - 1;
               start.setTime(start.getTime() - 3600 * 1000 * 24 * day);
               picker.$emit('pick', [start, end]);
-              vm.select = '本月';
             }
           },{
             text: '近30天',
@@ -130,7 +129,6 @@
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 29);
-              vm.select = '近30天';
               picker.$emit('pick', [start, end]);
             }
           },{
@@ -140,7 +138,6 @@
               const start = new Date();
               start.setTime(start.getTime());
               picker.$emit('pick', [start, end]);
-              vm.select = '今天';
             }
           }]
         },
@@ -188,7 +185,6 @@
 
         //默认选择近7天
         this.timeVal = [new Date().getTime() - 3600 * 1000 * 24 * 6, new Date()];
-        vm.select = '近7天';
 
         this.bucket_name = data.id == 1 ? '' : data.label;
         this.getStatsInfo();
@@ -261,6 +257,37 @@
       formatter (data) {
         return data ? data.split(' ')[0] : 0;
       },
+
+      //变更日期触发查询
+      getDate (date) {
+          //更改tag标记
+          let start = date.split(' - ')[0],
+              end = date.split(' - ')[1];
+
+          let today = util.format(new Date(),'yyyy-MM-dd'),
+              seven = util.format(new Date().getTime() - 3600 * 1000 * 24 * 6,'yyyy-MM-dd'),
+              thirty = util.format(new Date().getTime() - 3600 * 1000 * 24 * 29,'yyyy-MM-dd'),
+              day = util.format(new Date(),'yyyy-MM-dd','yyyy-MM-dd').split('-')[2] - 1,
+              month = util.format(new Date().getTime() - 3600 * 1000 * 24 * day,'yyyy-MM-dd');
+
+          if (end == today) {
+              if (start == today) {
+                  this.select = '今天';
+              } else if ( start == seven ) {
+                  this.select = '近7天';
+              } else if (start == thirty) {
+                  this.select = '近30天';
+              } else if (start == month) {
+                this.select = '本月';
+              } else {
+                this.select = '';
+              }
+          } else {
+              this.select = '';
+          }
+
+          this.getStatsInfo();
+      },
       //自适应报表
       resizeCharts () {
         this.myChart && this.myChart.resize();
@@ -321,5 +348,12 @@
   }
   .tabs /deep/ .el-tabs__item{
     width:120px;
+  }
+  .refresh {
+    position: absolute;
+    right: 240px;
+    top: 10px;
+    font-size: 16px;
+    cursor:pointer;
   }
 </style>
