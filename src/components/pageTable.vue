@@ -41,7 +41,8 @@
 </template>
 
 <script>
-  import http from 'index@/api/index';
+  // import http from 'index@/api/index';
+  import http from '@/libs/mockHttp'
   import util from 'index@/utils/util';
   let bTime = 0;
 
