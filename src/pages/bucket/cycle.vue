@@ -1,12 +1,17 @@
 <template>
   <div>
+    <div class="toolbar" ref="toolbar">
+     <!-- <el-button type="iconButton" icon="h-icon-plus" @click="createBucket">创建Bucket</el-button>
+      &lt;!&ndash;<el-button :disabled="!singleBtn" type="iconButton" icon="h-icon-eye_open" v-if="false">查看ACL</el-button>&ndash;&gt;
+      <el-button :disabled="!singleBtn" type="iconButton" icon="el-icon-share" @click="viewACL(multipleSelection[0])">查看ACL</el-button>-->
+    </div>
     <page-table ref="cycleTable" :url="cycleUrl" :select="true">
       <el-table-column prop="prefix" label="策略" width="130">
         <template scope="scope">
           前缀：{{scope.row.prefix}}
         </template>
       </el-table-column>
-      <el-table-column prop="expiration_days" label="过期天数" width="130">
+      <el-table-column prop="expiration_days" label="过期天数" width="130" align="right">
         <template scope="scope">
          {{util.tplDoNull(scope.row.expiration_days)}}
         </template>
@@ -34,7 +39,7 @@
     data () {
       return {
         util: util,
-        cycleUrl:''
+        cycleUrl:'/mock/cycle'
       }
     },
 
