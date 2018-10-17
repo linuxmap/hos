@@ -25,9 +25,11 @@ mockAdapter.onPost('/mock/cluster/list').reply((config) => {
     })
     setTimeout(() => {
       resolve([200, {
-        code: 200,
-        list: result.list,
-        total: 50
+        status: true,
+        data: {
+          list: result.list,
+          total: 50
+        }  
       }])
     }, 1000)
   })
@@ -48,9 +50,11 @@ mockAdapter.onPost('/mock/cluster/group/list').reply((config) => {
     })
     setTimeout(() => {
       resolve([200, {
-        code: 200,
-        list: result.list,
-        total: 3
+        status: true,
+        data: {
+          list: result.list,
+          total: 3
+        } 
       }])
     }, 1000)
   })

@@ -9,9 +9,11 @@ mockAdapter.onPost('/mock/login').reply(config => {
     if (userName === userInfo.userName && passWord === userInfo.passWord) {
       user.userName = userName
       resolve([200, {
-        code: 200,
-        msg: 'login success',
-        user
+        status: true,
+        data: {
+          msg: 'login: success',
+          user: user
+        }
       }])
     } else {
       resolve([200, {
