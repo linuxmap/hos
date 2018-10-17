@@ -313,15 +313,21 @@
           return '--';
       },
       toggleSelection (selection, row) {
-        const tempSelection = JSON.parse(JSON.stringify(selection))
+        // const tempSelection = JSON.parse(JSON.stringify(selection))
         // 由于拷贝了对象，此处需要有匹配主键，由于ID为空，域管理例子用的domainId
-        for (let item of tempSelection) {
-          if (row && row.domainId === item.domainId) {
-            continue
+        // for (let item of tempSelection) {
+        //   if (row && row.domainId === item.domainId) {
+        //     continue
+        //   }
+        //   const find = this.tableData.find(child => child.domainId === item.domainId)
+        //   !!find && this.$refs.tableInner.toggleRowSelection(find)
+        // }
+        // 由于屏蔽了全选按钮不用拷贝对象
+        selection.forEach(item => {
+          if (item !== row) {
+            this.$refs.tableInner.toggleRowSelection(item)
           }
-          const find = this.tableData.find(child => child.domainId === item.domainId)
-          !!find && this.$refs.tableInner.toggleRowSelection(find)
-        }
+        })
       }
     },
     mounted () {
