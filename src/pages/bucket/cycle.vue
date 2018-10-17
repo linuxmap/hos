@@ -11,7 +11,11 @@
          {{util.tplDoNull(scope.row.expiration_days)}}
         </template>
       </el-table-column>
-      <el-table-column prop="enable_status" label="状态" width="150"></el-table-column>
+      <el-table-column prop="enable_status" label="状态" width="150">
+        <template scope="scope">
+          <span v-html="getStatus(scope.row.enable_status)"></span>
+        </template>
+      </el-table-column>
     </page-table>
   </div>
 </template>
@@ -35,7 +39,13 @@
     },
 
     methods: {
-
+      //状态
+      getStatus (state) {
+        return util.setTdStatus('config.bucket.ruleStatus', {
+          'error': [0],
+          'success': [1]
+        }, state, '-');
+      }
     }
   }
 </script>

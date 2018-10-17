@@ -38,7 +38,7 @@
       node-key="id"
       default-expand-all
       :default-checked-keys = "[1]"
-      @node-click="selectTreeNode"
+      @current-change="selectTreeNode"
     ></el-tree>
   </page-sidebar>
 </template>

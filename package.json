@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "axios-mock-adapter": "^1.15.0",
     "babel-polyfill": "^6.23.0",
     "dolphin_common": "git+https://git.hikvision.com.cn/scm/dolphin/dolphin_common.git#dev",
     "hui": "git+https://git.hikvision.com.cn/scm/hik/hui.git",
