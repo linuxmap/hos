@@ -1,7 +1,8 @@
 let data = {
   log: {},
   bucket: {},
-  validator:{}
+  validator:{},
+  node: {}
 };
 
 // ====================== 校验 ======================
@@ -37,5 +38,8 @@ data.log.expLog = '导出操作日志';
 data.alarmStatus0        = '正常';
 data.alarmStatus1        = '异常';
 data.alarmStatus_1       = '撤防';
+
+data.node.onlineState1 = '在线';
+data.node.onlineState0 = '离线';
 
 export default data;

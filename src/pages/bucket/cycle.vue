@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
       <el-table-column width="70" :label="$t('common.option')" align="center">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑规则" placement="top" :enterable="false">
             <el-button type="text" size="small" @click="editRules(scope.row)"><i class="h-icon-draw"></i></el-button>
           </el-tooltip>

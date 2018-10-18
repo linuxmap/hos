@@ -19,5 +19,6 @@ export default {
   gCloudType: window.localStorage.gCloudType, // 用于标记标准云、微视云
   isNeedPassword: false, // 重要操作是否需要输入密码
   reloadAnyway: true, // 点击菜单后无论路由是否相同都重新加载
-  headerHeight: 45 // 导航栏高度
+  headerHeight: 45, // 导航栏高度
+  skinColor: '' // 皮肤颜色
 }

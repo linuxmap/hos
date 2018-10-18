@@ -22,6 +22,8 @@ async function setSkin (skin) {
 
   // 使用mock
   const res = await axios.get('/mock/skin', {params: {skin: skin}})
+  const skinData = res.data.skinJson.skins
+  store.commit('SET_SKIN_COLOR', skinData.find(item => item.name === skin).color)
   return Utils.renderSkin(skin, res.data.skinJson.packages, context)
 }
 
