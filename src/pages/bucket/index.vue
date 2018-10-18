@@ -4,7 +4,7 @@
     <sidebar v-if="showSideBar" showTools slot="pageSidebar" :treeData="treeData"
              @selectTreeNode="getChartData"
              @add="addBucket"></sidebar>
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" ref="tableTab">
       <el-tab-pane label="概览" name="overview">
         <overview></overview>
       </el-tab-pane>

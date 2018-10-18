@@ -239,8 +239,12 @@
           let table = that.$refs.pgTable;
           let top = table && table.offsetTop;
           let tableTab = this.$parent.$parent.$parent.$refs.tableTab;
+
+          if (this.$parent.$parent.$parent.$el.className == 'el-tabs')
+            tableTab = this.$parent.$parent.$parent;
+
           //含有tab页的表格自适应
-          tableTab && (top = tableTab.$el.offsetTop + 60);
+          tableTab && (top = tableTab.$el.offsetTop + 100);
 
           that.height = document.body.clientHeight - 95 - top - 50;
 
