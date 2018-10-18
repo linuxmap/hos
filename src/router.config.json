@@ -70,17 +70,24 @@
     "menuCode": "113"
   },
   {
+    "path": "/user/list",
+    "component": "user/list",
+    "breadcrumb": ["menu.userList"],
+    "router": ["/user/list"],
+    "menuCode": "114"
+  },
+  {
     "path": "/network",
     "component": "system/network",
     "breadcrumb": ["menu.network"],
     "router": ["/network"],
-    "menuCode": ["114"]
+    "menuCode": ["115"]
   },
   {
     "path": "/configuration",
     "component": "system/config",
     "breadcrumb": ["menu.config"],
     "router": ["/configuration"],
-    "menuCode": ["114"]
+    "menuCode": ["115"]
   }
 ]

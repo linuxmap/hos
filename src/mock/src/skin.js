@@ -1,5 +1,5 @@
 /**
- * mock api
+ * 获取皮肤 mock api
  */
 import {mockAdapter} from '../config'
 mockAdapter.onGet('/mock/skin').reply(config => {

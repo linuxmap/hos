@@ -48,6 +48,10 @@ module.exports = {
         'router': '/cloud'
       }],
       '114': [{
+        'title': 'menu.userManagement',
+        'router': '/user/list'
+      }],
+      '115': [{
         'title': 'menu.system',
         'router': '/network'
       }]

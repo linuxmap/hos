@@ -1,5 +1,5 @@
 /**
- * mock api
+ * 登录 mock api
  */
 import {mockAdapter, userInfo} from '../config'
 mockAdapter.onPost('/mock/login').reply(config => {

@@ -1,5 +1,5 @@
 /**
- * mock api
+ * 节点管理 mock api
  */
 import {mockAdapter} from '../config'
 mockAdapter.onPost('/mock/node/list').reply(config => {

@@ -23,8 +23,8 @@
     "icon": "icon-cus icon-cloud"
   },
   {
-    "title": "menu.user",
-    "router": "/user",
+    "title": "menu.userManagement",
+    "router": "/user/list",
     "icon": "icon-cus icon-user"
   },
   {

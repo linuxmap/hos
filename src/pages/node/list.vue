@@ -2,11 +2,11 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-edit" @click="handleClickTip('businessIp')">设置业务/数据IP</el-button>
-      <el-button type="iconButton" icon="h-icon-arrow_up" @click="handleClickTip('upgrade')">节点升级</el-button>
+      <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')">设置业务/数据IP</el-button>
+      <el-button type="iconButton" icon="h-icon-arrow_up" @click="checkSelection('upgrade')">节点升级</el-button>
       <el-button type="iconButton" icon="h-icon-plus" @click="showDialog('expand')">节点扩容</el-button>
-      <el-button type="iconButton" icon="h-icon-flash" @click="handleClickTip('reload')">重启节点</el-button>
-      <el-button type="iconButton" icon="h-icon-close" @click="handleClickTip('close')">关闭节点</el-button>
+      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('reload')">重启节点</el-button>
+      <el-button type="iconButton" icon="h-icon-close" @click="checkSelection('close')">关闭节点</el-button>
     </div>
     <!-- 列表 -->
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
@@ -198,10 +198,9 @@
           success: ['1']
         }, state, '-')
       },
-      handleSelectChange (selection) {
+      checkSelection (selection) {
         this.selection = selection;
       },
-
       handleClickTip (name) {
         if (this.selection && !this.selection.length) {
           util.alert2({message: '请选择一个节点'})
@@ -227,12 +226,10 @@
         this.showDialog(name)
       },
       showDialog (name) {
-        this.expandForm.ip = '';
         this.dialogVisible[name] = true;
         this.$nextTick(() => {
           this.$refs[name] && this.$refs[name].resetFields();
         })
-        
       },
       // 重启
       handleReload () {
