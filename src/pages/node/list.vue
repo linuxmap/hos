@@ -24,7 +24,7 @@
       <el-table-column width="110" label="操作" align="center">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="存储卷" placement="top" :enterable="false">
-              <el-button type="text"><i class="h-icon-save"></i></el-button>
+              <el-button type="text"><i class="h-icon-forward"></i></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
