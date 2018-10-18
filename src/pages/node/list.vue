@@ -198,10 +198,10 @@
           success: ['1']
         }, state, '-')
       },
-      checkSelection (selection) {
+      handleSelectChange (selection) {
         this.selection = selection;
       },
-      handleClickTip (name) {
+      checkSelection (name) {
         if (this.selection && !this.selection.length) {
           util.alert2({message: '请选择一个节点'})
           return
