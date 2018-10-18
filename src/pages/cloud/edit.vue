@@ -53,8 +53,7 @@
     methods: {
       getById () {
         http.getRequest('/mock/cloud/byId', 'get', {params: {cloudId: this.$route.query.cloudId}}).then(res => {
-          console.log(res)
-          this.cloudForm = res.data.data
+          this.cloudForm = res.data
         })
       },
       handleSubmit (form) {
