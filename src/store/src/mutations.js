@@ -15,7 +15,8 @@ import {
   SET_CLOUD,
   SET_HEIGHT,
   SET_RESIZE,
-  SET_USER_INFO
+  SET_USER_INFO,
+  SET_SKIN_COLOR
 } from './mutations-type'
 
 export default {
@@ -106,5 +107,12 @@ export default {
 
   [SET_USER_INFO] (state, userInfo) {
     state.userInfo = userInfo
+  },
+
+  /**
+   * 设置皮肤颜色
+   */
+  [SET_SKIN_COLOR] (state, color) {
+    state.skinColor = color
   }
 }

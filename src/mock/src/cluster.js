@@ -1,5 +1,5 @@
 /**
- * 集群mock数据
+ * 集群管理 mock api
  */
 /* eslint-disable */
 import { mockAdapter, MockJS } from '../config'
@@ -45,7 +45,7 @@ mockAdapter.onPost('/mock/cluster/group/list').reply((config) => {
         groupId: /\d{9}/,
         'serverIp|1': ['10.192.70.245', '10.192.70.238', '10.192.70.216'],
         serverId: /\w{10}/,
-        'onlineState|1': ['在线', '离线']
+        'onlineState|1': ['0', '1']
       }]
     })
     setTimeout(() => {

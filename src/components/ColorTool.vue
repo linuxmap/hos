@@ -42,6 +42,7 @@
 import http from '@/api/index'
 import huiLocale from 'hui/lib/locale'
 import util from '@/utils/util'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'ColorTool',
@@ -58,6 +59,7 @@ export default {
     window.addEventListener('click', this.handleWindowClick, false)
   },
   methods: {
+    ...mapMutations(['SET_SKIN_COLOR']),
     // 点击窗口隐藏工具栏
     handleWindowClick (event) {
       if (this.$el && !util.isDomContain(this.$el, event.target)) {
@@ -77,6 +79,7 @@ export default {
 
       http.getRequest(`/static/skin/${skinName}/skin.json`, 'get')
         .then(res => {
+          this.SET_SKIN_COLOR(res.skins.find(item => item.name === skinName).color)
           this.$utils.renderSkin(skinName, res.packages)
           this.$utils.setStorage('skin', {color: skinName})
         });

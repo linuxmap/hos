@@ -550,6 +550,15 @@ let utils = {
     });
   },
 
+  alert2 ({type = 'info', message, showClose = true, ...options}) {
+    vm.$message({
+      type,
+      message,
+      showClose,
+      ...options
+    })
+  },
+
   /**
    * 确认框
    * @author Stefan.Loo

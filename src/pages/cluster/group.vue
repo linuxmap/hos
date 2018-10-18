@@ -10,12 +10,17 @@
       <el-table-column prop="groupId" label="组ID"></el-table-column>
       <el-table-column prop="serverIp" label="服务器IP"></el-table-column>
       <el-table-column prop="serverId" label="服务器ID"></el-table-column>
-      <el-table-column prop="onlineState" label="在线状态"></el-table-column>
+      <el-table-column label="在线状态">
+        <template slot-scope="scope">
+          <span v-html="getStatus(scope.row.onlineState)"></span>
+        </template>
+      </el-table-column>
     </page-table>
   </page-container>
 </template>
 <script>
   import pageTable from '@/components/pageTable'
+  import util from '@/utils/util'
   export default {
     name: 'clusterGroup',
     components: {pageTable},
@@ -34,6 +39,12 @@
       // console.log(this.breadcrumbObj)
     },
     methods: {
+      getStatus (state) {
+        return util.setTdStatus('config.node.onlineState', {
+          error: ['0'],
+          success: ['1']
+        }, state, '-')
+      },
       handleCreate () {
         this.$router.push('/cluster/group/add')
       }

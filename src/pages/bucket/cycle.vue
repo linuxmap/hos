@@ -7,22 +7,22 @@
     </div>
     <page-table ref="cycleTable" :url="cycleUrl" :select="true" @select-change="handleSelectChange">
       <el-table-column prop="prefix" label="策略" width="130">
-        <template scope="scope">
+        <template slot-scope="scope">
           前缀：{{scope.row.prefix}}
         </template>
       </el-table-column>
       <el-table-column prop="expiration_days" label="过期天数" width="130" align="right">
-        <template scope="scope">
+        <template slot-scope="scope">
          {{util.tplDoNull(scope.row.expiration_days)}}
         </template>
       </el-table-column>
       <el-table-column prop="enable_status" label="状态" width="150">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-html="getStatus(scope.row.enable_status)"></span>
         </template>
       </el-table-column>
       <el-table-column width="70" :label="$t('common.option')" align="center">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑规则" placement="top" :enterable="false">
             <el-button type="text" size="small" @click="editRules(scope.row)"><i class="h-icon-draw"></i></el-button>
           </el-tooltip>
