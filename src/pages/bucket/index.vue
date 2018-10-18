@@ -12,7 +12,7 @@
         <basic></basic>
       </el-tab-pane>
       <el-tab-pane label="周期规则" name="cycle">
-        <cycle></cycle>
+        <cycle :bucketName="bucketName"></cycle>
       </el-tab-pane>
     </el-tabs>
     <el-dialog title="创建Bucket" :area="600" :visible.sync="dlgBucketShow" :close-on-click-modal="false">
@@ -151,6 +151,7 @@
             { validator: this.valiParam, trigger: 'blur' }
           ]
         },
+        bucketName: ''
       }
     },
 
@@ -178,11 +179,12 @@
     methods: {
       //点击树节点回调函数
       getChartData (data) {
-
+        this.bucketName = data.label;
       },
 
       //添加资源池
       addBucket () {
+        this.$refs.bucketForm && this.$refs.bucketForm.resetFields();
         this.dlgBucketShow = true;
       },
 
@@ -314,8 +316,5 @@
     top: 10px;
     font-size: 16px;
     cursor:pointer;
-  }
-  /deep/ .is-error{
-    margin-bottom:0;
   }
 </style>
