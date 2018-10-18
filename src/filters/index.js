@@ -1,7 +1,7 @@
 /**
  * 全局安装过滤器
  */
-import * as filters from './filter'
+import * as filters from './filters'
 
 const install = (Vue) => {
   Object.keys(filters).forEach(key => {
