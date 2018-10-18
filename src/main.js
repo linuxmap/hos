@@ -8,9 +8,12 @@ import store from './store'
 import hui from 'hui'
 import common from 'dolphin_common'
 import initApp from './initApp'
+import filters from './filters'
 import '@/mock'
+
 Vue.use(hui)
 Vue.use(common)
+Vue.use(filters)
 
 // 全局混合，对面包屑的多语言进行处理
 Vue.mixin({

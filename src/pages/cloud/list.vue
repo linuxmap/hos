@@ -7,29 +7,29 @@
       <el-button type="iconButton" icon="h-icon-trashcan">删除</el-button>
     </div>
     <!-- 列表 -->
-    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true">
-      <el-table-column prop="cloudId" label="云ID"></el-table-column>
-      <el-table-column prop="cloudIp" label="云存储IP"></el-table-column>
-      <el-table-column prop="cloudPort" label="云存储端口"></el-table-column>
-      <el-table-column prop="cloudObjectPort" label="对象端口"></el-table-column>
-      <el-table-column prop="cloudUsername" label="用户名"></el-table-column>
-      <el-table-column prop="isCurrentCloud" label="是否本云"></el-table-column>
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">>
+      <el-table-column prop="cloud_id" label="云ID"></el-table-column>
+      <el-table-column prop="cloud_ip" label="云存储IP"></el-table-column>
+      <el-table-column prop="cloud_port" label="云存储端口"></el-table-column>
+      <el-table-column prop="cloud_object_port" label="对象端口"></el-table-column>
+      <el-table-column prop="cloud_user" label="用户名"></el-table-column>
+      <el-table-column label="是否本云">
+        <template slot-scope="scope">
+          {{scope.row.type | cloudType}}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" with="110">
+        <template slot-scope="scope">
+          <el-tooltip class="item" effect="dark" content="修改" placement="top" :enterable="false">
+            <el-button type="text"><i class="h-icon-edit"></i></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="删除" placement="top" :enterable="false">
+            <el-button type="text"><i class="h-icon-trashcan"></i></el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
     </page-table>
 
-    <!-- 弹出框 -->
-    <el-dialog title="提示信息" :visible.sync="dialogVisible" :area="560" top="middle" no-scrollbar>
-      <div class="dialog-form">
-        <el-form ref="form" label-width="160px" content-width="280px">
-          <el-form-item label="修改虚拟IP" required>
-            <el-input v-model="dataForm.virtualIp"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button class="page-btn" type="primary" @click="dialogVisible = false">确 定</el-button>
-        <el-button class="page-btn" @click="dialogVisible = false">取 消</el-button>
-      </span>
-    </el-dialog>
   </page-container>
 </template>
 <script>
@@ -40,7 +40,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
-        listUrl: '',
+        listUrl: '/mock/cloud/list',
         queryForm: null,
         dialogVisible: false,
         dataForm: {}
