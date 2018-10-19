@@ -2,11 +2,11 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')">设置业务/数据IP</el-button>
-      <el-button type="iconButton" icon="h-icon-arrow_up" @click="checkSelection('upgrade')">节点升级</el-button>
+      <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')" :disabled="!selection.length">设置业务/数据IP</el-button>
+      <el-button type="iconButton" icon="h-icon-arrow_up" @click="checkSelection('upgrade')" :disabled="!selection.length">节点升级</el-button>
       <el-button type="iconButton" icon="h-icon-plus" @click="showDialog('expand')">节点扩容</el-button>
-      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('reload')">重启节点</el-button>
-      <el-button type="iconButton" icon="h-icon-close" @click="checkSelection('close')">关闭节点</el-button>
+      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('reload')" :disabled="!selection.length">重启节点</el-button>
+      <el-button type="iconButton" icon="h-icon-close" @click="checkSelection('close')" :disabled="!selection.length">关闭节点</el-button>
     </div>
     <!-- 列表 -->
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
