@@ -1425,6 +1425,45 @@ let utils = {
       }
     } while (node !== null)
     return false
+  },
+
+
+  //数字校验
+  valiInteger (value,range) {
+    let result = '';
+    if (/\D/.test(value)) {
+      result = '请输入'+ range[0] +'-' + range[1] +'之间的整数';
+    } else {
+      if (value < range[0] || value > range[1]) {
+        result = '请输入'+range[0] +'-' + range[1] + '之间的整数';
+      }
+    }
+
+    return result;
+  },
+
+  //上传文件名称的截取
+  formatFileName(str) {
+    let index = str.lastIndexOf('.'),
+      name = str.slice(0,index),
+      unit = str.slice(index,str.length),
+      lenByte = this.getByteSize(name),
+      lenStr = name.length,
+      split = 1;
+
+    if (lenByte == lenStr) {
+      //英文
+      split = 1;
+    } else {
+      //中文
+      split = lenByte / lenStr;
+    }
+
+    if (lenByte <= 24) {
+      return str;
+    } else {
+      return name.slice(0,parseInt(24/split) - 3) + '....' + name.slice(name.length-3,name.length) +  unit;
+    }
   }
 };
 

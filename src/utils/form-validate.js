@@ -14,10 +14,10 @@ let methods = {
             '请输入合法网关。',
             callback)
     },
-    port (rule, value, callback) {
+    port (rule, value, callback, tag) {
         return addMethod(/^([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/.test(value),
           '请输入有效的端口 [0-65535]。',
-          callback)
+          callback, tag)
     },
     hostname (rule, value, callback) {
       return /^[a-z]{1}[a-z0-9\-]{1,13}[a-z0-9]{1}$/.test(value);
