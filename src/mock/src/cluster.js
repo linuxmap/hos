@@ -5,15 +5,18 @@
 import { mockAdapter, MockJS } from '../config'
 
 mockAdapter.onPost('/mock/cluster/list').reply((config) => {
+  const total = 42
+  const { pageSize = 30, pageNo = 1} = JSON.parse(config.data)
+  const totalPage = Math.ceil(total / pageSize)
+  const returnSize = pageNo < totalPage ? pageSize : total - (pageNo - 1) * pageSize
+  const index = (pageNo - 1) * pageSize + 1
   return new Promise((resolve, reject) => {
-    const params = config.data
-    const pageSize = params.pageSize || 30
     const result = MockJS.mock({
-      [`list|${pageSize}`]: [{
+      [`list|${returnSize}`]: [{
         'ret|8-2': true,
         virtual_ip: '10.192.70.246',
         'cloud_type|1': ['0', '1'],
-        'cloud_id|+1': 1,
+        'cloud_id|+1': index,
         cloud_version: 'V3.0.5',
         create_time: '2018-10-15 15:08:28',
         modification_time: '',
@@ -30,7 +33,7 @@ mockAdapter.onPost('/mock/cluster/list').reply((config) => {
         status: true,
         data: {
           list: result.list,
-          total: 50
+          total
         }  
       }])
     }, 1000)
