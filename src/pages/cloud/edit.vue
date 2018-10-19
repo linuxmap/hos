@@ -1,5 +1,5 @@
 <template>
-  <page-container :breadcrumb="i18nBreadcrumb">
+  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="true">
     <div class="basicMes">
     <el-form ref="cloudForm" label-width="120px" :model="cloudForm" :rules="cloudRules" content-width="500px">
       <el-form-item label="云ID" prop="cloud_id">
