@@ -6,13 +6,13 @@
     </div>
     <!-- 列表 -->
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">
-      <el-table-column prop="groupName" label="组名称"></el-table-column>
-      <el-table-column prop="groupId" label="组ID"></el-table-column>
-      <el-table-column prop="serverIp" label="服务器IP"></el-table-column>
-      <el-table-column prop="serverId" label="服务器ID"></el-table-column>
+      <el-table-column prop="group_name" label="组名称"></el-table-column>
+      <el-table-column prop="group_id" label="组ID"></el-table-column>
+      <el-table-column prop="server_ip" label="服务器IP"></el-table-column>
+      <el-table-column prop="server_id" label="服务器ID"></el-table-column>
       <el-table-column label="在线状态">
         <template slot-scope="scope">
-          <span v-html="getStatus(scope.row.onlineState)"></span>
+          <span v-html="getStatus(scope.row.online_state)"></span>
         </template>
       </el-table-column>
     </page-table>

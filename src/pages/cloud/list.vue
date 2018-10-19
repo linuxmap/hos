@@ -13,7 +13,7 @@
       <el-table-column prop="cloud_user" label="用户名"></el-table-column>
       <el-table-column label="是否本云">
         <template slot-scope="scope">
-          {{scope.row.type | cloudType}}
+          {{scope.row.type|isInnnerCloud}}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" with="110">

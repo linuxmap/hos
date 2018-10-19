@@ -1,5 +1,5 @@
 <template>
-  <page-container :breadcrumb="i18nBreadcrumb">
+  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="true">
       <div class="group-panel">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">

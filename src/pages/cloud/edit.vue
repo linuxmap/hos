@@ -17,8 +17,8 @@
       <el-form-item label="用户名" prop="cloud_user">
         <el-input v-model="cloudForm.cloud_user"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="cloud_passwd">
-        <el-input v-model="cloudForm.cloud_passwd" type="password"></el-input>
+      <el-form-item label="密码" prop="cloud_pin">
+        <el-input v-model="cloudForm.cloud_pin" type="password"></el-input>
       </el-form-item>
       <el-form-item label="云存储访问key" prop="cloud_ak">
         <el-input v-model="cloudForm.cloud_ak"></el-input>
@@ -65,7 +65,7 @@
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
             {validator: validates.utils_string1, trigger: 'blur'}
           ],
-          cloud_password: [
+          cloud_pin: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ],
           cloud_ak: [
