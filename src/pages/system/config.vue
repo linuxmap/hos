@@ -106,7 +106,7 @@
         <h3>证书</h3>
         <el-form ref="formImportCert" :model="formImportCert" label-width="160px" content-width="300px" class="is-required fileForm" :class="{noTag:noTag}" :rules="certRules">
           <el-form-item class="rel" label="证书文件" prop="cert_file" discription="（格式：*.crt，*.pem，*.key）">
-            <el-input v-model="fileName" :title="formImportCert.cert_file"></el-input>
+            <el-input readonly v-model="fileName" :title="formImportCert.cert_file"></el-input>
             <el-button type="iconButton" class="importIcon" icon="h-icon-fold" @click="uploadFiles"></el-button>
             <h-upload
               v-show="false"
@@ -116,8 +116,7 @@
               :auto-upload=false
               ref="upload"
               @change="chooseFile"
-              :on-success="uploadSuccess"
-              readonly>
+              :on-success="uploadSuccess">
               <input name="token" type="hidden" :value="$store.state.accessToken"/>
             </h-upload>
           </el-form-item>
@@ -126,24 +125,29 @@
           </el-form-item>
         </el-form>
       </div>
-      <!--<div class="basicMes">
+      <div class="basicMes">
         <h3>防火墙</h3>
-        <el-form :model="inAppForm" label-width="160px">
+        <el-form ref="firewallConfigForm" :model="firewallConfigForm" label-width="160px" :rules="firewallRule">
           <el-form-item label="端口号">
-            <el-input v-model="inAppForm.user" ></el-input>
+            <el-input v-model="firewallConfigForm.ip_tables_port" ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="setUser('userForm')">设置</el-button>
-            <el-button @click="resetForm('userForm')">重置</el-button>
+            <el-button type="primary" @click="setFirewallConfig('firewallConfigForm')">设置</el-button>
+            <el-button @click="resetForm('firewallConfigForm')">重置</el-button>
           </el-form-item>
         </el-form>
-      </div>-->
+      </div>
     </div>
     <div v-show="activeSidebar == '控制器'">
         123
     </div>
     <div v-show="activeSidebar == '日志'">
-       111
+      <div class="basicMes">
+        <h3>接入服务</h3>
+      </div>
+      <div class="basicMes">
+        <h3>接入服务</h3>
+      </div>
     </div>
   </page-container>
 </template>
@@ -237,6 +241,15 @@
           certRules: {
             cert_file:[
               { validator: this.validateFile, trigger: 'blur' }
+            ]
+          },
+          firewallConfigForm:{
+            ip_tables_port:''
+          },
+          firewallRule:{
+            ip_tables_port: [
+              {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+              {validator:validate.port,trigger:'blur'}
             ]
           }
       }
@@ -346,6 +359,15 @@
       //触发上传
       uploadFiles () {
         this.$refs.upload.$el.querySelector('input[type=file]').click();
+      },
+
+      //设置防火墙端口
+      setFirewallConfig (form) {
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            alert('接入服务器设置');
+          }
+        });
       }
     }
   }
