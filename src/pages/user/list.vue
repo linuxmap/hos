@@ -2,7 +2,7 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('resetPwz')">重置密码</el-button>
+      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('resetPwz')" :disabled="!selection.length">重置密码</el-button>
       <el-button type="iconButton" icon="h-icon-upload" @click="showDialog('uploadUser')">导入用户</el-button>
       <el-button type="iconButton" icon="h-icon-download">下载模板</el-button>
     </div>
