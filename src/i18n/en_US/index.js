@@ -84,6 +84,9 @@ common.more = '更多'
 common.open = '展开'
 common.close = '收起'
 common.option = '操作'
+common.rangeStr = '长度在 {x} 到 {y} 个字符'
+common.rangeNum = '请输入整数,数值范围在 {x} 和 {y}之间'
+let ct_unknown = '未知'
 
 let iconCollection = {};
 iconCollection.table = 'Table'

@@ -5,6 +5,7 @@
               <div class="logo header-logo mode-home">{{$t('login.name')}}</div>
             </header>
             <div class="rel">
+              <el-button type="text" class="abs register" @click="showRegister = true">立即注册</el-button>
               <span class="error_txt" v-show="!!error_txt">{{error_txt}}</span>
               <div class="changeLang abs">
                <!-- <el-dropdown @command="switchLang">
@@ -40,6 +41,29 @@
         版权信息
       </div>-->
      <edit-pass ref="editPass" :pwdChangeDlgVis="pwdChangeDlgVis" :title="$t('pass.title1')" :user="signin.userName" url="/platform/login/initPwd"></edit-pass>
+     <el-dialog title="用户注册" :visible.sync="showRegister" :area="610" :close-on-click-modal="false" top="middle">
+       <span class="abs jumpTolog">已有账号?<el-button type="text" @click="showRegister=false">快捷登录</el-button></span>
+       <el-form ref="regForm" label-width="120px" :rules="regRules" content-width="300px" :model="regForm">
+         <el-form-item label="用户名" prop="nick">
+           <el-input v-model="regForm.nick"></el-input>
+         </el-form-item>
+         <el-form-item label="登录密码" prop="pin">
+           <vali-pass v-model="regForm.pin" @valiRisk="getRiskVali"></vali-pass>
+         </el-form-item>
+         <el-form-item label="密码确认" prop="rePin">
+           <el-input type="password" v-model="regForm.rePin"></el-input>
+         </el-form-item>
+         <el-form-item label="空间大小" prop="userSize">
+           <el-input v-model="regForm.userSize">
+             <template slot="append">GB</template>
+           </el-input>
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="setRegister('regForm')">确定</el-button>
+           <el-button @click="resetForm('regForm')">重置</el-button>
+         </el-form-item>
+       </el-form>
+     </el-dialog>
    </div>
 </template>
 <script>
@@ -52,9 +76,12 @@
   import lang from 'index@/libs/lang.js'
   import { JSEncrypt } from 'jsencrypt'
   import editPass from '@/components/editPass'
+  import valiPass from '@/components/valiPass'  //密码校验组件
+
   export default {
     components: {
-      editPass
+      editPass,
+      valiPass
     },
     data () {
       return {
@@ -82,7 +109,36 @@
             {required: true,message: this.$t('login.v3'),trigger: 'blur'}
           ]
         },
-        pwdChangeDlgVis:false//强制修改密码弹出框
+        pwdChangeDlgVis:false,//强制修改密码弹出框
+        showRegister: false, //注册弹出框
+        regForm: {
+          nick:'',
+          pin:'',
+          rePin:'',
+          userSize:''
+        },
+        regRules:{
+          regRules:[
+            {required: true,message: this.$t('config.validator.required'),trigger: 'blur'},
+            {min: 3, max: 32, message: this.$t('rangeStr',{x:5,y:64}), trigger: 'blur'},
+            {validator: this.string2,trigger: 'blur' }
+          ],
+          pin:[
+            {required: true,message: this.$t('config.validator.required'),trigger: 'blur'},
+            {min: 3, max: 32, message: this.$t('common.rangeStr',{x:8,y:32}), trigger: 'blur'},
+            {validator:this.valiRisk,trigger: 'blur'}
+          ],
+          rePin:[
+            {required: true,message: this.$t('config.validator.required'),trigger: 'blur'},
+            { min:8,max:16,message: this.$t('pass.length',{x:8,y:16}),trigger: 'blur'   },
+            {validator:this.validatePass,trigger:'blur'}
+          ],
+          userSize: [
+            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {validator: this.sizeVali, message: '请输入1-8589934591之间的整数',trigger: 'blur' }
+          ]
+        },
+        risk:false
       }
     },
     created () {
@@ -136,201 +192,75 @@
             })
           }
         })
+      },
+
+      //获取密码校验结果是否为风险密码
+      getRiskVali (value) {
+        this.risk = value;
+      },
+      //校验风险密码
+      valiRisk (rule, value, callback) {
+
+        if (this.risk) {
+            callback(new Error(this.$t('pass.v5')));
+        } else {
+            callback();
+        }
+      },
+
+      /**
+       *  校验再次输入密码，必须与新密码一致 input校验
+       * @author wangjing
+       * @date 2018-07-10
+       */
+      validatePass (rule, value, callback){
+        if (value === '') {
+          callback(new Error(this.$t('pass.v3')));
+        } else if (value !== this.regForm.pin) {
+          callback(new Error(this.$t('pass.v6')));
+        } else {
+          callback();
+        }
+      },
+
+      //用户空间校验
+      sizeVali (rule, value, callback) {
+        let result = '';
+        if (/\D/.test(value)) {
+          result = '请输入1-8589934591之间的整数';
+        } else {
+          if (value < 1 || value > 8589934591) {
+            result = '请输入1-8589934591之间的整数';
+          }
+        }
+
+        if (result)
+          callback(new Error(result));
+        else
+          callback();
+      },
+
+      //用户注册
+      setRegister (form) {
+        this.$refs[form].validate((valid) => {
+           if (valid) {
+
+           }
+        });
       }
     }
   }
 </script>
-<style lang="less">
-  .loginForm .el-form-item__content{
-    position:static;
+<style lang="less" scoped>
+  .register{
+    width:80px!important;
+    right:10px;
+    top:18px;
   }
-  body{
-    min-width:1000px;
-    background:#fff;
-  }
-  .login_header{
-    width: 100%;
-    height: 68px;
-    text-align: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow:hidden;
-    .logo{
-      position:relative;
-      border-bottom: 2px solid #797e7e;
-      padding: 14px 0 12px;
-      min-width: 130px;
-      height: 68px;
-      line-height:40px;
-      display: inline-block;
-      color:#fff;
-      font-size: 20px;
-      &:before,&:after{
-         display:block;
-         content:'';
-         width: 830px;
-         height: 68px;
-         position: absolute;
-         top: 0;
-       }
-      &:before{
-         left: -830px;
-         background-image:url(../assets/images/login/leftH.png);
-       }
-      &:after{
-         left: 100%;
-         background-image:url(../assets/images/login/rightH.png);
-       }
-    }
-  }
-  .login{
-    position:absolute;
+  .jumpTolog{
     top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    width:100%;
-    height:100%;
-    background:url(../assets/images/login/ll_bg.jpg);
-    background-size:100% 100%;
-    .changeLang{
-      right: 18px;
-      top: 0px;
-      font-size:14px;
-      .el-dropdown-link{
-        cursor:pointer;
-        font-size:14px;
-        color:#ccc;
-      }
-    }
-
-    .error_txt{
-      position:absolute;
-      top:28px;
-      left:13px;
-      color: #fe5332;
-    }
-  }
-  .login_box .loginForm{
-    height:100%;
-   // background:url(../assets/images/login/login_bg.jpg) no-repeat left bottom;
-    background-size:65%;
-    *{
-      color:#fff;
-    }
-    a{
-      position: relative;
-      top: 10px;
-      color: #3399ff;
-    }
-    .is-error{
-      margin-bottom:20px!important;
-    }
-    .userItem,.passItem,.yzm{
-      i.licon{
-        position:absolute;
-        left:30px;
-        top:9px;
-      }
-    }
-    .userItem i.licon{
-      top:79px;
-    }
-    .passItem i.licon{
-      top:134px;
-    }
-    .loginForm .el-form-item{
-      margin-bottom:20px!important;
-    }
-  }
-  .login_box > div{
-    position:absolute;
-    width:329px;
-    height:259px;
-    top:32%;
-    left:65%;
-  }
-  .login_box button{
-    width:100%;
-  }
-  .login_box .el-form.loginForm{
-    width:90%;
-    margin:65px auto;
-  }
-  .login_box .yzm .el-input{
-    width:30%;
-    input{
-      background:transparent;
-    }
-  }
-  .passItem .el-input{
-    position:relative;
-    top:-4px;
-  }
-  .login .loginForm .el-form-item{
-    position:static;
-  }
-  .login .loginForm .el-form-item__error,.login .loginForm .tips{
-    position:absolute;
-    width:400px;
-    height:30px;
-    top: 28px;
-    left: 13px;
-    font-size:14px;
-    background:#000002;
-  }
-  .loginForm .el-form-item__error{
-    color: #fe5332;
-  }
-  .login_box .loginForm input{
-    height:40px;
-    border:1px solid #aac9e2!important;
-    box-shadow: 0 0 13px #3beaff;
-    &:active, &:hover {
-       border:1px solid #f4faff!important;
-       box-shadow: 0 0 13px #3beaff;
-    }
-  }
-  .login .tips{
-    color:#696969;
-  }
-
-  .userItem input, .passItem input{
-    text-indent:2.3em;
-    background:transparent;
-  }
-  .loginBtn{
-    margin-left:-10%;
-    width: 120%;
-    height: 100px;
-    line-height: 80px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    background-image: url(../assets/images/login/login_btn.png);
-    background-size:100%;
-    display: inline-block;
-    cursor: pointer;
-  }
-  .foot{
-    position:absolute;
-    bottom:0;
-    height:3rem;
-    line-height:3rem;
-    width:100%;
-    text-align:center;
+    right:10px;
+    height:22px;
     background:#fff;
-    z-index:9;
-  }
-
-  .login .el-dropdown-menu.lang{
-    background:#072643;
-    color:#ccc;
-    li:hover{
-        background:none;
-        color:#fff;
-     }
   }
 </style>
