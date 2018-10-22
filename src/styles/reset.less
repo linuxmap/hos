@@ -329,3 +329,195 @@ i.big{
 .cursor{
   cursor:pointer;
 }
+.loginForm .el-form-item__content{
+  position:static;
+}
+body{
+  min-width:1000px;
+  background:#fff;
+}
+.login_header{
+  width: 100%;
+  height: 68px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow:hidden;
+  .logo{
+    position:relative;
+    border-bottom: 2px solid #797e7e;
+    padding: 14px 0 12px;
+    min-width: 130px;
+    height: 68px;
+    line-height:40px;
+    display: inline-block;
+    color:#fff;
+    font-size: 20px;
+    &:before,&:after{
+      display:block;
+      content:'';
+      width: 830px;
+      height: 68px;
+      position: absolute;
+      top: 0;
+    }
+    &:before{
+      left: -830px;
+      background-image:url(../assets/images/login/leftH.png);
+    }
+    &:after{
+      left: 100%;
+      background-image:url(../assets/images/login/rightH.png);
+    }
+  }
+}
+.login{
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:url(../assets/images/login/ll_bg.jpg);
+  background-size:100% 100%;
+  .changeLang{
+    right: 18px;
+    top: 0px;
+    font-size:14px;
+    .el-dropdown-link{
+      cursor:pointer;
+      font-size:14px;
+      color:#ccc;
+    }
+  }
+
+  .error_txt{
+    position:absolute;
+    top:28px;
+    left:13px;
+    color: #fe5332;
+  }
+}
+.login_box .loginForm{
+  height:100%;
+  // background:url(../assets/images/login/login_bg.jpg) no-repeat left bottom;
+  background-size:65%;
+  *{
+    color:#fff;
+  }
+  a{
+    position: relative;
+    top: 10px;
+    color: #3399ff;
+  }
+  .is-error{
+    margin-bottom:20px!important;
+  }
+  .userItem,.passItem,.yzm{
+    i.licon{
+      position:absolute;
+      left:30px;
+      top:9px;
+    }
+  }
+  .userItem i.licon{
+    top:79px;
+  }
+  .passItem i.licon{
+    top:134px;
+  }
+  .loginForm .el-form-item{
+    margin-bottom:20px!important;
+  }
+}
+.login_box > div{
+  position:absolute;
+  width:329px;
+  height:259px;
+  top:32%;
+  left:65%;
+}
+.login_box button{
+  width:100%;
+}
+.login_box .el-form.loginForm{
+  width:90%;
+  margin:65px auto;
+}
+.login_box .yzm .el-input{
+  width:30%;
+  input{
+    background:transparent;
+  }
+}
+.passItem .el-input{
+  position:relative;
+  top:-4px;
+}
+.login .loginForm .el-form-item{
+  position:static;
+}
+.login .loginForm .el-form-item__error,.login .loginForm .tips{
+  position:absolute;
+  width:400px;
+  height:30px;
+  top: 28px;
+  left: 13px;
+  font-size:14px;
+  background:#000002;
+}
+.loginForm .el-form-item__error{
+  color: #fe5332;
+}
+.login_box .loginForm input{
+  height:40px;
+  border:1px solid #aac9e2!important;
+  box-shadow: 0 0 13px #3beaff;
+  &:active, &:hover {
+    border:1px solid #f4faff!important;
+    box-shadow: 0 0 13px #3beaff;
+  }
+}
+.login .tips{
+  color:#696969;
+}
+
+.userItem input, .passItem input{
+  text-indent:2.3em;
+  background:transparent;
+}
+.loginBtn{
+  margin-left:-10%;
+  width: 120%;
+  height: 100px;
+  line-height: 80px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  background-image: url(../assets/images/login/login_btn.png);
+  background-size:100%;
+  display: inline-block;
+  cursor: pointer;
+}
+.foot{
+  position:absolute;
+  bottom:0;
+  height:3rem;
+  line-height:3rem;
+  width:100%;
+  text-align:center;
+  background:#fff;
+  z-index:9;
+}
+
+.login .el-dropdown-menu.lang{
+  background:#072643;
+  color:#ccc;
+  li:hover{
+    background:none;
+    color:#fff;
+  }
+}
