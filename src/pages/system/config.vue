@@ -179,25 +179,47 @@
       <div class="basicMes">
         <h3>日志属性</h3>
         <div class="toolbar">
-          <el-form :inline="true" :model="compressLog" label-width="160px">
-            <!--<el-form-item>
-              <el-select v-model="scope.row.control" placeholder="请选择" style="width:200px">
+          <el-form ref="compressLog" :inline="true" :model="compressLog" label-width="160px" :rules="compressRule">
+            <el-form-item label="模块名称">
+              <el-select v-model="compressLog.moduleName" placeholder="请选择">
                 <el-option
-                  v-for="item in control"
+                  v-for="item in moduleName"
                   :key="item.value"
                   :label="item.value"
                   :value="item.value">
                 </el-option>
               </el-select>
-            </el-form-item>-->
-            <el-form-item label="节点IP">
-              <el-input v-model="firewallConfigForm.ip_tables_port" ></el-input>
+            </el-form-item>
+            <el-form-item label="节点IP" prop="nodeIP">
+              <el-input v-model="compressLog.nodeIP" ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button @click="setFirewallConfig('firewallConfigForm')">查询</el-button>
+              <el-button @click="setCompressLog('compressLog')">查询</el-button>
             </el-form-item>
           </el-form>
         </div>
+        <el-form v-if="logConfig" ref="logConfigForm" :model="logConfigForm" label-width="160px" :rules="logConfigRule" class="logWrap">
+          <el-form-item label="输出级别">
+            <el-radio-group v-model="logConfigForm.log_threshold" size="small">
+              <el-radio-button label="0">DEBUG</el-radio-button>
+              <el-radio-button label="1">INFO</el-radio-button>
+              <el-radio-button label="2">WARN</el-radio-button>
+              <el-radio-button label="3">ERROR</el-radio-button>
+              <el-radio-button label="4">FATAL</el-radio-button>
+              <el-radio-button label="5">TRACE</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="文件最大值" prop="log_size">
+            <el-input v-model="logConfigForm.log_size" ></el-input>
+          </el-form-item>
+          <el-form-item label="文件保留数" prop="log_backup_index">
+            <el-input v-model="logConfigForm.log_backup_index" ></el-input>
+          </el-form-item>
+          <el-form-item class="clear">
+            <el-button type="primary" @click="submitFileConfig('logConfigForm')">设置</el-button>
+            <el-button @click="resetForm('logConfigForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
   </page-container>
@@ -327,7 +349,55 @@
               value:'C'
           },{
               value:'D'
-          }]
+          }],
+
+          compressLog:{
+            moduleName:'',
+            nodeIP:''
+          },
+
+          moduleName:[{
+            value:'account_service'
+          },{
+            value:'monitor_client'
+          },{
+            value:'monitor_server'
+          },{
+            value:'hgw'
+          },{
+            value:'access_service'
+          },{
+            value:'nas_cluster'
+          },{
+            value:'shvfs'
+          },{
+            value:'bind'
+          },{
+            value:'cm'
+          }],
+
+          compressRule:{
+            nodeIP: [
+              {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+              {validator:validate.ipv4,trigger:'blur'}
+            ]
+          },
+          logConfig: false,
+          logConfigForm:{
+            log_threshold:'0',
+            log_size:'',
+            log_backup_index:''
+          },
+          logConfigRule:{
+            log_size:[
+              {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+              {validator:this.valiLogSize,trigger:'blur'}
+            ],
+            log_backup_index:[
+              {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+              {validator:this.valiLogIndex,trigger:'blur'}
+            ],
+          }
       }
     },
     methods: {
@@ -438,6 +508,43 @@
             alert('接入服务器设置');
           }
         });
+      },
+
+      //查询日志
+      setCompressLog (form) {
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            //显示日志模块配置
+            this.logConfig = true;
+          }
+        });
+      },
+
+      //文件最大值校验
+      valiLogSize (rule, value, callback) {
+        let result = util.valiInteger(value,[1,100]);
+        if (result)
+          callback(new Error(result));
+        else
+          callback();
+      },
+
+      //文件保留数校验
+      valiLogIndex (rule, value, callback) {
+        let result = util.valiInteger(value,[1,10]);
+        if (result)
+          callback(new Error(result));
+        else
+          callback();
+      },
+
+      //设置日志属性
+      submitFileConfig (form) {
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            alert('设置日志属性');
+          }
+        });
       }
     }
   }
@@ -461,5 +568,12 @@
   }
   .config /deep/ .fileForm .el-input{
     width:300px;
+  }
+  .logWrap{
+    padding:20px 0;
+  }
+  .toolbar{
+    padding:8px 0 0 0!important;
+    background:#eee;
   }
 </style>
