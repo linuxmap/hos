@@ -1464,6 +1464,37 @@ let utils = {
     } else {
       return name.slice(0,parseInt(24/split) - 3) + '....' + name.slice(name.length-3,name.length) +  unit;
     }
+  },
+
+  /**
+   * 16位颜色转rgb 
+   * @param  hexColor 16位制颜色
+   * @param  opacity 透明度
+   */
+  hexToRgb (hexColor, opacity) {
+    const reg = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
+    hexColor = hexColor.toLowerCase()
+    if (hexColor && reg.test(hexColor)) {
+      if (hexColor.length === 4) {
+        let hexColorNew = '#'
+        for (let i = 1; i < 4; i++) {
+          const hex = hexColor.slice(i, i + 1)
+          hexColorNew += hex + hex
+        }
+        hexColor = hexColorNew
+      }
+      const array = []
+      for (let i = 1; i < 7; i += 2) {
+        array.push(parseInt('0x' + hexColor.slice(i, i + 2)))
+      }
+      if (opacity) {
+        return 'rgba(' + array.join(',') + ',' + opacity + ')'
+      } else {
+        return 'rgb(' + array.join(',') + ')'
+      }
+    } else {
+      return hexColor
+    }
   }
 };
 

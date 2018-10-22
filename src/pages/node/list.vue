@@ -185,7 +185,7 @@
       ...mapState(['skinColor']),
       style () {
         const style = {};
-        style.background = this.skinColor
+        style.background = utl.hexToRgb(this.skinColor, 0.7)
         return style
       }
     },

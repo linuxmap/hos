@@ -45,7 +45,7 @@
     <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible" :close-on-click-modal="false">
       <div class="tip-info" :style="style">
         <h4>提示</h4>
-        <p>1、关机会影响云存储运行，请慎重操作。</p>
+        <p>1、格式化会造成数据丢失，请慎重操作。</p>
         <p>2、通过密码验证才能执行此操作。</p>
       </div>
       <el-form ref="dataForm" label-width="120px"  content-width="360px" :model="dataForm" :rules="dataFormRules">
@@ -106,7 +106,7 @@
       ...mapState(['skinColor']),
       style () {
         const style = {};
-        style.background = this.skinColor
+        style.background = util.hexToRgb(this.skinColor, 0.7)
         return style
       }
     },
