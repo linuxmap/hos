@@ -9,6 +9,7 @@ import hui from 'hui'
 import common from 'dolphin_common'
 import initApp from './initApp'
 import filters from './filters'
+import './icons'
 import '@/mock'
 
 Vue.use(hui)
