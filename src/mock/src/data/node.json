@@ -4,6 +4,7 @@
   "data": {
     "total": 2,
     "list": [{
+      "id": 1,
       "cpu": "1.48",
       "groupId": "140667621",
       "hgwStatus": "1",
@@ -18,6 +19,7 @@
       "status": "1",
       "totalCap": "3032"
     }, {
+      "id": 2,
       "cpu": "0.854531",
       "groupId": "340666599",
       "hgwStatus": "1",

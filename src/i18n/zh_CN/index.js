@@ -64,6 +64,7 @@ menu.clusterGroup = '组管理';
 menu.clusterGroupAdd = '创建组';
 menu.node = '节点管理';
 menu.nodeList = '接入节点';
+menu.volumes = "存储卷";
 menu.domain = '域名管理';
 menu.domainList = '域名列表';
 menu.cloud = '云存储管理';

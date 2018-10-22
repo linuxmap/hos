@@ -97,18 +97,18 @@
               </template>
             </el-table-column>-->
             <el-table-column prop="node_type" label="节点类型" width="120">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-html="util.showNodeType(scope.row.node_type)"></span>
               </template>
             </el-table-column>
             <el-table-column prop="hostname" :label="$t('config.cluster.tbHostname')" width="180">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <edit-input :rowValue="scope.row.hostname" :datas="scope.row" @submitVal="submitVal" :result="edit_result" :resetTag="resetTag[scope.row.local_ip] || false"></edit-input>
               </template>
             </el-table-column>
             <el-table-column prop="sys_time" :label="$t('config.cluster.tbSystemTime')" width="160"></el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button type="text" class="netSetBtn" size="small" @click="netCardDlg = true;netCardIp=scope.row.local_ip;nodeType = scope.row.node_type">
                   网络配置<i v-if="scope.row.isSet == '0'" class="nettag h-icon-circle_notice"></i><i v-else-if="scope.row.isSet == '1'" class="nettag h-icon-circle_success"></i><i style="visibility: hidden" v-else class="nettag h-icon-circle_notice"></i>
                 </el-button>
@@ -163,7 +163,7 @@
             :rules="BucketRules"
             style="width: 100%">
             <el-table-column prop="bucketName" label="Bucket名称" width="100">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{scope.row.bucketName}}</span>
                 <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketName" @blur="BucketVali('bucketName', scope.$index)"></el-input>
                 <el-tooltip v-show="scope.row.bucketName_error" class="item" effect="error" :content="scope.row.bucketName_error" placement="top">
@@ -172,7 +172,7 @@
               </template>
             </el-table-column>
             <el-table-column label="冗余级别" width="200">
-              <template scope="scope">
+              <template slot-scope="scope">
                   <span class="ryjbCol">
                     <span v-show="!scope.row.editFlag">{{scope.row.ecN}}</span>
                     <el-input v-show="scope.row.editFlag" v-model="scope.row.ecN" @blur="BucketVali('ecN', scope.$index)"></el-input>
@@ -193,7 +193,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="bucketSize" label="容量（GB）" width="100">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{scope.row.bucketSize}}</span>
                 <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketSize"  @blur="BucketVali('bucketSize',scope.$index)"></el-input>
                 <el-tooltip v-show="scope.row.bucketSize_error" class="item" effect="error" :content="scope.row.bucketSize_error" placement="top">
@@ -202,7 +202,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="coverType" label="覆盖策略" width="140">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{coverType[scope.row.coverType].label}}</span>
                 <el-select v-show="scope.row.editFlag" v-model="scope.row.coverType">
                   <el-option
@@ -219,7 +219,7 @@
             </el-table-column>
 
             <el-table-column prop="bucketCycle" label="存储周期（天）" width="120">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{scope.row.bucketCycle}}</span>
                 <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketCycle" @blur="BucketVali('bucketCycle',scope.$index)" :disabled="scope.row.coverType!=2"></el-input>
                 <el-tooltip v-show="scope.row.bucketCycle_error" class="item" effect="error" :content="scope.row.bucketCycle_error" placement="top">
@@ -228,7 +228,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="region" label="存储区域" width="100" v-show="false">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{scope.row.region}}</span>
                 <el-input v-show="scope.row.editFlag" v-model="scope.row.region" @blur="BucketVali('region',scope.$index)"></el-input>
                 <el-tooltip v-show="scope.row.region_error" class="item" effect="error" :content="scope.row.region_error" placement="top">
@@ -237,7 +237,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="lock_limit" label="锁定上限（%）" width="120">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-show="!scope.row.editFlag">{{scope.row.lock_limit}}</span>
                 <el-input v-show="scope.row.editFlag" v-model="scope.row.lock_limit" @blur="BucketVali('lock_limit',scope.$index)"></el-input>
                 <el-tooltip v-show="scope.row.lock_limit_error" class="item" effect="error" :content="scope.row.lock_limit_error" placement="top">
@@ -246,7 +246,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" min-width="120">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button v-show="!scope.row.editFlag" type="text" size="small" @click="scope.row.editFlag = !scope.row.editFlag">编辑
                 </el-button>
                 <el-button v-show="scope.row.editFlag" type="text" size="small" @click="submitEdit(scope.row, scope.$index)">确定

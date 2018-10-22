@@ -43,6 +43,10 @@ data.alarmStatus_1       = '撤防';
 
 data.node.onlineState1 = '在线';
 data.node.onlineState0 = '离线';
+data.node.deviceStatus1 = '正常';
+data.node.deviceStatus0 = '异常';
+data.node.formatStatus7 = '已格式化';
+data.node.formatStatus6 = '未格式化';
 
 // ====================== 集群 ======================
 data.cluster.formNodeIp = '节点IP';
