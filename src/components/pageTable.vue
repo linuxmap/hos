@@ -103,7 +103,14 @@
       'pageSize': 'getData',
       'pageNo': 'getData',
       '$route': 'getDataRoute',
-      '$store.state.resize': 'setHeight'
+      '$store.state.resize': 'setHeight',
+      url (val) {
+        if (val) {
+          this.getData()
+        } else {
+          this.tableData = []
+        }
+      }
     },
     methods: {
       setUnchecked (index) {
@@ -199,6 +206,7 @@
         }
         this.loadingUsergroupList = true;
         this.action(this.url, resultPara).then((res) => {
+          console.log(res)
           this.loadingUsergroupList = false;
           if (res.status == true) {
 

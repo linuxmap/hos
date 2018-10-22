@@ -56,6 +56,13 @@
     "menuCode": "111"
   },
   {
+    "path": "/node/volumes",
+    "component": "node/volumes",
+    "breadcrumb": ["menu.nodeList", "menu.volumes"],
+    "router": ["/node", "/node/volumes"],
+    "menuCode": "111"
+  },
+  {
     "path": "/domain",
     "component": "domain/list",
     "breadcrumb": ["menu.domainList"],

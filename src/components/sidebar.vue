@@ -22,7 +22,7 @@
     <template slot="sidebarSearch">
       <el-input
         v-model="treeSearchKey"
-        :placeholder="'请输入Bucket名称'"
+        :placeholder="placeholder"
         icon="h-icon-search"
         clearable
         :on-icon-click="handleSearchTree"
@@ -51,10 +51,16 @@ export default {
       type: Boolean,
       default: false
     },
-
     treeData: {
       type: Array,
       default: []
+    },
+    placeholder: {
+      type: String,
+      deplaceholderfault: '请输入Bucket名称'
+    },
+    currentKey: { // 当前选中
+      type: String|Number
     }
   },
   data () {
@@ -66,18 +72,16 @@ export default {
       treeSearchKey: ''
     }
   },
-
   mounted () {
     this.$nextTick(function () {
-      this.setTreeChoosed(1);
+      const currentKey = this.currentKey || 1
+      this.setTreeChoosed(currentKey)
     });
   },
-
   methods: {
     handleSearchTree () {
 
     },
-
     handleClearTree () {
       this.treeSearchKey = ''
       this.handleSearchTree()
