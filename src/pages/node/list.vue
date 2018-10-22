@@ -114,11 +114,19 @@
 
     <!-- 关闭节点 -->
     <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible.close" :close-on-click-modal="false">
-      <div class="tip-info" :style="style">
-        <h4>提示</h4>
-        <p>1、关机会影响云存储运行，请慎重操作。</p>
-        <p>2、通过密码验证才能执行此操作。</p>
-      </div>
+      <el-alert
+        title="提示"
+        type="error"
+        simple
+        show-icon
+        icon="h-icon-circle_info"
+        :closable="false"
+        style="margin-bottom: 20px;">
+        <div style="color: rgba(0,0,0,.7)">
+          <p>1、关机会影响云存储运行，请慎重操作。</p>
+          <p>2、通过密码验证才能执行此操作。</p>
+        </div>
+      </el-alert>
       <el-form ref="close" label-width="120px"  content-width="360px" :model="dataForm" :rules="closeFormRules">
         <el-form-item label="登录密码" prop="login_password">
           <el-input v-model="dataForm.login_password"></el-input>
@@ -266,19 +274,4 @@
   }
 </script>
 <style lang="less" scoped>
-  .tip-info {
-    padding: 8px 14px;
-    color: #fff;
-    margin-bottom: 26px;
-    line-height: 20px;
-    border-radius: 4px;
-    h4 {
-      font-size: 17.5px;
-      font-weight: bold;
-    }
-    p {
-      font-weight: 500;
-      margin: 4px 0;
-    }
-  }
 </style>
