@@ -2,7 +2,8 @@ let data = {
   validator:{},
   log: {},
   bucket:{},
-  node: {}
+  node: {},
+  cluster:{}
 };
 
 // ====================== 校验 ======================
@@ -47,5 +48,57 @@ data.node.deviceStatus0 = '异常';
 data.node.formatStatus7 = '已格式化';
 data.node.formatStatus6 = '未格式化';
 
+// ====================== 集群 ======================
+data.cluster.formNodeIp = '节点IP';
+data.cluster.formVIp = '虚拟IP';
+data.cluster.formCloudId = '云ID';
+data.cluster.formCloudName = '云名称';
+data.cluster.formDbCacheLimit = '数据库缓存最大值（GB）';
+data.cluster.formDbCacheLimitTip = '（务必低于单台设备物理内存的 1/2）';
+data.cluster.btnCheckAndAdd = '检测并添加';
+data.cluster.btnSetTime = '全部校时';
+data.cluster.btnRefreshAll = '全部刷新';
+data.cluster.btnReviseTime = '校时';
+data.cluster.btnRefresh = '刷新';
+data.cluster.btnDelete = '删除';
+data.cluster.btnCheck = '检测';
+data.cluster.btnCreateCluster = '组建集群';
+data.cluster.btnInitializeCluster = '初始化';
+data.cluster.btnExpand = '扩容';
+data.cluster.btnModify = '修改';
+data.cluster.btnClose = '关闭';
+data.cluster.tbNodeIp = '节点 IP';
+data.cluster.tbDeployType = '部署模式';
+data.cluster.tbHostname = '主机名';
+data.cluster.tbSystemTime = '系统时间';
+data.cluster.tbLVSRole = '负载均衡角色';
+data.cluster.tbDDBRole = '分布式数据库角色';
+data.cluster.tbAction = '操作';
+data.cluster.updateHostname0 = '修改主机名失败。';
+data.cluster.tbCloudName = '所属云';
+data.cluster.tbCloudType = '云类型';
+data.cluster.tplStandCloud = '标准云';
+data.cluster.tplMicroCloud = '微视云';
+data.cluster.tbVip = '虚拟IP';
+data.cluster.tbState = 'License状态';
+data.cluster.tbCreateTime = '创建时间';
+data.cluster.tbEditTime = '修改时间';
+data.cluster.tbCloudVersion = '云版本';
+data.cluster.initStatus2 = '已初始化';
+data.cluster.initStatus0 = '未初始化';
+data.cluster.initStatus1 = '正在初始化';
+data.cluster.initStatus9 = '初始化失败';
+data.cluster.initStatus100 = '改造中';
+data.cluster.initStatus101 = '改造失败';
+data.cluster.dlgClusterCreated = '已组建集群';
+data.cluster.dlgIPInconsistent = 'IP地址不一致';
+data.cluster.tbMaxCreateBucket = '创建Bucket最大数';
+data.cluster.tbCoverThreshold = '容量覆盖阈值';
+data.cluster.tbRebuildSpeed = '重构速度';
+data.cluster.tbTimeDiskOffline = '磁盘下线启动重构(分钟)';
+data.cluster.tbTimeOsdOffline = '存储节点下线启动重构(分钟)';
+data.cluster.dlgCreateCluster0 = '组建集群失败';
+data.cluster.setParam = '设置参数';
+data.cluster.expandNode = '集群扩容';
 
 export default data;

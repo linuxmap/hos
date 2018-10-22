@@ -48,7 +48,7 @@
            <el-input v-model="regForm.nick"></el-input>
          </el-form-item>
          <el-form-item label="登录密码" prop="pin">
-           <vali-pass v-model="regForm.pin" @valiRisk="getRiskVali"></vali-pass>
+           <vali-pass v-model="regForm.pin" @valiRisk="risk=arguments[0]"></vali-pass>
          </el-form-item>
          <el-form-item label="密码确认" prop="rePin">
            <el-input type="password" v-model="regForm.rePin"></el-input>
@@ -194,10 +194,6 @@
         })
       },
 
-      //获取密码校验结果是否为风险密码
-      getRiskVali (value) {
-        this.risk = value;
-      },
       //校验风险密码
       valiRisk (rule, value, callback) {
 
