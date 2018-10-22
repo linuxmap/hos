@@ -1,4 +1,9 @@
-[
+[ {
+    "path": "/deployment",
+    "component": "deployment",
+    "breadcrumb": [],
+    "menuCode": "009"
+  },
   {
     "path": "/user",
     "component": "user/userInfo",

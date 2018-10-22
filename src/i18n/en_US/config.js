@@ -2,7 +2,8 @@ let data = {
   log: {},
   bucket: {},
   validator:{},
-  node: {}
+  node: {},
+  cluster:{}
 };
 
 // ====================== 校验 ======================
@@ -41,5 +42,57 @@ data.alarmStatus_1       = '撤防';
 
 data.node.onlineState1 = '在线';
 data.node.onlineState0 = '离线';
+
+data.cluster.formNodeIp = 'IP Address';
+data.cluster.formVIp = 'Virtual IP Address';
+data.cluster.formCloudId = 'Cloud ID';
+data.cluster.formCloudName = 'Cloud Name';
+data.cluster.formDbCacheLimit = 'Max Database Cache Value (GB)';
+data.cluster.formDbCacheLimitTip = '(must be lower than 1/2 of physical memory)';
+data.cluster.btnCheckAndAdd = 'Detect and Add';
+data.cluster.btnSetTime = 'Time-revise';
+data.cluster.btnRefreshAll = 'Refresh All';
+data.cluster.btnReviseTime = 'Time-revise';
+data.cluster.btnRefresh = 'Refresh';
+data.cluster.btnDelete = 'Delete';
+data.cluster.btnCheck = 'Detect';
+data.cluster.btnCreateCluster = 'Create Cluster';
+data.cluster.btnInitializeCluster = 'Initialize';
+data.cluster.btnExpand = 'Expand';
+data.cluster.btnModify = 'Modify';
+data.cluster.btnClose = 'Close';
+data.cluster.tbNodeIp = 'IP Address';
+data.cluster.tbDeployType = 'Deploy Mode';
+data.cluster.tbHostname = 'Hostname';
+data.cluster.tbSystemTime = 'System Time';
+data.cluster.tbLVSRole = 'Load Balance Role';
+data.cluster.tbDDBRole = 'Distributed Database Role';
+data.cluster.tbAction = 'Operation';
+data.cluster.updateHostname0 = 'Updating hostname failed.';
+data.cluster.tbCloudName = 'Cloud Name';
+data.cluster.tbCloudType = 'Cloud Type';
+data.cluster.tplStandCloud = 'Standard Cloud';
+data.cluster.tplMicroCloud = 'Micro Video Cloud';
+data.cluster.tbVip = 'Virtual IP Address';
+data.cluster.tbState = 'License State';
+data.cluster.tbCreateTime = 'Creation Time';
+data.cluster.tbEditTime = 'Modification Time';
+data.cluster.tbCloudVersion = 'Cloud Version';
+data.cluster.initStatus2 = 'Initialized';
+data.cluster.initStatus0 = 'Uninitialized';
+data.cluster.initStatus1 = 'Initializing';
+data.cluster.initStatus9 = 'Initialization Failed';
+data.cluster.initStatus100 = 'Reforming';
+data.cluster.initStatus101 = 'Reforming Failed';
+data.cluster.dlgClusterCreated = 'Node cluster has been created.';
+data.cluster.dlgIPInconsistent = 'IP address is inconsistent.';
+data.cluster.tbMaxCreateBucket = 'Create Bucket Max No.';
+data.cluster.tbCoverThreshold = 'Capacity Coverage Threshold';
+data.cluster.tbRebuildSpeed = 'Rebuilding Speed';
+data.cluster.tbTimeDiskOffline = '磁盘下线启动重构';
+data.cluster.tbTimeOsdOffline = '存储节点下线启动重构';
+data.cluster.dlgCreateCluster0 = 'Creating cluster failed.';
+data.cluster.setParam = '设置参数';
+data.cluster.expandNode = '集群扩容';
 
 export default data;

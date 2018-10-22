@@ -1,5 +1,10 @@
 [
   {
+    "title": "menu.deployment",
+    "icon": "h-icon-stick",
+    "router": "/deployment"
+  },
+  {
     "title": "menu.cluster",
     "icon": "icon-cus icon-cluster1",
     "children": [

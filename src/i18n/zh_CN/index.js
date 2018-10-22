@@ -74,7 +74,8 @@ menu.userManagement = '用户管理';
 menu.userList = '用户列表';
 menu.system = "系统管理";
 menu.network = "网络管理";
-menu.config = "配置管理"
+menu.config = "配置管理";
+menu.deployment = '一键部署';
 
 let common = {};
 common.index = '序号';

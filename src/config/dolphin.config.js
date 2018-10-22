@@ -15,6 +15,10 @@ module.exports = {
     'languageId': 'zh_CN',
     'skin': 'blue',
     'breadcrumb': {
+      '009':[{
+        'title':'menu.deployment',
+        'router':''
+      }],
       '010': [{
         'title':'menu.user',
         'router': '/user'
@@ -30,7 +34,7 @@ module.exports = {
 	    '014': [{
         'title':'menu.log',
         'router': '/log'
-      }],	
+      }],
       '110': [{
         'title': 'menu.cluster',
         'router': '/cluster'
