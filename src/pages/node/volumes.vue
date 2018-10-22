@@ -3,13 +3,13 @@
     <!-- 左侧树 -->
     <sidebar v-if="showSideBar" slot="pageSidebar" :currentKey="currentId" :treeData="treeData" @selectTreeNode="getNodeList"
       placeholder="请输入节点IP"></sidebar>
-    <el-tabs type="border-card" style="tab-container">
+    <el-tabs style="tab-container">
       <el-tab-pane label="存储卷列表">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">
-          <el-button type="iconButton" icon="h-icon-plus" @click="checkSelection('systemFormat')" :disabled="!selection.length">系统格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('volumeForamt')" :disabled="!selection.legnth">卷格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteOffline')" :disabled="!selection.length">删除不在线设备</el-button>
+          <el-button type="iconButton" icon="h-icon-plus" @click="handleSystemFormat">系统格式化</el-button>
+          <el-button type="iconButton" icon="h-icon-trashcan" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
+          <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
           @select-change="handleSelectChange">
@@ -31,8 +31,8 @@
               <span v-html="getStatus(scope.row.device_online, 'config.node.onlineState')"></span>
             </template>
           </el-table-column>
-          <el-table-column prop="device_id" label="ID" width="160"></el-table-column>
-          <el-table-column label="容量（GB）【总/空闲】" width="100">
+          <el-table-column prop="device_id" label="ID" width="140"></el-table-column>
+          <el-table-column label="容量（GB）【总/空闲】" width="140">
             <template slot-scope="scope">
               {{scope.row.total_block + '/' + scope.row.free_block}}
             </template>
@@ -40,6 +40,24 @@
         </page-table>
       </el-tab-pane>
     </el-tabs>
+
+    <!-- 关闭节点 -->
+    <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible" :close-on-click-modal="false">
+      <div class="tip-info" :style="style">
+        <h4>提示</h4>
+        <p>1、关机会影响云存储运行，请慎重操作。</p>
+        <p>2、通过密码验证才能执行此操作。</p>
+      </div>
+      <el-form ref="dataForm" label-width="120px"  content-width="360px" :model="dataForm" :rules="dataFormRules">
+        <el-form-item label="登录密码" prop="login_password">
+          <el-input v-model="dataForm.login_password"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSubmit('dataForm')">确 定</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </page-container>
 </template>
 
@@ -49,7 +67,7 @@
   // import http from 'index@/api/index'
   import http from '@/libs/mockHttp'
   import util from 'index@/utils/util'
-  import echartsUtil from  'index@/utils/echartsUtil'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'volumes',
@@ -74,7 +92,22 @@
         listUrl: '',
         selection: [],
         queryForm: null,
-        loading: null
+        loading: null,
+        dialogVisible: false,
+        dataForm: {},
+        dataFormRules: {
+          login_password: [
+            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    computed: {
+      ...mapState(['skinColor']),
+      style () {
+        const style = {};
+        style.background = this.skinColor
+        return style
       }
     },
     created () {
@@ -100,40 +133,45 @@
         } else {
           this.listUrl = '/mock/volume/list'
           this.queryForm = {id: this.$route.query.id}
+          this.$refs.table.getData()
         }
-        console.log('getNodeList', data)
       },
       handleSelectChange (selection) {
         this.selection = selection;
       },
-      checkSelection (name) {
+      handleSystemFormat () {
+        this.showDialog('dataForm')
+      },
+      handleVolumeFormat () {
+        this.checkSelection()
+        this.showDialog('dataForm')
+      },
+      handleDelete () {
+        const isAllOffline = this.selection.every(item => item.device_online === '0')
+        if (isAllOffline) {
+        } else {
+          util.alert2({message: '请选择不在线设备'})
+        }
+      },
+      checkSelection () {
         if (this.selection && !this.selection.length) {
-          util.alert2({message: '请选择一个节点'})
+          util.alert2({message: '请选择一个存储卷'})
           return
         }
-        switch (name) {
-          case 'businessIp':
-            this.dataForm = {
-              business_ip: '',
-              data_ip: ''
-            }
-            break;
-          case 'upgrade':
-            this.dataForm = {file: ''}
-            break;
-          case 'reload':
-            this.handleReload()
-            break;
-          case 'close':
-            this.dataForm = {login_password: ''}
-            break;  
-        }
-        // this.showDialog(name)
       },
       showDialog (name) {
-        this.dialogVisible[name] = true;
+        this.dialogVisible = true;
         this.$nextTick(() => {
           this.$refs[name] && this.$refs[name].resetFields();
+        })
+      },
+      handleSubmit (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            console.log('执行提交')
+          } else {
+            console.log('表单不合法')
+          }
         })
       },
       getStatus (state, key, {error = ['0'], success = ['1']} = {}) {
@@ -148,5 +186,21 @@
 <style lang="less" scoped>
   /deep/ .el-tabs.el-tabs--border-card {
     height: 100%;
+  }
+
+  .tip-info {
+    padding: 8px 14px;
+    color: #fff;
+    margin-bottom: 26px;
+    line-height: 20px;
+    border-radius: 4px;
+    h4 {
+      font-size: 17.5px;
+      font-weight: bold;
+    }
+    p {
+      font-weight: 500;
+      margin: 4px 0;
+    }
   }
 </style>

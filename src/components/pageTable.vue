@@ -206,7 +206,6 @@
         }
         this.loadingUsergroupList = true;
         this.action(this.url, resultPara).then((res) => {
-          console.log(res)
           this.loadingUsergroupList = false;
           if (res.status == true) {
 

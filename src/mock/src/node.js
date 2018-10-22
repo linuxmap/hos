@@ -12,6 +12,8 @@ mockAdapter.onPost('/mock/node/list').reply(config => {
 mockAdapter.onPost('/mock/volume/list').reply(config => {
   const json = require('./data/volumes.json')
   return new Promise((resolve, reject) => {
-    resolve([200, json])
+    setTimeout(() => {
+      resolve([200, json])
+    }, 1000)
   })
 })
