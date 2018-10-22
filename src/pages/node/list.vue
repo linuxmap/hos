@@ -29,7 +29,7 @@
       <el-table-column width="110" label="操作" align="center">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="存储卷" placement="top" :enterable="false">
-              <el-button type="text"><i class="h-icon-forward" @click="gotoStorageVolumes(scope.row)"></i></el-button>
+              <el-button type="text" @click="gotoStorageVolumes(scope.row)"><svg-icon type="volume" style="font-size:16px;"></svg-icon></el-button>
             </el-tooltip>
           </template>
         </el-table-column>

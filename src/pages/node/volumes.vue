@@ -7,8 +7,8 @@
       <el-tab-pane label="存储卷列表">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">
-          <el-button type="iconButton" icon="h-icon-plus" @click="handleSystemFormat">系统格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="handleSystemFormat">系统格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
           <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
