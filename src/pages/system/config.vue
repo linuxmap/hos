@@ -422,6 +422,10 @@
                 });
               break;
             }
+          case '日志': {
+              this.logConfig = false;
+              this.resetForm('compressLog');
+            }
         }
       },
 
