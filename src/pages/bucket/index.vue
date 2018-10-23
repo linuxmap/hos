@@ -2,6 +2,7 @@
   <page-container :breadcrumb="i18nBreadcrumb">
     <!-- 左侧树 -->
     <sidebar v-if="showSideBar" showTools slot="pageSidebar" :treeData="treeData"
+             placeholder="请输入Bucket名称"
              @selectTreeNode="getChartData"
              @add="addBucket"></sidebar>
     <el-tabs v-model="activeName" ref="tableTab">

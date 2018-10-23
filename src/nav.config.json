@@ -20,7 +20,7 @@
   {
     "title": "menu.domain",
     "router": "/domain",
-    "icon": "h-icon-menu_app"
+    "icon": "h-icon-internet"
   },
   {
     "title": "menu.cloud",
