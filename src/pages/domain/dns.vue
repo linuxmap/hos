@@ -29,7 +29,7 @@
                 <el-input v-model="item.ip"></el-input>
               </div>
               <div class="button-container">
-                <el-button @click="handleEdit(index)">{{index > 0 ? '删除' : '添加更多'}}</el-button>
+                <el-button @click="handleEditForm(index)">{{index > 0 ? '删除' : '添加更多'}}</el-button>
               </div>
             </div>
           </el-form-item>
