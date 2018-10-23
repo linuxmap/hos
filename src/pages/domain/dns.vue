@@ -65,9 +65,19 @@
     },
     methods: {
       handleAdd () {
+        this.dataForm = {
+          ipList: [
+            {ip: ''},
+            {ip: ''},
+            {ip: ''}
+          ]
+        }
         this.dialogVisible = true
+        this.$nextTick(() => {
+          this.$refs.dataForm.resetFields()
+        })
       },
-      handleEdit (index) {
+      handleEditForm (index) {
         if (index > 0) {
           this.dataForm.ipList.splice(index, 1)
         } else {
