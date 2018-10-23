@@ -1,9 +1,6 @@
 <template>
   <page-sidebar>
     <template slot="sidebarToolbar" v-if="showTools">
-      <el-tooltip effect="dark" content="创建Bucket" placement="top">
-        <el-button type="iconButton" icon="h-icon-plus" @click="add">创建Bucket</el-button>
-      </el-tooltip>
      <!-- <el-tooltip effect="dark" content="编辑" placement="top">
         <el-button type="iconButton" icon="h-icon-edit"></el-button>
       </el-tooltip>
@@ -18,6 +15,11 @@
           <el-dropdown-item>导出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>-->
+      <slot name="sidebar_toolbar">
+        <el-tooltip effect="dark" content="创建Bucket" placement="top">
+          <el-button type="iconButton" icon="h-icon-plus" @click="add">创建Bucket</el-button>
+        </el-tooltip>
+      </slot>
     </template>
     <template slot="sidebarSearch">
       <el-input
@@ -39,6 +41,7 @@
       default-expand-all
       :default-checked-keys = "[1]"
       @current-change="selectTreeNode"
+      :show-checkbox="showCheckbox"
     ></el-tree>
   </page-sidebar>
 </template>
@@ -61,6 +64,10 @@ export default {
     },
     currentKey: { // 当前选中
       type: String|Number
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
