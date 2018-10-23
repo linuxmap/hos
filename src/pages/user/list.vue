@@ -18,11 +18,19 @@
 
     <!-- 重置密码 -->
     <el-dialog title="重置密码" :area="600" :visible.sync="dialogVisible.resetPwz" :close-on-click-modal="false">
-      <div class="tip-info" :style="style">
-        <h4>提示</h4>
-        <p>1、文本框输入yes, 则执行密码重置操作</p>
-        <p>2、用户获得新密码, 成功登录系统后, 请先修改密码</p>
-      </div>
+      <el-alert
+        title="提示"
+        type="error"
+        simple
+        show-icon
+        icon="h-icon-circle_info"
+        :closable="false"
+        style="margin-bottom: 20px;">
+        <div style="color: rgba(0,0,0,.7)">
+          <p>1、文本框输入yes, 则执行密码重置操作</p>
+          <p>2、用户获得新密码, 成功登录系统后, 请先修改密码</p>
+        </div>
+      </el-alert>
       <el-form ref="resetPwz" label-width="120px"  content-width="360px" :model="dataForm" :rules="resetPwzRules">
         <el-form-item label="确定重置密码" prop="key">
           <el-input v-model="dataForm.key"></el-input>

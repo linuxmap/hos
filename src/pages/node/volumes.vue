@@ -7,8 +7,8 @@
       <el-tab-pane label="存储卷列表">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">
-          <el-button type="iconButton" icon="h-icon-plus" @click="handleSystemFormat">系统格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="handleSystemFormat">系统格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
           <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
@@ -41,13 +41,21 @@
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 关闭节点 -->
-    <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible" :close-on-click-modal="false">
-      <div class="tip-info" :style="style">
-        <h4>提示</h4>
-        <p>1、格式化会造成数据丢失，请慎重操作。</p>
-        <p>2、通过密码验证才能执行此操作。</p>
-      </div>
+    <!-- 弹出框 -->
+    <el-dialog :title="title" :area="600" :visible.sync="dialogVisible" :close-on-click-modal="false">
+      <el-alert
+        title="提示"
+        type="error"
+        simple
+        show-icon
+        icon="h-icon-circle_info"
+        :closable="false"
+        style="margin-bottom: 20px;">
+        <div style="color: rgba(0,0,0,.7)">
+          <p>1、格式化会造成数据丢失，请慎重操作。</p>
+          <p>2、通过密码验证才能执行此操作。</p>
+        </div>
+      </el-alert>
       <el-form ref="dataForm" label-width="120px"  content-width="360px" :model="dataForm" :rules="dataFormRules">
         <el-form-item label="登录密码" prop="login_password">
           <el-input v-model="dataForm.login_password"></el-input>
@@ -99,7 +107,8 @@
           login_password: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
-        }
+        },
+        title: ''
       }
     },
     computed: {
@@ -140,9 +149,11 @@
         this.selection = selection;
       },
       handleSystemFormat () {
+        this.title = '系统格式化'
         this.showDialog('dataForm')
       },
       handleVolumeFormat () {
+        this.title = '提示'
         this.checkSelection()
         this.showDialog('dataForm')
       },
@@ -186,21 +197,5 @@
 <style lang="less" scoped>
   /deep/ .el-tabs.el-tabs--border-card {
     height: 100%;
-  }
-
-  .tip-info {
-    padding: 8px 14px;
-    color: #fff;
-    margin-bottom: 26px;
-    line-height: 20px;
-    border-radius: 4px;
-    h4 {
-      font-size: 17.5px;
-      font-weight: bold;
-    }
-    p {
-      font-weight: 500;
-      margin: 4px 0;
-    }
   }
 </style>
