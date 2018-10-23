@@ -9,13 +9,14 @@
         <el-table
           :data="tableData">
           <el-table-column
-            type="selection">
+            type="selection"
+            :selectable="checkSelectable">
           </el-table-column>
           <el-table-column
             label="组名称"
             width="35%">
             <template slot-scope="scope">
-              <span v-if="scope.row.group_name">
+              <span v-if="!scope.row.selectable">
                 {{scope.row.group_name}}
                 <el-badge class="item" value="需扩容" />
               </span>     
@@ -31,13 +32,14 @@
                   <el-button type="iconButton" icon="h-icon-plus"></el-button>
                 </template>
               </el-input>
+              <el-button type="iconButton" icon="h-icon-plus" v-else></el-button>
             </template>
           </el-table-column>
           <el-table-column
             label="操作"
             width="30%">
             <template slot-scope="scope">
-              <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete(scope.row)"></el-button>
+              <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete(scope.row)" :disabled="!scope.row.selectable"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -49,6 +51,7 @@
   </page-container>
 </template>
 <script>
+import http from '@/libs/mockHttp'
 export default {
   name: "groudAdd",
   props: {
@@ -58,30 +61,47 @@ export default {
   },
   data() {
     return {
-      tableData: [
-        {
-          id: 0,
-          group_name: 'g1',
-          server_ip: '10.192.70.254'
-        },
-        {
-          id: 1,
-          group_name: 'g2',
-          server_ip: '10.192.70.244' 
-        }
-      ]
+      tableData: [],
+      loading: null,
+      adding: false // 是否正在添加
     };
   },
+  created () {
+    this.getGroupList()
+  },
   methods: {
+    async getGroupList () {
+      this.loading = this.$loading()
+      const res = await http.getRequest('/mock/cluster/group/list')
+      this.tableData = res.data.list || []
+      this.tableData.forEach(item => {
+        item.selectable = false
+      })
+      this.loading.close()
+    },
     handleAdd () {
+      if (this.adding) {
+        this.$message.error({
+          showClose: true,
+          type: 'warning',
+          message: '请完成当前操作'
+        })
+        return
+      }
+      this.adding = true
       this.tableData.push({
         id: '',
         group_name: '',
-        server_ip: ''
+        server_ip: '',
+        selectable: true
       })
     },
     handleDelete (row) {
       this.tableData = this.tableData.filter(item => item !== row)
+      this.adding = false
+    },
+    checkSelectable (row, index) {
+      return row.selectable
     }
   }
 };

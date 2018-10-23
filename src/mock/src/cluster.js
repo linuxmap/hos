@@ -47,7 +47,7 @@ mockAdapter.onPost('/mock/cluster/group/list').reply((config) => {
     const result = MockJS.mock({
       [`list|${pageSize}`]: [{
         'id|+1': 1,
-        'group_name|1': ['g1', 'g2', 'g3'],
+        'group_name': `g@increment(1)`,
         group_id: /\d{9}/,
         'server_ip|1': ['10.192.70.245', '10.192.70.238', '10.192.70.216'],
         server_id: /\w{10}/,
