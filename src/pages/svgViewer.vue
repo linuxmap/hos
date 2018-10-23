@@ -3,7 +3,7 @@
  */
 <template>
   <div class="svg-viewer">
-    <div class="svg" v-for="(item, index) in svgList" :key="index">
+    <div class="svg" v-for="(item, index) in svgList" :key="index" :title="item">
       <figure>
         <svg-icon :type="item"></svg-icon>
         <figcaption>{{item}}</figcaption>
@@ -39,8 +39,9 @@
     flex-flow: row wrap;
     font-size: 18px;
     .svg {
-      flex: 1;
+      flex: 0 0 30px;
       text-align: center;
+      // overflow: hidden;
     }
   }
 </style>
