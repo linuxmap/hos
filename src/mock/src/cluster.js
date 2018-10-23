@@ -14,17 +14,17 @@ mockAdapter.onPost('/mock/cluster/list').reply((config) => {
     const result = MockJS.mock({
       [`list|${returnSize}`]: [{
         'ret|8-2': true,
-        virtual_ip: '10.192.70.246',
+        virtual_ip: '@ip',
         'cloud_type|1': ['0', '1'],
         'cloud_id|+1': index,
-        cloud_version: 'V3.0.5',
-        create_time: '2018-10-15 15:08:28',
-        modification_time: '',
-        all_ip: '10.192.70.244,10.192.70.245',
-        all_hostname: 'node244,node-245',
-        all_devid: 'A40BF00100D0410729F9,A40BF00100D03A00B12A',
-        all_ssdb_ip: '10.192.70.244,10.192.70.245',
-        'status|1': ['0', '1', '2'],
+        cloud_version: /^V\d\.\d\.\d$/,
+        create_time: '@datetime',
+        modification_time: '@now()',
+        all_ip: '@ip , @ip',
+        all_hostname: '@domain("hikvision") , @domain("hikvision")',
+        all_devid: /^[0-9A-Z]{20}\,[0-9A-Z]{18}$/,
+        all_ssdb_ip: '@ip , @ip',
+        'status|1': ['0', '1'],
         'cluster_type|1': ['0', '1', '2']
       }]
     })

@@ -5,14 +5,14 @@
       <el-button type="iconButton" icon="h-icon-edit" @click="showDialog('dataForm')">修改虚拟IP</el-button>
     </div>
     <!-- 列表 -->
-    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false">
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true">
       <el-table-column prop="cloud_id" label="云ID" width="60"></el-table-column>
-      <el-table-column prop="cloud_type" label="云类型" width="80">
+      <el-table-column prop="cloud_type" label="云类型" width="60">
         <template slot-scope="scope">
           {{scope.row.cloud_type|cloudType}}
         </template>
       </el-table-column>
-      <el-table-column prop="cluster_type" label="集群类型" width="80">
+      <el-table-column prop="cluster_type" label="集群类型" width="60">
         <template slot-scope="scope">
           {{scope.row.cluster_type|clusterType}}
         </template>
@@ -33,7 +33,11 @@
           <p class="split" v-for="(item, index) in scope.row.all_ssdb_ip.split(',')" :key="index">{{item}}</p>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="80"></el-table-column>
+      <el-table-column prop="status" label="状态" width="80">
+        <template slot-scope="scope">
+          <span v-html="getStatus(scope.row.status, 'config.cluster.status')"></span>
+        </template>
+      </el-table-column>
       <el-table-column prop="create_time" label="创建时间" width="110"></el-table-column>
       <el-table-column prop="modification_time" label="修改时间" width="110"></el-table-column>
       <el-table-column prop="cloud_version" label="云版本" width="80"></el-table-column>
@@ -58,6 +62,7 @@
 <script>
   import pageTable from '@/components/pageTable'
   import validates from '@/utils/form-validate'
+  import util from '@/utils/util'
   export default {
     name: 'clusterList',
     components: { pageTable },
@@ -89,6 +94,12 @@
             this.dialogVisible = false
           }
         })
+      },
+      getStatus (state, key, {error = ['0'], success = ['1']} = {}) {
+        return util.setTdStatus(key, {
+          error,
+          success
+        }, state, '-')
       }
     }
   }
