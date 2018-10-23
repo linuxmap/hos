@@ -99,4 +99,7 @@ data.cluster.dlgCreateCluster0 = 'Creating cluster failed.';
 data.cluster.setParam = '设置参数';
 data.cluster.expandNode = '集群扩容';
 
+data.cluster.status1 = '已初始化';
+data.cluster.status0 = '未初始化';
+
 export default data;

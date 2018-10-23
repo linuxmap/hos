@@ -69,7 +69,7 @@
   },
   {
     "path": "/domain",
-    "component": "domain/list",
+    "component": "domain/index",
     "breadcrumb": ["menu.domainList"],
     "router": ["/domain"],
     "menuCode": "112"
