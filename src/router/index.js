@@ -16,6 +16,7 @@ Vue.use(Router)
 
 const Login = resolve => require(['index@/pages/login'], resolve)
 const Home = resolve => require(['index@/pages/home'], resolve)
+const SvgViewer = resolve => require(['index@/pages/svgViewer'], resolve)
 
 const createRoute = (routes) => {
   return routes.reduce((processedRoutes, currentRoute) => {
@@ -60,6 +61,10 @@ const router = new Router({
       path: '/home',
       component: Home,
       children: createRoute(routes)
+    },
+    {
+      path: '/svg',
+      component: SvgViewer
     }
   ]
 })

@@ -13,26 +13,30 @@
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
           @select-change="handleSelectChange">
-          <el-table-column prop="location" label="槽位号" width="80"></el-table-column>
-          <el-table-column prop="device_name" label="名称" width="80"></el-table-column>
-          <el-table-column prop="device_type" label="类型" width="100"></el-table-column>
-          <el-table-column prp="init_status" label="格式化状态" width="100">
+          <el-table-column prop="location" label="槽位号" width="60"></el-table-column>
+          <el-table-column prop="device_name" label="名称" width="60"></el-table-column>
+          <el-table-column prop="device_type" label="类型" width="60">
+            <template slot-scope="{row}">
+              {{row.device_type | deviceType}}
+            </template>
+          </el-table-column>
+          <el-table-column prp="init_status" label="格式化状态" width="60">
             <template slot-scope="scope">
               <span v-html="getStatus(scope.row.init_status, 'config.node.formatStatus', {success: ['7'], error: ['6']})"></span>
             </template>
           </el-table-column>
-          <el-table-column prop="device_status" label="设备状态" width="80">
+          <el-table-column prop="device_status" label="设备状态" width="60">
             <template slot-scope="scope">
               <span v-html="getStatus(scope.row.device_status, 'config.node.deviceStatus')"></span>
             </template>
           </el-table-column>
-          <el-table-column prop="device_online" label="在线状态" width="80">
+          <el-table-column prop="device_online" label="在线状态" width="60">
             <template slot-scope="scope">
               <span v-html="getStatus(scope.row.device_online, 'config.node.onlineState')"></span>
             </template>
           </el-table-column>
-          <el-table-column prop="device_id" label="ID" width="140"></el-table-column>
-          <el-table-column label="容量（GB）【总/空闲】" width="140">
+          <el-table-column prop="device_id" label="ID" width="180"></el-table-column>
+          <el-table-column label="容量（GB）【总/空闲】" width="120">
             <template slot-scope="scope">
               {{scope.row.total_block + '/' + scope.row.free_block}}
             </template>

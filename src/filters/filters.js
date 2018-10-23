@@ -26,5 +26,14 @@ export const clusterType = (value) => {
     case 0: return 'HA'
     case 1: return 'HB'
     case 2: return 'HC'
+    default: return '--'
+  }
+}
+
+// 存储卷设备类型
+export const deviceType = (value) => {
+  switch (parseInt(value)) {
+    case 6: return 'SSD设备'
+    default: return '--'
   }
 }

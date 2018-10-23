@@ -113,7 +113,7 @@
     </el-dialog>
 
     <!-- 关闭节点 -->
-    <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible.close" :close-on-click-modal="false">
+    <el-dialog title="关闭节点" :area="600" :visible.sync="dialogVisible.close" :close-on-click-modal="false">
       <el-alert
         title="提示"
         type="error"
@@ -267,7 +267,6 @@
       handleSearch () {
       },
       gotoStorageVolumes (row) {
-        console.log(row)
         util.jump('/node/volumes', {id: row.id})
       }
     }

@@ -15,18 +15,18 @@
             label="组名称"
             width="35%">
             <template slot-scope="scope">
-              <span v-if="scope.row.groupName">
-                {{scope.row.groupName}}
+              <span v-if="scope.row.group_name">
+                {{scope.row.group_name}}
                 <el-badge class="item" value="需扩容" />
               </span>     
-              <el-input v-else v-model="scope.row.groupName"></el-input>         
+              <el-input v-else v-model="scope.row.group_name"></el-input>         
             </template>
           </el-table-column>
           <el-table-column
             label="组IP列表"
             width="35%">
             <template slot-scope="scope">
-              <el-input :disabled="true" v-model="scope.row.groupIp" v-if="scope.row.groupIp">
+              <el-input :disabled="true" v-model="scope.row.server_ip" v-if="scope.row.server_ip">
                 <template slot="append">
                   <el-button type="iconButton" icon="h-icon-plus"></el-button>
                 </template>
@@ -61,13 +61,13 @@ export default {
       tableData: [
         {
           id: 0,
-          groupName: 'g1',
-          groupIp: '10.192.70.254'
+          group_name: 'g1',
+          server_ip: '10.192.70.254'
         },
         {
           id: 1,
-          groupName: 'g2',
-          groupIp: '10.192.70.244' 
+          group_name: 'g2',
+          server_ip: '10.192.70.244' 
         }
       ]
     };
@@ -76,8 +76,8 @@ export default {
     handleAdd () {
       this.tableData.push({
         id: '',
-        groupName: '',
-        groupIp: ''
+        group_name: '',
+        server_ip: ''
       })
     },
     handleDelete (row) {
