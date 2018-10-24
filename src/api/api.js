@@ -3,6 +3,7 @@ import configure from '../config/dolphin.config'
 import { Message } from 'hui'
 import i18n from '@/i18n'
 import token from 'index@/libs/token'
+import HUI from 'hui'
 
 const http = axios.create({
   timeout: 20000,

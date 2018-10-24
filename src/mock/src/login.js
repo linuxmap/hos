@@ -2,7 +2,7 @@
  * 登录 mock api
  */
 import {mockAdapter, userInfo} from '../config'
-mockAdapter.onPost('/mock/login').reply(config => {
+mockAdapter.onPost('/platform/login').reply(config => {
   const { userName, passWord } = JSON.parse(config.data)
   const user = {}
   return new Promise((resolve, reject) => {

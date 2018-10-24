@@ -44,7 +44,7 @@
              <el-input v-model="clusterCollection.cloudName"></el-input>
            </el-form-item>-->
             <el-form-item class="is-required" label="数据库实例个数">
-              <el-select v-model="clusterCollection.baseData">
+              <el-select v-model="clusterCollection.dbInstance">
                 <el-option value="2" label="2"></el-option>
               </el-select>
             </el-form-item>
@@ -124,10 +124,10 @@
                 label="SSDB"
                 width="50">
                 <template scope="scope">
-                  <el-checkbox :checked="getCataPath(scope.$index,true)"
+                  <el-checkbox :checked="tableData.length <= 2"
                                v-model="scope.row.SSDB"
-                               :disabled="getCataPath(scope.$index,true)"
-                                change.native="getCataPath(scope.$index)">
+                               :disabled="tableData.length <= 2"
+                               change.native="getCataPath(scope.$index,false,scope.row)">
 
                   </el-checkbox>
                 </template>
@@ -147,7 +147,7 @@
                 <el-table
                   class="noBorderTable"
                   :show-header="false"
-                  :data="getTables(pathList)">
+                  :data="getTables(scope.row.path)">
                   <el-table-column>
                     <template slot-scope="path">
                       <el-input v-model="path.row.catalog"></el-input>
@@ -191,8 +191,8 @@
 <script>
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
-  // import http from 'index@/api/index'
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index'
+ // import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'
@@ -233,12 +233,9 @@
         noTag: false, //标记是否显示上传文件校验
         clusterCollection: {
           virtualIp: '',
-          hBaseHeapSize: '8',
           cloudId: '',
           nodeIpList: [],
-          domainList: [],
-          fileName: '',
-          baseData:'2'
+          dbInstance:'2'
         },
         deFileName:'',
         dateValue: '',
@@ -370,12 +367,15 @@
           http.getRequest('/config/common/getNodeInfo', 'post', {nodeIp: addIp}).then(res => {
             util.hideMask();
             if (res.status) {
+              res.data.path=[];
               _this.tableData.push(res.data);
+              _this.adjustChecked();
+
             }
           });
         } else { // IP段扫描添加
           util.showMask();
-          http.getRequest('/config/oneKey/ipScan', 'post', {startIp: _this.ipStart, endIp: _this.ipEnd}, 1000 * 120).then(res => {
+          http.getRequest('/config/deploy/ipScan', 'post', {startIp: _this.ipStart, endIp: _this.ipEnd}, 1000 * 120).then(res => {
             util.hideMask();
             if (res.status) {
               let retData = res.data;
@@ -391,13 +391,15 @@
                 }
                 // 节点未加入，执行push
                 if (!isAdded) {
+                  retData[i].path=[];
                   _this.tableData.push(retData[i]);
                 }
+                _this.adjustChecked();
+
               } // end for 扫描列表数据
             }
           });
         } // end else IP段扫描添加
-        _this.adjustChecked();
 
       },
 
@@ -515,15 +517,9 @@
           return;
         }
         _this.$refs[formName].validate((valid) => {
-
-          _this.$refs.domains.validate((valid2) => {
-            if (valid && valid2) {
+            if (valid) {
               if (_this.manageCount % 2 == 0) {
                 util.alert('管理节点数量必须为奇数。');
-                return;
-              }
-              if (_this.tableDataBucket.length != 0 && _this.storeCount == 0) {
-                util.alert('请至少添加1个存储节点。');
                 return;
               }
               if (!_this.hasOneTypeNode) {
@@ -534,7 +530,7 @@
               if (_this.manageCount > 1) {
                 let tmpPrefix = '';
                 let hostnameArr = [];
-                _this.tableData.forEach(function(v) {
+                _this.tableData.forEach(function (v) {
                   hostnameArr.push(v['hostname']);
                   if (v['node_type'] === '1' || v['node_type'] === '2') {
                     if (tmpPrefix === '') {
@@ -558,8 +554,6 @@
               }
               _this.progress.show = true;
               _this.clusterCollection.nodeIpList = _this.tableData; // 节点数组
-              _this.clusterCollection.domainList = [_this.domainForm]; // 域信息
-              _this.clusterCollection.bucketList = _this.tableDataBucket; // bucket数组
               for (let i = 0; i <= 20; i++) {
                 (function (k) {
                   setTimeout(function () {
@@ -567,7 +561,8 @@
                   }, k * 1000);
                 })(i)
               }
-              http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
+              console.log(_this.clusterCollection);
+              /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
                 _this.progress.show = false
                 if (res.status) {
                   util.refreshCloud();
@@ -579,9 +574,8 @@
                     }
                   });
                 } // end if
-              }); // end http
-            } // end if
-          }); // end domains validate
+              }); // end http*/
+           }
         }); // end formName validate
       },
 
@@ -630,17 +624,6 @@
         })
       },
 
-      submitEdit (row, index) {
-        let result = true;
-        for (let p in row) {
-          if (!this.BucketVali(p, index)) {
-            result = false;
-          }
-        }
-        this.tableDataBucket[index].editFlag = !result;
-        return result;
-      },
-
       ipv4 (rule, value, callback) {
         if (!value) return callback();
         if (!this.valiDataIp(value))
@@ -673,7 +656,7 @@
       //获取数据目录表格行
       getTables (catalog) {
         let tables = [];
-        catalog.forEach(function(v){
+        catalog && catalog.forEach(function(v){
           tables.push({
             catalog:v
           });
@@ -694,9 +677,6 @@
             if ((key == 'DRServer' && datas.BKDRServer == true) || (key == 'BKDRServer' && datas.DRServer == true)){
               util.alert(_this.$t('config.validator.DRServerAndBKDRServer'));
             }
-            if ((key == 'NNode' && datas.BKNNode == true) || (key == 'BKNNode' && datas.NNode == true)){
-              util.alert(_this.$t('config.validator.NNodeAndBKNNode'));
-            }
             datas[key] = true;
           }
           _this.$set(_this.tableData,i,datas);
@@ -708,9 +688,8 @@
         let _this = this,
           defaultCk = {
             '0': ['DRServer'],
-            '1': ['BKDRServer', 'NNode'],
-            '2': ['BKNNode'],
-            'all': ['RLServer','DNode','HRServer']
+            '1': ['BKDRServer'],
+            'all': ['RLServer']
           },
           allCk = defaultCk[0].concat(defaultCk[1],defaultCk[2]);
 
@@ -720,6 +699,9 @@
             _this.setAllCheck(defaultCk[i], v, true);
           }
           _this.setAllCheck(defaultCk['all'], v, true);
+
+          //获取目录
+          _this.getCataPath(i,true,v);
         });
       },
 
@@ -730,15 +712,24 @@
       },
 
       //获取数据目录
-      getCataPath (index,tag) {
+      getCataPath (index,tag,row) {
+          let _this = this;
           if (!tag || util.isInArray([0,1],index)) {
-              http.getRequest('/config/common/getPath','post').then(res => {
+              http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
                 if (res.status) {
-                    console.log(res.data);
-                  //this.tableData[index].path.push(res.data.path);
+                  this.tableData[index].path = [];
+
+                  let pathArr = res.data.data_path_list[0].data_path.split(',');
+
+                  pathArr.forEach(function(v){
+                    _this.tableData[index].path.push(v);
+                  });
+
                 }
               });
               return true;
+          } else {
+              return false;
           }
       }
     }

@@ -67,8 +67,8 @@
    </div>
 </template>
 <script>
-  import http from 'index@/api/index'
-  import mockHttp from '@/libs/mockHttp'
+  //import http from 'index@/api/index'
+  import http from '@/libs/mockHttp'
   import token from 'index@/libs/token'
   import { use } from 'hui/lib/locale'
   import enLocale from 'hui/lib/locale/lang/en'
@@ -157,22 +157,22 @@
         }
       }
 
-      // if (!window.localStorage.language) {
-      //   http.getRequest('/platform/login/language', 'get')
-      //     .then(res => {
-      //       if (res.status) {
-      //         let langD = (res.data == 'zh_cn' ? 'zh-CN' : 'en-US');
-      //         lang.set(langD);
-      //       }
-      //     });
-      // }
+       if (!window.localStorage.language) {
+         http.getRequest('/platform/login/language', 'get')
+           .then(res => {
+             if (res.status) {
+               let langD = (res.data == 'zh_cn' ? 'zh-CN' : 'en-US');
+               lang.set(langD);
+             }
+           });
+       }
     },
     methods: {
       signIn (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // this.$router.push('/home')
-            mockHttp.getRequest('/mock/login', 'post', this.signin).then(res => {
+            http.getRequest('/platform/login', 'post', this.signin).then(res => {
               if (res.status === true) {
                 token.set(res.data.user.userName)
                 this.$router.push('/cluster')

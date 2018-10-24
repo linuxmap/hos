@@ -1,10 +1,10 @@
 'use strict'
 // Template version: 1.2.7
 // see http://vuejs-templates.github.io/webpack for documentation.
-const SERVER_IP = 'http://10.192.77.241:5123'; //http://10.192.75.31';
+//const SERVER_IP = 'http://10.192.77.241:5123'; //http://10.192.75.31';
 //const SERVER_IP = 'http://10.192.66.11:5123'; //吴
 //const SERVER_IP = 'http://10.192.66.206:5123'; //王
-//const SERVER_IP = 'http://10.192.66.141:5123'; //卢
+const SERVER_IP = 'http://10.192.66.141:5123'; //卢
 //const SERVER_IP = 'http://10.192.66.9:5123';//熊
 //const SERVER_IP = 'http://10.192.75.33:5123';
 //const SERVER_IP = 'http://10.192.89.59:5123';
