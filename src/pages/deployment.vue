@@ -6,8 +6,6 @@
     </div>
     <!--添加表单-->
     <div class="stepWrap">
-      <s class="line"></s>
-      <h3><i></i>添加IP段</h3>
       <div>
         <el-form :inline="true" @submit.native.prevent="">
           <el-form-item label="IP段" style="margin-right:0;">
@@ -33,40 +31,22 @@
         </el-form>
 
         <el-form v-if="tableData.length > 0" ref="form" :inline="true" :model="clusterCollection" :rules="rules">
-          <el-row v-if="isCluster" :gutter="20">
-            <span class="form_label">{{$t('config.cluster.formVIp')}}</span>
-            <el-form-item class="is-required" prop="virtualIp">
+          <el-row :gutter="20">
+            <el-form-item v-if="isCluster" :label="$t('config.cluster.formVIp')" class="is-required" prop="virtualIp">
               <el-input v-model="clusterCollection.virtualIp"></el-input>
             </el-form-item>
-            <el-button type="success" @click="checkVip">{{$t('config.cluster.btnCheck')}}</el-button>
-            <span class="form_label">{{$t('config.cluster.formDbCacheLimit')}}</span>
-            <el-form-item prop="hBaseHeapSize" class="is-required">
-              <el-input v-model="clusterCollection.hBaseHeapSize"></el-input>
-            </el-form-item>
-            <span class="description">{{$t('config.cluster.formDbCacheLimitTip')}}</span>
-          </el-row>
-          <el-row :gutter="20">
-            <el-form-item class="is-required" :label="$t('config.cluster.formCloudId')" prop="cloudId" v-show="false">
+            <el-button v-if="isCluster" type="success" @click="checkVip" style="margin-right:40px;">{{$t('config.cluster.btnCheck')}}</el-button>
+            <el-form-item class="is-required" :label="$t('config.cluster.formCloudId')" prop="cloudId">
               <el-input v-model="clusterCollection.cloudId"></el-input>
             </el-form-item>
-            <span class="form_label">{{$t('config.cluster.formCloudName')}}</span>
-            <el-form-item class="is-required" prop="cloudName">
-              <el-input v-model="clusterCollection.cloudName"></el-input>
-            </el-form-item>
-            <el-form-item prop="fileName" label="License文件">
-              <input name="fileName" type="hidden" v-model="clusterCollection.fileName"/>
-              <h-upload
-                action="/config/oneKey/upload"
-                name="file"
-                type="primary"
-                text="请选择"
-                ref="upload"
-                icon="h-icon-upload"
-                :before-upload="beforeUpload"
-                :on-success="uploadSuccess">
-                <input name="token" type="hidden" :value="$store.state.accessToken"/>
-              </h-upload>
-              <span>{{deFileName}}</span>
+            <!--<span class="form_label">{{$t('config.cluster.formCloudName')}}</span>
+          <el-form-item class="is-required" prop="cloudName">
+             <el-input v-model="clusterCollection.cloudName"></el-input>
+           </el-form-item>-->
+            <el-form-item class="is-required" label="数据库实例个数">
+              <el-select v-model="clusterCollection.dbInstance">
+                <el-option value="2" label="2"></el-option>
+              </el-select>
             </el-form-item>
           </el-row>
         </el-form>
@@ -82,20 +62,20 @@
             max-height="300"
             style="width: 100%">
             <el-table-column prop="local_ip" label="业务IP" width="120"></el-table-column>
-           <!-- <el-table-column prop="data_ip" label="数据IP" width="120">
-              <template scope="scope">
-                <el-form style="padding-bottom:0" ref="ipForm" :model="scope.row" :rules="ipList">
-                  <el-tooltip v-if="!valiDataIp(scope.row.data_ip)" class="item" effect="error" :content="$t('config.validator.validIp')" placement="top">
-                    <el-form-item prop="data_ip" style="margin-bottom:0">
-                        <el-input v-model="scope.row.data_ip"></el-input>
-                    </el-form-item>
-                  </el-tooltip>
-                  <el-form-item v-else prop="data_ip" style="margin-bottom:0">
-                    <el-input v-model="scope.row.data_ip"></el-input>
-                  </el-form-item>
-                </el-form>
-              </template>
-            </el-table-column>-->
+            <!-- <el-table-column prop="data_ip" label="数据IP" width="120">
+               <template scope="scope">
+                 <el-form style="padding-bottom:0" ref="ipForm" :model="scope.row" :rules="ipList">
+                   <el-tooltip v-if="!valiDataIp(scope.row.data_ip)" class="item" effect="error" :content="$t('config.validator.validIp')" placement="top">
+                     <el-form-item prop="data_ip" style="margin-bottom:0">
+                         <el-input v-model="scope.row.data_ip"></el-input>
+                     </el-form-item>
+                   </el-tooltip>
+                   <el-form-item v-else prop="data_ip" style="margin-bottom:0">
+                     <el-input v-model="scope.row.data_ip"></el-input>
+                   </el-form-item>
+                 </el-form>
+               </template>
+             </el-table-column>-->
             <el-table-column prop="node_type" label="节点类型" width="120">
               <template slot-scope="scope">
                 <span v-html="util.showNodeType(scope.row.node_type)"></span>
@@ -107,6 +87,78 @@
               </template>
             </el-table-column>
             <el-table-column prop="sys_time" :label="$t('config.cluster.tbSystemTime')" width="160"></el-table-column>
+            <el-table-column :label="$t('config.cluster.tbLVSRole')" v-if="isCluster" align="center">
+              <el-table-column
+                class-name="no-padding"
+                prop="DRServer"
+                label="DRServer"
+                width="62">
+                <template scope="scope">
+                  <el-checkbox v-model="scope.row.DRServer" @change.native="handleCheckedChange(scope.row.local_ip,'DRServer')"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                class-name="no-padding"
+                prop="BKDRServer"
+                label="BKDRServer"
+                v-model="tableData.BKDRServer"
+                width="78">
+                <template scope="scope">
+                  <el-checkbox  v-model="scope.row.BKDRServer" @change.native="handleCheckedChange(scope.row.local_ip,'BKDRServer')"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                class-name="no-padding"
+                prop="RLServer"
+                label="RLServer"
+                width="60">
+                <template scope="scope">
+                  <el-checkbox v-model="scope.row.RLServer" disabled></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column :label="$t('config.cluster.tbDDBRole')" align="center">
+              <el-table-column
+                class-name="no-padding"
+                prop="SSDB"
+                label="SSDB"
+                width="50">
+                <template scope="scope">
+                  <el-checkbox :checked="tableData.length <= 2"
+                               v-model="scope.row.SSDB"
+                               :disabled="tableData.length <= 2"
+                               change.native="getCataPath(scope.$index,false,scope.row)">
+
+                  </el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                class-name="no-padding"
+                prop="ZK"
+                label="ZK"
+                width="62">
+                <template scope="scope">
+                  <el-checkbox checked disabled></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column prop="sys_time" label="数据目录" width="160">
+              <template slot-scope="scope">
+                <el-table
+                  class="noBorderTable"
+                  :show-header="false"
+                  :data="getTables(scope.row.path)">
+                  <el-table-column>
+                    <template slot-scope="path">
+                      <el-input v-model="path.row.catalog"></el-input>
+                      <el-tooltip class="item" effect="dark" :content="path.$index == 0 ? '添加自定义路径' : '删除'" placement="top" :enterable="false">
+                        <el-button :icon-border="path.$index == 0 ? 'h-icon-plus' : 'h-icon-close'" @click="changeLogRow(path.$index,scope.row.path)"></el-button>
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
               <template slot-scope="scope">
                 <el-button type="text" class="netSetBtn" size="small" @click="netCardDlg = true;netCardIp=scope.row.local_ip;nodeType = scope.row.node_type">
@@ -123,151 +175,16 @@
         </div>
       </div>
     </div>
-    <div class="stepWrap">
-      <s class="line"></s>
-      <h3><i></i>添加域</h3>
-      <div>
-        <el-form ref="domains" :model="domainForm" :inline="true" @submit.native.prevent="" :rules="domainRules">
-          <el-form-item label="域名称" prop="domainName">
-            <el-input v-model="domainForm.domainName"></el-input>
-          </el-form-item>
-          <el-form-item label="域类型" prop="ecSingleMachine">
-            <el-select v-model="domainForm.ecSingleMachine">
-              <el-option
-                v-for="item in collUtil.domainTypeOptions()"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="描述信息" prop="domainDescription" v-show="false">
-            <el-input v-model="domainForm.domainDescription" style="width:380px"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
-
-    <div class="stepWrap last">
-      <s class="line"></s>
-      <h3><i></i>添加Bucket</h3>
-      <div>
-        <el-button @click="addBucket" v-show="isShow">添加</el-button>
-        <div v-show="BucketShow" style="margin-top: 10px;">
-          <el-table
-            border
-            empty-text=""
-            :data="tableDataBucket"
-            force-scroll
-            max-height="3000"
-            :rules="BucketRules"
-            style="width: 100%">
-            <el-table-column prop="bucketName" label="Bucket名称" width="100">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{scope.row.bucketName}}</span>
-                <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketName" @blur="BucketVali('bucketName', scope.$index)"></el-input>
-                <el-tooltip v-show="scope.row.bucketName_error" class="item" effect="error" :content="scope.row.bucketName_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column label="冗余级别" width="200">
-              <template slot-scope="scope">
-                  <span class="ryjbCol">
-                    <span v-show="!scope.row.editFlag">{{scope.row.ecN}}</span>
-                    <el-input v-show="scope.row.editFlag" v-model="scope.row.ecN" @blur="BucketVali('ecN', scope.$index)"></el-input>
-                  </span>
-                  <span class="ryjbCol">+</span>
-                  <span class="ryjbCol">
-                    <span v-show="!scope.row.editFlag">{{scope.row.ecM}}</span>
-                    <el-input v-show="scope.row.editFlag" v-model="scope.row.ecM" @blur="BucketVali('ecM', scope.$index)"></el-input>
-                  </span>
-                  <span class="ryjbCol">:</span>
-                  <span class="ryjbCol">
-                    <span v-show="!scope.row.editFlag">{{scope.row.ecK}}</span>
-                    <el-input v-show="scope.row.editFlag" v-model="scope.row.ecK" @blur="BucketVali('ecK', scope.$index)"></el-input>
-                  </span>
-                <el-tooltip v-show="!!scope.row.ecN_error || !!scope.row.ecM_error || !!scope.row.ecK_error" class="item" effect="error" :content="scope.row.ecN_error || scope.row.ecM_error || scope.row.ecK_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="bucketSize" label="容量（GB）" width="100">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{scope.row.bucketSize}}</span>
-                <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketSize"  @blur="BucketVali('bucketSize',scope.$index)"></el-input>
-                <el-tooltip v-show="scope.row.bucketSize_error" class="item" effect="error" :content="scope.row.bucketSize_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="coverType" label="覆盖策略" width="140">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{coverType[scope.row.coverType].label}}</span>
-                <el-select v-show="scope.row.editFlag" v-model="scope.row.coverType">
-                  <el-option
-                    v-for="item in collUtil.coverTypeOptions()"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-tooltip v-show="scope.row.coverType_error" class="item" effect="error" :content="scope.row.coverType_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="bucketCycle" label="存储周期（天）" width="120">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{scope.row.bucketCycle}}</span>
-                <el-input v-show="scope.row.editFlag" v-model="scope.row.bucketCycle" @blur="BucketVali('bucketCycle',scope.$index)" :disabled="scope.row.coverType!=2"></el-input>
-                <el-tooltip v-show="scope.row.bucketCycle_error" class="item" effect="error" :content="scope.row.bucketCycle_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="region" label="存储区域" width="100" v-show="false">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{scope.row.region}}</span>
-                <el-input v-show="scope.row.editFlag" v-model="scope.row.region" @blur="BucketVali('region',scope.$index)"></el-input>
-                <el-tooltip v-show="scope.row.region_error" class="item" effect="error" :content="scope.row.region_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="lock_limit" label="锁定上限（%）" width="120">
-              <template slot-scope="scope">
-                <span v-show="!scope.row.editFlag">{{scope.row.lock_limit}}</span>
-                <el-input v-show="scope.row.editFlag" v-model="scope.row.lock_limit" @blur="BucketVali('lock_limit',scope.$index)"></el-input>
-                <el-tooltip v-show="scope.row.lock_limit_error" class="item" effect="error" :content="scope.row.lock_limit_error" placement="top">
-                  <span class="errorico"></span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="address" :label="$t('config.cluster.tbAction')" min-width="120">
-              <template slot-scope="scope">
-                <el-button v-show="!scope.row.editFlag" type="text" size="small" @click="scope.row.editFlag = !scope.row.editFlag">编辑
-                </el-button>
-                <el-button v-show="scope.row.editFlag" type="text" size="small" @click="submitEdit(scope.row, scope.$index)">确定
-                </el-button>
-                <el-button type="text" size="small" @click="delBucket(scope.$index)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          </div>
-      </div>
-    </div>
-    <el-button style="margin-top:30px;margin-left:170px;" type="primary" ref="btnCreateCluster" v-show="isShow" :class="{isSub:enableSubmit}"  @click="createCluster('form')">{{$t('config.cluster.btnCreateCluster')}}
+    <el-button style="margin-top:30px;" type="primary" ref="btnCreateCluster" v-show="isShow" :class="{isSub:enableSubmit}"  @click="createCluster('form')">{{$t('config.cluster.btnCreateCluster')}}
     </el-button>
 
     <!--网络配置对话框-->
-   <!-- <el-dialog :area="[1200,680]" title="网络配置" :visible.sync="netCardDlg" :close-on-click-modal="false" top="middle" class="netDlg">
-      <net-config :nodeIp="netCardIp" :type="nodeType" v-if="netCardDlg" :deployment="true" @delTable="delTable" @setNetCard="setNetCard" @closeDlg="closeNetDlg"></net-config>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="netCardDlg=false">关闭</el-button>
-      </div>
-    </el-dialog>-->
+    <!-- <el-dialog :area="[1200,680]" title="网络配置" :visible.sync="netCardDlg" :close-on-click-modal="false" top="middle" class="netDlg">
+       <net-config :nodeIp="netCardIp" :type="nodeType" v-if="netCardDlg" :deployment="true" @delTable="delTable" @setNetCard="setNetCard" @closeDlg="closeNetDlg"></net-config>
+       <div slot="footer" class="dialog-footer">
+         <el-button @click="netCardDlg=false">关闭</el-button>
+       </div>
+     </el-dialog>-->
   </page-container>
 </template>
 
@@ -275,10 +192,11 @@
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
   import http from 'index@/api/index'
+ // import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'
- // import netConfig from '../network/detail.vue';
+  // import netConfig from '../network/detail.vue';
 
 
   let BucketIndex = 0;  //当前校验的bucket行号
@@ -301,6 +219,7 @@
         resetTag: {},         // 修改主机名子组件重置
         errorIp: false,       // IP格式报错样式控制
         tableData: [],        // 节点列表
+        pathList:[],          //目录数据
         isCluster: false,     // 是否集群
         manageCount: 0,          // 管理节点数量
         storeCount: 0,          // 存储节点数量
@@ -314,12 +233,9 @@
         noTag: false, //标记是否显示上传文件校验
         clusterCollection: {
           virtualIp: '',
-          hBaseHeapSize: '8',
-          cloudId: 'CloudId',
-          cloudName: '',
+          cloudId: '',
           nodeIpList: [],
-          domainList: [],
-          fileName: ''
+          dbInstance:'2'
         },
         deFileName:'',
         dateValue: '',
@@ -343,9 +259,9 @@
             {min: 3, max: 15, message: this.$t('common.rangeStr', {x: 3, y: 15}), trigger: 'blur'},
             {validator: validate.string1, trigger: 'blur'}
           ]/*,
-          fileName: [
-            {validator: this.validateLicense, trigger: 'blur'}
-          ]*/
+           fileName: [
+           {validator: this.validateLicense, trigger: 'blur'}
+           ]*/
         },
         //数据ip校验
         ipList: {
@@ -353,53 +269,10 @@
             {validator: this.ipv4, trigger: 'blur'}
           ]
         },
-        BucketShow: false,
-        tableDataBucket: [],
-        coverType: collUtil.coverTypeOptions(),
-        value: '0',
-        domainForm: {
-          domainName: '',
-          ecSingleMachine: '0',
-          distributedSpace: '',
-          domainDescription: ''
-        },
-        domainRules: {
-          domainName: [
-            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
-            {min: 5, max: 18, message: this.$t('common.rangeStr', {x: 5, y: 18}), trigger: 'blur'},
-            {validator: validate.string3, trigger: 'blur'}
-          ],
-          domainDescription: [
-            {min: 0, max: 128, message: this.$t('common.rangeStr', {x: 0, y: 128}), trigger: 'blur'},
-            {validator: this.valiDomainDes, trigger: 'blur'}
-          ]
-        },
-        BucketRules: {
-          bucketName: [
-            {validator: this.bucketNameVali, trigger: 'blur'}
-          ],
-          ecM: [
-            {validator: this.stripeLevelVali, trigger: 'blur'}
-          ],
-          ecN: [
-            {validator: this.stripeLevelVali, trigger: 'blur'}
-          ],
-          ecK: [
-            {validator: this.stripeLevelVali, trigger: 'blur'}
-          ],
-          bucketSize: [
-            {validator: this.bucketSizeVali, trigger: 'blur'}
-          ],
-          bucketCycle: [
-            {validator: this.bucketCycleVali, trigger: 'blur'}
-          ],
-          region: [
-            {validator: this.bucketLocationVali, trigger: 'blur'}
-          ],
-          lock_limit: [
-            {validator: this.lockLimitVali, trigger: 'blur'}
-          ]
-        }
+        //数据目录
+        logTable: [{
+          catalog: '/opt/hikvision'
+        }]
 
       }
     },
@@ -425,7 +298,7 @@
           this.hasOneTypeNode = false;
         }
         // 是否集群
-        if (this.manageCount > 2) {
+        if (this.manageCount >= 2) {
           this.isCluster = true;
         } else {
           this.isCluster = false;
@@ -494,12 +367,15 @@
           http.getRequest('/config/common/getNodeInfo', 'post', {nodeIp: addIp}).then(res => {
             util.hideMask();
             if (res.status) {
+              res.data.path=[];
               _this.tableData.push(res.data);
+              _this.adjustChecked();
+
             }
           });
         } else { // IP段扫描添加
           util.showMask();
-          http.getRequest('/config/oneKey/ipScan', 'post', {startIp: _this.ipStart, endIp: _this.ipEnd}, 1000 * 120).then(res => {
+          http.getRequest('/config/deploy/ipScan', 'post', {startIp: _this.ipStart, endIp: _this.ipEnd}, 1000 * 120).then(res => {
             util.hideMask();
             if (res.status) {
               let retData = res.data;
@@ -515,12 +391,16 @@
                 }
                 // 节点未加入，执行push
                 if (!isAdded) {
+                  retData[i].path=[];
                   _this.tableData.push(retData[i]);
                 }
+                _this.adjustChecked();
+
               } // end for 扫描列表数据
             }
           });
         } // end else IP段扫描添加
+
       },
 
       // 全部校时
@@ -637,73 +517,65 @@
           return;
         }
         _this.$refs[formName].validate((valid) => {
-
-            _this.$refs.domains.validate((valid2) => {
-              if (valid && valid2) {
-                if (_this.manageCount % 2 == 0) {
-                  util.alert('管理节点数量必须为奇数。');
-                  return;
-                }
-                if (_this.tableDataBucket.length != 0 && _this.storeCount == 0) {
-                  util.alert('请至少添加1个存储节点。');
-                  return;
-                }
-                if (!_this.hasOneTypeNode) {
-                  util.alert('管理节点类型必须相同。');
-                  return;
-                }
-                // 同网段检测
-                if (_this.manageCount > 1) {
-                  let tmpPrefix = '';
-                  let hostnameArr = [];
-                  _this.tableData.forEach(function(v) {
-                    hostnameArr.push(v['hostname']);
-                    if (v['node_type'] === '1' || v['node_type'] === '2') {
-                      if (tmpPrefix === '') {
-                        tmpPrefix = util.getIPPrefix(v['local_ip']);
-                      } else {
-                        if (tmpPrefix !== util.getIPPrefix(v['local_ip'])) {
-                          util.alert('管理节点必须为同网段。');
-                          validCheck = false;
-                          return false;
-                        }
+            if (valid) {
+              if (_this.manageCount % 2 == 0) {
+                util.alert('管理节点数量必须为奇数。');
+                return;
+              }
+              if (!_this.hasOneTypeNode) {
+                util.alert('管理节点类型必须相同。');
+                return;
+              }
+              // 同网段检测
+              if (_this.manageCount > 1) {
+                let tmpPrefix = '';
+                let hostnameArr = [];
+                _this.tableData.forEach(function (v) {
+                  hostnameArr.push(v['hostname']);
+                  if (v['node_type'] === '1' || v['node_type'] === '2') {
+                    if (tmpPrefix === '') {
+                      tmpPrefix = util.getIPPrefix(v['local_ip']);
+                    } else {
+                      if (tmpPrefix !== util.getIPPrefix(v['local_ip'])) {
+                        util.alert('管理节点必须为同网段。');
+                        validCheck = false;
+                        return false;
                       }
                     }
-                  });
-
-                  if (util.isRepeated(hostnameArr)) {
-                    util.alert('主机名不能相同。');
-                    return;
                   }
+                });
 
-                  if (!validCheck) return false;
+                if (util.isRepeated(hostnameArr)) {
+                  util.alert('主机名不能相同。');
+                  return;
                 }
-                _this.progress.show = true;
-                _this.clusterCollection.nodeIpList = _this.tableData; // 节点数组
-                _this.clusterCollection.domainList = [_this.domainForm]; // 域信息
-                _this.clusterCollection.bucketList = _this.tableDataBucket; // bucket数组
-                for (let i = 0; i <= 20; i++) {
-                  (function (k) {
-                    setTimeout(function () {
-                      _this.progress.data = k * 5;
-                    }, k * 1000);
-                  })(i)
-                }
-                http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
-                  _this.progress.show = false
-                  if (res.status) {
-                    util.refreshCloud();
-                    _this.$alert(res.data, '', {
-                      callback: action => {
-                        _this.$router.push({
-                          path: '/home/cloud/list'
-                        });
-                      }
-                    });
-                  } // end if
-                }); // end http
-             } // end if
-            }); // end domains validate
+
+                if (!validCheck) return false;
+              }
+              _this.progress.show = true;
+              _this.clusterCollection.nodeIpList = _this.tableData; // 节点数组
+              for (let i = 0; i <= 20; i++) {
+                (function (k) {
+                  setTimeout(function () {
+                    _this.progress.data = k * 5;
+                  }, k * 1000);
+                })(i)
+              }
+              console.log(_this.clusterCollection);
+              /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
+                _this.progress.show = false
+                if (res.status) {
+                  util.refreshCloud();
+                  _this.$alert(res.data, '', {
+                    callback: action => {
+                      _this.$router.push({
+                        path: '/home/cloud/list'
+                      });
+                    }
+                  });
+                } // end if
+              }); // end http*/
+           }
         }); // end formName validate
       },
 
@@ -745,202 +617,11 @@
         }
       },
 
-      // 导入license
-      beforeUpload (file) {
-        if (!file.match(/(.dat)$/i)) {
-          util.alert('上传的文件只支持.dat格式'); // _this.$t('config.validator.nodeAdded')
-          return false;
-        }
-        return true;
-      },
-      uploadSuccess (response, file) {
-        this.noTag = true;
-        if (response.status) {
-          this.clusterCollection.fileName = response.data;
-          this.deFileName = file;
-        } else {
-          if (response.data == 'noLogin') {
-            util.jumpToLogout();
-          } else {
-            util.alert(response.data)
-          }
-        }
-        this.$refs.form.submit();
-      },
-
       getIndex (ip) {
         //获取索引值
         return this.tableData.findIndex((value, index, arr) => {
           return value.local_ip == ip;
         })
-      },
-
-      //添加Bucket
-      addBucket () {
-        //有未修改完的表格行，则不能添加
-        let error = false;
-        let that = this;
-        this.tableDataBucket.forEach(function (v, i) {
-          if (v.editFlag && !that.submitEdit(v, i)) {
-            error = true;
-          }
-        })
-
-        if (error) {
-          util.alert('请先处理之前的数据', 'warning');
-          return;
-        }
-
-        let BucketFields = ['bucketName', 'ecN', 'ecM', 'ecK', 'bucketSize', 'coverType', 'bucketCycle', 'lock_limit', 'region',
-          'bucketName_error', 'ecN_error','ecM_error', 'ecK_error',  'bucketSize_error', 'coverType_error', 'bucketCycle_error', 'lock_limit_error', 'region_error'];
-        let BucketObj = {};
-        BucketFields.forEach(function (v) {
-          BucketObj[v] = '';
-        });
-        BucketObj.ecN = '2';
-        BucketObj.ecM = '1';
-        BucketObj.ecK = '1';
-        BucketObj.region = 'LOCAL-1';
-        BucketObj.coverType = '0';
-        BucketObj.editFlag = true;
-        this.BucketShow = true;
-        this.tableDataBucket.push(BucketObj);
-      },
-
-      //删除Bucket
-      delBucket (index) {
-        this.tableDataBucket.splice(index, 1)
-        if (this.tableDataBucket.length == 0) {
-          this.BucketShow = false
-        }
-      },
-
-      // bucket表单校验
-      bucketNameVali (rule, value, callback) {
-        if (value.length < 3 || value.length > 32 || (!/^[0-9a-z]{1}[0-9a-z_]*$/.test(value)) || value.toLowerCase().indexOf('hikcstor') == 0) { // [3,32] 长度
-          return '请输入3-32位长度小写字母、数字、下划线，以小写字母、数字开头，且不能以hikcstor开头'
-        }
-        return ''
-      },
-
-      stripeLevelVali (rule, value, callback) {
-        let result = '';
-        let regExp = /\D/;
-        let ecN = this.tableDataBucket[BucketIndex].ecN,
-            ecM = this.tableDataBucket[BucketIndex].ecM,
-            ecK = this.tableDataBucket[BucketIndex].ecK;
-
-        if (ecN === '' || ecM === '' || ecK === '') {
-          result = 'N,M,K为必填项';
-        } else if (regExp.test(ecN) || regExp.test(ecM) || regExp.test(ecK)) {
-          result = 'N,M,K必须为正整数';
-        } else {
-          ecN = Number(ecN);
-          ecM = Number(ecM);
-          ecK = Number(ecK);
-          if (ecN == 0 || ecM == 0 || ecK == 0) {
-            result = 'N,M,K必须为正整数';
-          } else {
-            if ((ecN + ecM) > 30) {
-              result = 'N+M不能大于30';
-            } else if (ecN != 1) {
-              if (ecN < ecM) {
-                result = 'N不等于1, N必须大于等于M';
-              } else {
-                if (ecM < ecK) {
-                  result = 'N不等于1, 并且N大于等于M, 则M必须大于等于K';
-                }
-              }
-            } else if (ecN == 1) {
-              if (ecM < ecK) {
-                result = ' N=1的时,M也必须大于等于 K ';
-              }
-
-            }
-          }
-        }
-
-        return result;
-      },
-
-      bucketSizeVali (rule, value, callback) {
-        if (value == '' || (!/^[0-9]\d*$/.test(value)) || parseInt(value) < 0 || parseInt(value) > 999999999999999) {
-          return '请输入0-999999999999999之间数字';
-        }
-        return '';
-      },
-
-      bucketCycleVali (index, value, callback) {
-        if (this.tableDataBucket[index].coverType != 2) return '';
-        if (value == '' || (!/^[0-9]\d*$/.test(value)) || parseInt(value) < 0 || parseInt(value) > 99999) {
-          return '请输入0-99999之间数字';
-        }
-        return '';
-      },
-
-      bucketLocationVali (rule, value, callback) {
-        if (value.length < 3 || value.length > 32 || (!/^[0-9a-zA-Z_-]+$/.test(value))) { // [3,32] 长度
-          return '请输入3-32位长度字母、数字、下划线、中划线';
-        }
-        return '';
-      },
-
-      lockLimitVali (rule, value, callback) {
-        if (value == '' || (!/^[0-9]\d*$/.test(value)) || parseInt(value) < 0 || parseInt(value) > 30) {
-          return '请输入0-30之间数字';
-        }
-        return '';
-      },
-
-      //可编辑表格的表单验证
-      BucketVali (key, index) {
-        BucketIndex = index;
-        let that = this;
-        let rules = this.BucketRules[key];
-        let value = that.tableDataBucket[index][key]; //校验值
-        if (rules) {
-          for (let i = 0; i < rules.length; i++) {
-            let v = rules[i];
-            let mes = v.validator(index, value, function () {});
-            if (mes) {
-              that.tableDataBucket[index][key + '_error'] = mes;
-              return false;
-            } else {
-              that.tableDataBucket[index][key + '_error'] = '';
-            }
-          }
-        }
-        return true;
-      },
-
-      submitEdit (row, index) {
-        let result = true;
-        for (let p in row) {
-          if (!this.BucketVali(p, index)) {
-            result = false;
-          }
-        }
-        this.tableDataBucket[index].editFlag = !result;
-        return result;
-      },
-
-      //域描述信息校验
-      valiDomainDes (rule, value, callback) {
-        if (!value) {
-          callback();
-        } else {
-          if (!validate.string1(rule, value, callback)) {
-            callback(new Error('请输入常见字符'));
-          } else {
-            callback();
-          }
-        }
-      },
-
-      validateLicense (rule, value, callback) {
-        //此处补充校验license的请求
-        let ip = this.tableData[0].local_ip;
-        callback();
       },
 
       ipv4 (rule, value, callback) {
@@ -961,6 +642,95 @@
       closeNetDlg (ip) {
         this.netCardDlg = false;
         this.ipStart = ip;
+      },
+      //添加或删除行
+      changeLogRow (index,path) {
+        if (index == 0) {
+          //添加行
+          path.push('');
+        } else {
+          path.splice(index,1);
+        }
+      },
+
+      //获取数据目录表格行
+      getTables (catalog) {
+        let tables = [];
+        catalog && catalog.forEach(function(v){
+          tables.push({
+            catalog:v
+          });
+        });
+
+        return tables;
+      },
+
+      //负载均衡
+      handleCheckedChange (ip,key) {
+        let index = this.getIndex(ip),
+          _this = this;
+
+        this.tableData.forEach(function(v,i){
+          let datas = v;
+          datas[key] = false;
+          if (i==index) {
+            if ((key == 'DRServer' && datas.BKDRServer == true) || (key == 'BKDRServer' && datas.DRServer == true)){
+              util.alert(_this.$t('config.validator.DRServerAndBKDRServer'));
+            }
+            datas[key] = true;
+          }
+          _this.$set(_this.tableData,i,datas);
+        });
+
+      },
+
+      adjustChecked() {
+        let _this = this,
+          defaultCk = {
+            '0': ['DRServer'],
+            '1': ['BKDRServer'],
+            'all': ['RLServer']
+          },
+          allCk = defaultCk[0].concat(defaultCk[1],defaultCk[2]);
+
+        this.tableData.forEach(function(v, i) {
+          _this.setAllCheck(allCk, v, false);
+          if (defaultCk[i]) {
+            _this.setAllCheck(defaultCk[i], v, true);
+          }
+          _this.setAllCheck(defaultCk['all'], v, true);
+
+          //获取目录
+          _this.getCataPath(i,true,v);
+        });
+      },
+
+      setAllCheck (arr,v,tag) {
+        arr.forEach(function(ck){
+          v[ck] = tag;
+        });
+      },
+
+      //获取数据目录
+      getCataPath (index,tag,row) {
+          let _this = this;
+          if (!tag || util.isInArray([0,1],index)) {
+              http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
+                if (res.status) {
+                  this.tableData[index].path = [];
+
+                  let pathArr = res.data.data_path_list[0].data_path.split(',');
+
+                  pathArr.forEach(function(v){
+                    _this.tableData[index].path.push(v);
+                  });
+
+                }
+              });
+              return true;
+          } else {
+              return false;
+          }
       }
     }
   }
@@ -988,96 +758,120 @@
   }
   .setTimeBtn {
   >span {
-    text-align: left;
+     text-align: left;
    // padding-left: 10px;
-  }
+   }
   }
   .deploy{
-    .errorico{
-      right:2px;
-    }
-    .el-input{
-      width:90%;
-    }
+  .errorico{
+    right:2px;
+  }
+  .el-input{
+    width:90%;
+  }
+  td .el-input{
+    width:70%;
+  }
+  .el-button.is-iconBorder{
+    position:relative;
+    top:-1px;
+    left:10px;
+    padding:5px;
+  }
   }
   .stepWrap {
     position:relative;
     padding-bottom:10px;
     clear:both;
-    > s.line{
-        position: absolute;
-        display: block;
-        top: 32px;
-        bottom: 2px;
-        left: 4px;
-        width: 2px;
-        background: #bfc2d9;
-      }
-    &.last > s.line {
-        display:none;
-     }
-    h3{
-      width:160px;
-      float:left;
-      position:relative;
-      top:7px;
-      margin-bottom:10px;
-      font-size:14px;
-      font-weight:700;
-      color:#666;
-      i{
-        margin-right:10px;
-        display:inline-block;
-        width:10px;
-        height:10px;
-        line-height: 28px;
-        text-align: center;
-        border:2px solid #ddd;
-        border-radius:50%;
-        font-style: normal;
-        font-weight:100;
-        color:#666;
-      }
+  > s.line{
+      position: absolute;
+      display: block;
+      top: 32px;
+      bottom: 2px;
+      left: 4px;
+      width: 2px;
+      background: #bfc2d9;
     }
-    > div{
-        width:auto;
-        margin-left:170px;
-      }
+  &.last > s.line {
+     display:none;
+   }
+  h3{
+    width:160px;
+    float:left;
+    position:relative;
+    top:7px;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:700;
+    color:#666;
+  i{
+    margin-right:10px;
+    display:inline-block;
+    width:10px;
+    height:10px;
+    line-height: 28px;
+    text-align: center;
+    border:2px solid #ddd;
+    border-radius:50%;
+    font-style: normal;
+    font-weight:100;
+    color:#666;
+  }
+  }
+  > div{
+      width:auto;
+    }
   }
   .nodeList {
-    .el-form-item.is-error{
-      &:after{
-          content:'';
-          display:block;
-          position:absolute;
-          top:10px;
-          right:0;
-          width: 16px;
-          height: 16px;
-         // background: url(../../assets/images/exclamation.png);
-       }
-       .el-form-item__error{
-         display:none;
-       }
+  .el-form-item.is-error{
+  &:after{
+     content:'';
+     display:block;
+     position:absolute;
+     top:10px;
+     right:0;
+     width: 16px;
+     height: 16px;
+   // background: url(../../assets/images/exclamation.png);
+   }
+  .el-form-item__error{
+    display:none;
+  }
+  }
+  .nettag{
+    position: relative;
+    color: red;
+    top: -6px;
+    left: 2px;
+  &.h-icon-circle_success{
+     color:#00c770;
+   }
+  }
+  thead{
+    border:1px solid #ddd!important;
+  }
+  th{
+    height:20px!important;
+    border-right:1px solid #ddd!important;
+  > div:after{
+      border:none!important;
     }
-    .nettag{
-      position: relative;
-      color: red;
-      top: -6px;
-      left: 2px;
-      &.h-icon-circle_success{
-        color:#00c770;
-       }
-    }
+  }
+  th > div.show-header-overflow{
+    font-family:'Microsoft Yahei';
+  }
 
   }
   .ryjbCol {
     float:left;
     margin:0 3px;
     font-size:14px;
-    input{
-      width:40px;
-    }
+  input{
+    width:40px;
+  }
+  }
+  .noBorderTable td{
+    border:none;
   }
   /*.el-form-item.noTag .el-form-item__error{display:none}*/
 </style>

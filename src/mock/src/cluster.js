@@ -34,7 +34,7 @@ mockAdapter.onPost('/mock/cluster/list').reply((config) => {
         data: {
           list: result.list,
           total
-        }  
+        }
       }])
     }, 1000)
   })
@@ -60,7 +60,40 @@ mockAdapter.onPost('/mock/cluster/group/list').reply((config) => {
         data: {
           list: result.list,
           total: 3
-        } 
+        }
+      }])
+    }, 1000)
+  })
+})
+
+mockAdapter.onPost('/config/common/getNodeInfo').reply((config) => {
+  return new Promise((resolve, reject) => {
+    const params = config.data
+    const result = MockJS.mock({
+      'local_ip|1': ['10.192.71.185','10.192.77.241','10.192.77.51'],
+      'node_type|1': ['1', '2', '1'],
+      'hostname': /\d{9}/,
+      'sys_time|1': ['111', '1222', '111']
+    })
+    setTimeout(() => {
+      resolve([200, {
+        status: true,
+        data: result
+      }])
+    }, 1000)
+  })
+})
+
+mockAdapter.onPost('/config/common/getPath').reply((config) => {
+  return new Promise((resolve, reject) => {
+    const params = config.data
+    const result = MockJS.mock({
+      'path|1-3': ['/opt/hikvision','/mnt/cvm/disk2','/svt']
+    })
+    setTimeout(() => {
+      resolve([200, {
+        status: true,
+        data: result
       }])
     }, 1000)
   })
