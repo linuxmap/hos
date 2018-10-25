@@ -84,11 +84,13 @@ mockAdapter.onPost('/config/common/getNodeInfo').reply((config) => {
   })
 })
 
-mockAdapter.onPost('/config/common/getPath').reply((config) => {
+mockAdapter.onPost('/config/deploy/getDataPath').reply((config) => {
   return new Promise((resolve, reject) => {
     const params = config.data
     const result = MockJS.mock({
-      'path|1-3': ['/opt/hikvision','/mnt/cvm/disk2','/svt']
+      'data_path_list':[{
+        'data_path': '/opt/mnt/sst,/opt/cvt'
+      }]
     })
     setTimeout(() => {
       resolve([200, {

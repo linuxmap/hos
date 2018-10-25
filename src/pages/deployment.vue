@@ -189,8 +189,8 @@
 <script>
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
-  import http from 'index@/api/index'
- // import http from '@/libs/mockHttp'
+  //import http from 'index@/api/index'
+  import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'
@@ -515,74 +515,103 @@
       //创建集群
       createCluster (formName) {
         let _this = this;
-        let validCheck = true;
+
         if (!_this.tableData.length) {
           util.alert('请添加节点。');
           return;
         }
-        _this.$refs[formName].validate((valid) => {
-            _this.$refs.pathForm.validate((valid1) => {
-              if (valid && valid1) {
-              if (_this.manageCount % 2 == 0) {
-                util.alert('管理节点数量必须为奇数。');
-                return;
-              }
-              if (!_this.hasOneTypeNode) {
-                util.alert('管理节点类型必须相同。');
-                return;
-              }
-              // 同网段检测
-              if (_this.manageCount > 1) {
-                let tmpPrefix = '';
-                let hostnameArr = [];
-                _this.tableData.forEach(function (v) {
-                  hostnameArr.push(v['hostname']);
-                  if (v['node_type'] === '1' || v['node_type'] === '2') {
-                    if (tmpPrefix === '') {
-                      tmpPrefix = util.getIPPrefix(v['local_ip']);
-                    } else {
-                      if (tmpPrefix !== util.getIPPrefix(v['local_ip'])) {
-                        util.alert('管理节点必须为同网段。');
-                        validCheck = false;
-                        return false;
-                      }
-                    }
-                  }
-                });
 
-                if (util.isRepeated(hostnameArr)) {
-                  util.alert('主机名不能相同。');
-                  return;
-                }
-
-                if (!validCheck) return false;
-              }
-              _this.progress.show = true;
-              _this.clusterCollection.nodeIpList = _this.tableData; // 节点数组
-              for (let i = 0; i <= 20; i++) {
-                (function (k) {
-                  setTimeout(function () {
-                    _this.progress.data = k * 5;
-                  }, k * 1000);
-                })(i)
-              }
-             console.log(_this.clusterCollection);
-              /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
-               _this.progress.show = false
-               if (res.status) {
-               util.refreshCloud();
-               _this.$alert(res.data, '', {
-               callback: action => {
-               _this.$router.push({
-               path: '/home/cloud/list'
-               });
-               }
-               });
-               } // end if
-               }); // end http*/
+        let pathForms = [];
+        this.tableData.forEach(function(v,i){
+            if (_this.$refs['pathForm'+i]) {
+              pathForms.push('pathForm'+i);
             }
+        });
+
+        //只有一条节点数据时SSDB选中一个，否则选中两个
+        if (this.tableData.length == 1) {
+          _this.$refs[formName].validate((valid) => {
+            _this.$refs[pathForms[0]].validate((valid1) => {
+              if (valid && valid1) {
+                this.buildCluster();
+              }
             });
-        }); // end formName validate
+          }); // end formName validate
+        } else {
+          _this.$refs[formName].validate((valid) => {
+            _this.$refs[pathForms[0]].validate((valid1) => {
+              _this.$refs[pathForms[1]].validate((valid2) => {
+                if (valid && valid1 && valid2) {
+                  this.buildCluster();
+                }
+              });
+            });
+          }); // end formName validate
+        }
+
+
+      },
+
+      buildCluster () {
+        let _this = this;
+        let validCheck = true;
+        if (_this.manageCount % 2 == 0) {
+          util.alert('管理节点数量必须为奇数。');
+          return;
+        }
+        if (!_this.hasOneTypeNode) {
+          util.alert('管理节点类型必须相同。');
+          return;
+        }
+        // 同网段检测
+        if (_this.manageCount > 1) {
+          let tmpPrefix = '';
+          let hostnameArr = [];
+          _this.tableData.forEach(function (v) {
+            hostnameArr.push(v['hostname']);
+            if (v['node_type'] === '1' || v['node_type'] === '2') {
+              if (tmpPrefix === '') {
+                tmpPrefix = util.getIPPrefix(v['local_ip']);
+              } else {
+                if (tmpPrefix !== util.getIPPrefix(v['local_ip'])) {
+                  util.alert('管理节点必须为同网段。');
+                  validCheck = false;
+                  return false;
+                }
+              }
+            }
+          });
+
+          if (util.isRepeated(hostnameArr)) {
+            util.alert('主机名不能相同。');
+            return;
+          }
+
+          if (!validCheck) return false;
+        }
+        _this.progress.show = true;
+        _this.clusterCollection.nodeIpList = _this.tableData; // 节点数组
+        for (let i = 0; i <= 20; i++) {
+          (function (k) {
+            setTimeout(function () {
+              _this.progress.data = k * 5;
+            }, k * 1000);
+          })(i)
+        }
+        console.log(_this.clusterCollection);
+        /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
+         _this.progress.show = false
+         if (res.status) {
+         util.refreshCloud();
+         _this.$alert(res.data, '', {
+         callback: action => {
+         _this.$router.push({
+         path: '/home/cloud/list'
+         });
+         }
+         });
+         } // end if
+         }); // end http*/
       },
 
       //删除ip行
