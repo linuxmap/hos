@@ -78,8 +78,8 @@
         <el-form-item label="安全认证开关">
           <el-switch
             v-model="formSetASConfig.check_auth_flg"
-            active-text=""
-            inactive-text="">
+            active-value="1"
+            inactive-value="0">
           </el-switch>
         </el-form-item>
         <el-form-item label="用户行为统计开关">
@@ -104,16 +104,17 @@
     </div>
     <div v-show="activeSidebar == '证书'">
       <el-form ref="formImportCert" :model="formImportCert" label-width="160px" content-width="300px" class="is-required fileForm" :class="{noTag:noTag}" :rules="certRules">
-        <el-form-item class="rel" label="证书文件" prop="cert_file" discription="（格式：*.crt，*.pem，*.key）">
-          <el-input readonly v-model="fileName" :title="formImportCert.cert_file"></el-input>
+        <el-form-item class="rel" label="证书文件" prop="file" description="（格式：*.crt，*.pem，*.key）">
+          <el-input readonly v-model="fileName" :title="formImportCert.file"></el-input>
           <el-button type="iconButton" class="importIcon" icon="h-icon-fold" @click="uploadFiles"></el-button>
           <h-upload
             v-show="false"
-            action="/config/upgrade/upload"
-            name="cert_file"
+            action="/config/sys/upload_cert"
+            name="file"
             text="请选择"
             :auto-upload=false
             ref="upload"
+            accept=".crt,.pem,.key"
             @change="chooseFile"
             :on-success="uploadSuccess">
             <input name="token" type="hidden" :value="$store.state.accessToken"/>
@@ -128,15 +129,16 @@
       <el-table
         :data="tableData">
         <el-table-column
-          prop="ip"
+          prop="server_ip"
           label="节点IP"
           width="25%">
         </el-table-column>
         <el-table-column
+          prop="contrl_id"
           label="控制器"
           width="35%">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.control" placeholder="请选择" style="width:200px">
+            <el-select v-model="scope.row.contrl_id" placeholder="请选择" style="width:200px">
               <el-option
                 v-for="item in control"
                 :key="item.value"
@@ -147,7 +149,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button type="primary" style="margin-top:20px;">设置</el-button>
+      <el-button type="primary" style="margin-top:20px;" @click="setControlConfig">设置</el-button>
     </div>
     <div v-show="activeSidebar =='防火墙端口'">
       <el-form ref="firewallConfigForm" :model="firewallConfigForm" label-width="160px" :rules="firewallRule">
@@ -163,16 +165,17 @@
     <div v-show="activeSidebar == '日志'">
       <div class="basicMes">
         <h3>日志压缩</h3>
-        <el-form :inline="true" :model="compressLog" label-width="160px">
+        <el-form :inline="true" :model="compressStatus" label-width="160px">
           <el-form-item label="开关">
             <el-switch
-              v-model="compressLog.status"
+              v-model="compressStatus.status"
               active-value="1"
-              inactive-value="0">
+              inactive-value="0"
+              @change="setCompressState">
             </el-switch>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="setFirewallConfig('firewallConfigForm')">刷新</el-button>
+            <el-button type="primary" @click="getLogTarState">刷新</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -209,10 +212,10 @@
               <el-radio-button label="5">TRACE</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="文件最大值" prop="log_size">
+          <el-form-item label="文件最大值" prop="log_size" disabled>
             <el-input v-model="logConfigForm.log_size" ></el-input>
           </el-form-item>
-          <el-form-item label="文件保留数" prop="log_backup_index">
+          <el-form-item label="文件保留数" prop="log_backup_index" disabled>
             <el-input v-model="logConfigForm.log_backup_index" ></el-input>
           </el-form-item>
           <el-form-item class="clear">
@@ -228,8 +231,8 @@
   import pageTable from '@/components/pageTable'
   import validate from 'index@/utils/form-validate'
   import util from 'index@/utils/util'
-  // import http from 'index@/api/index';
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index';
+  //import http from '@/libs/mockHttp'
 
   export default {
     name: 'clusterList',
@@ -312,12 +315,12 @@
             ]
           },
           formImportCert: {
-            cert_file:''
+            file:''
           },
           fileName:'',
           noTag: false,
           certRules: {
-            cert_file:[
+            file:[
               { validator: this.validateFile, trigger: 'blur' }
             ]
           },
@@ -330,16 +333,10 @@
               {validator:validate.port,trigger:'blur'}
             ]
           },
-          compressLog:{
+          compressStatus:{
             status:'1'
           },
-          tableData:[{
-            ip:'10.192.70.245',
-            control:''
-          },{
-            ip:'10.192.70.244',
-            control:''
-          }], //控制器
+          tableData:[], //控制器
 
           control:[{
               value:'A'
@@ -400,7 +397,75 @@
           }
       }
     },
+
+    created () {
+      this.getAsConfig();
+    },
+
     methods: {
+      //获取接入服务配置
+      getAsConfig () {
+        http.getRequest('/config/sys/get_as_config', 'post',{})
+          .then(res => {
+            if (res.status) {
+              this.formSetASConfig = res.data;
+            }
+          });
+      },
+      //查询控制器
+      getControlConfig () {
+        http.getRequest('/config/sys/control_config', 'post',{})
+          .then(res => {
+            if (res.status) {
+              this.tableData = JSON.parse(res.data.data).list;
+            }
+          });
+      },
+
+      //设置日志压缩和日志属性
+      getLogConfig () {
+        //日志压缩
+        this.getLogTarState();
+        //日志属性
+        this.getLogProperty();
+      },
+
+      getLogTarState () {
+        http.getRequest('/config/sys/get_tar_log_status', 'post',{})
+          .then(res => {
+            if (res.status) {
+              this.compressStatus.status = JSON.parse(res.data.data).status;
+            }
+          });
+      },
+      //设置日志压缩属性
+      setCompressState () {
+        let that = this;
+        util.confirm(function(){
+          let params = {
+            'switchData': this.compressStatus.status == 1 ? 'start' : 'stop'
+          };
+          http.getRequest('/config/sys/switch_tar_log_status', 'post',params)
+            .then(res => {
+              if (res.status) {
+                that.compressStatus.status = JSON.parse(res.data.data).status;
+              }
+              util.alert(res.data,res.status ? 'success' : 'error');
+              that.getLogTarState();
+            });
+        },'确认执行此操作?');
+
+      },
+
+      getLogProperty () {
+        http.getRequest('/config/sys/get_log_property', 'post',{})
+          .then(res => {
+            if (res.status) {
+             // this.compressLog = res.data;
+            }
+          });
+      },
+
       //菜单点击事件
       handleClickSidebar (item) {
         let that = this;
@@ -414,17 +479,17 @@
 
         switch (item) {
           case '接入服务': {
-              http.getRequest('/mock/config', 'post')
-                .then(res => {
-                  if (res.status) {
-                    this.formSetASConfig = res.data;
-                  }
-                });
+              this.getAsConfig();
               break;
             }
+          case '控制器': {
+              this.getControlConfig();
+              break;
+          }
           case '日志': {
               this.logConfig = false;
               this.resetForm('compressLog');
+              this.getLogConfig();
             }
         }
       },
@@ -453,7 +518,14 @@
       submitInserApp (form) {
         this.$refs[form].validate((valid) => {
           if (valid) {
-            alert('接入服务器设置');
+            util.showMask('设置中...');
+            http.getRequest('/config/sys/set_as_config', 'post',this.formSetASConfig)
+              .then(res => {
+                if (res.status) {
+                  util.hideMask();
+                  util.alert('设置成功','success');
+                }
+              });
           }
         });
       },
@@ -469,14 +541,15 @@
       //选择文件
       chooseFile (name) {
         this.noTag = true;
-        this.formImportCert.cert_file = name;
+        this.formImportCert.file = name;
         this.fileName = util.formatFileName(name);
       },
       //导入成功
-      uploadSuccess (response, file) {
+      uploadSuccess (response) {
         util.hideMask();
         this.fileName = '';
         this.noTag = false;
+        util.alert(response.data,response.status ? 'success' : 'error' );
       },
 
       //导入license文件
@@ -505,11 +578,33 @@
         this.$refs.upload.$el.querySelector('input[type=file]').click();
       },
 
+      //设置控制器
+      setControlConfig () {
+        let control_mode = '';
+        this.tableData.forEach(function(v,i){
+          control_mode += (i==0 ? '' : ',') + v.server_ip + ':' + v.contrl_id;
+        });
+
+        http.getRequest('/config/sys/set_control_config', 'post',{control_mode: control_mode})
+          .then(res => {
+            util.alert(res.data,res.status ? 'success' : 'error');
+          });
+      },
+
       //设置防火墙端口
       setFirewallConfig (form) {
+        let that = this;
         this.$refs[form].validate((valid) => {
           if (valid) {
-            alert('接入服务器设置');
+              util.confirm(function(){
+                util.showMask('设置中...');
+                http.getRequest('/config/sys/set_firewall_config', 'post',{ip_tables_port: that.firewallConfigForm.ip_tables_port})
+                  .then(res => {
+                    util.hideMask();
+                    util.alert(res.data,res.status ? 'success' : 'error');
+                    that.firewallConfigForm.ip_tables_port = '';
+                  });
+              },'当前操作有一定风险，请确保配置的正确性。是否继续？');
           }
         });
       },

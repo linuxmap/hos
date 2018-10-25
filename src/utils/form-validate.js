@@ -1,5 +1,6 @@
 let methods = {
     ipv4 (rule, value, callback , tag) {
+        if (value == '') return callback();
         return addMethod(/^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/i.test(value),
             vm.$t('config.validator.validIp'),
             callback,tag)
@@ -89,6 +90,12 @@ let methods = {
     bucket_name (rule, value, callback) {
       return addMethod( /^[0-9a-z]{1}[0-9a-z_-]*[0-9a-z]{1}$/.test(value),
         '必须以小写字母或数字开头和结尾（使用小写字母、数字、下划线和中划线）。',
+        callback)
+    },
+
+    path (rule, value, callback) {
+      return addMethod(/^[a-zA-Z]:(((\\(?! )[^/:*?<>\""|\\]+)+\\?)|(\\)?)\s*$/.test(value),
+        '请输入合法的路径名称',
         callback)
     },
 

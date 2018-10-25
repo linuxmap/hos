@@ -144,19 +144,17 @@
             </el-table-column>
             <el-table-column prop="sys_time" label="数据目录" width="160">
               <template slot-scope="scope">
-                <el-table
-                  class="noBorderTable"
-                  :show-header="false"
-                  :data="getTables(scope.row.path)">
-                  <el-table-column>
-                    <template slot-scope="path">
-                      <el-input v-model="path.row.catalog"></el-input>
-                      <el-tooltip class="item" effect="dark" :content="path.$index == 0 ? '添加自定义路径' : '删除'" placement="top" :enterable="false">
-                        <el-button :icon-border="path.$index == 0 ? 'h-icon-plus' : 'h-icon-close'" @click="changeLogRow(path.$index,scope.row.path)"></el-button>
+                  <el-form :ref="'pathForm'+scope.$index" :rules="dataRules" :model="scope.row" class="pathForm">
+                    <el-form-item v-for="(item,index) in scope.row.pathForm"
+                                  :prop="`pathForm.${index}.catalog`"
+                                  :rules="pathRules"
+                                  :key="index">
+                      <el-input v-model="item.catalog"></el-input>
+                      <el-tooltip class="item" effect="dark" :content="index == 0 ? '添加自定义路径' : '删除'" placement="top" :enterable="false">
+                        <el-button :icon-border="index == 0 ? 'h-icon-plus' : 'h-icon-close'" @click="changeLogRow(index,scope.row.pathForm)"></el-button>
                       </el-tooltip>
-                    </template>
-                  </el-table-column>
-                </el-table>
+                    </el-form-item>
+                  </el-form>
               </template>
             </el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
@@ -272,8 +270,12 @@
         //数据目录
         logTable: [{
           catalog: '/opt/hikvision'
-        }]
-
+        }],
+        dataRules: {},
+        pathRules: [
+          {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+         /* {validator: validate.path, trigger: 'blur change'}*/
+        ]
       }
     },
 
@@ -367,7 +369,8 @@
           http.getRequest('/config/common/getNodeInfo', 'post', {nodeIp: addIp}).then(res => {
             util.hideMask();
             if (res.status) {
-              res.data.path=[];
+              res.data.pathForm=[];
+              res.data.path = '';
               _this.tableData.push(res.data);
               _this.adjustChecked();
 
@@ -391,7 +394,8 @@
                 }
                 // 节点未加入，执行push
                 if (!isAdded) {
-                  retData[i].path=[];
+                  retData[i].pathForm=[];
+                  retData[i].path = '';
                   _this.tableData.push(retData[i]);
                 }
                 _this.adjustChecked();
@@ -517,7 +521,8 @@
           return;
         }
         _this.$refs[formName].validate((valid) => {
-            if (valid) {
+            _this.$refs.pathForm.validate((valid1) => {
+              if (valid && valid1) {
               if (_this.manageCount % 2 == 0) {
                 util.alert('管理节点数量必须为奇数。');
                 return;
@@ -561,21 +566,22 @@
                   }, k * 1000);
                 })(i)
               }
-              console.log(_this.clusterCollection);
+             console.log(_this.clusterCollection);
               /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
-                _this.progress.show = false
-                if (res.status) {
-                  util.refreshCloud();
-                  _this.$alert(res.data, '', {
-                    callback: action => {
-                      _this.$router.push({
-                        path: '/home/cloud/list'
-                      });
-                    }
-                  });
-                } // end if
-              }); // end http*/
-           }
+               _this.progress.show = false
+               if (res.status) {
+               util.refreshCloud();
+               _this.$alert(res.data, '', {
+               callback: action => {
+               _this.$router.push({
+               path: '/home/cloud/list'
+               });
+               }
+               });
+               } // end if
+               }); // end http*/
+            }
+            });
         }); // end formName validate
       },
 
@@ -647,22 +653,12 @@
       changeLogRow (index,path) {
         if (index == 0) {
           //添加行
-          path.push('');
+          path.push([{
+              catalog:''
+          }]);
         } else {
           path.splice(index,1);
         }
-      },
-
-      //获取数据目录表格行
-      getTables (catalog) {
-        let tables = [];
-        catalog && catalog.forEach(function(v){
-          tables.push({
-            catalog:v
-          });
-        });
-
-        return tables;
       },
 
       //负载均衡
@@ -722,8 +718,11 @@
                   let pathArr = res.data.data_path_list[0].data_path.split(',');
 
                   pathArr.forEach(function(v){
-                    _this.tableData[index].path.push(v);
+                    _this.tableData[index].pathForm.push({
+                      catalog:v
+                    });
                   });
+                  _this.tableData[index].path = res.data.data_path_list[0].data_path;
 
                 }
               });
@@ -774,9 +773,9 @@
   }
   .el-button.is-iconBorder{
     position:relative;
-    top:-1px;
-    left:10px;
-    padding:5px;
+    top: -1px;
+    left: 10px;
+    padding: 3px 5px;
   }
   }
   .stepWrap {
@@ -835,7 +834,7 @@
    // background: url(../../assets/images/exclamation.png);
    }
   .el-form-item__error{
-    display:none;
+    //display:none;
   }
   }
   .nettag{
