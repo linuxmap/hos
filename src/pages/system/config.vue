@@ -98,7 +98,6 @@
         </el-form-item>
         <el-form-item class="clear">
           <el-button type="primary" @click="submitInserApp('inAppForm')">设置</el-button>
-          <el-button @click="resetForm('inAppForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -158,7 +157,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="setFirewallConfig('firewallConfigForm')">设置</el-button>
-          <el-button @click="resetForm('firewallConfigForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -183,7 +181,7 @@
         <h3>日志属性</h3>
         <div class="toolbar">
           <el-form ref="compressLog" :inline="true" :model="compressLog" label-width="160px" :rules="compressRule">
-            <el-form-item label="模块名称">
+            <el-form-item label="模块名称" prop="moduleName">
               <el-select v-model="compressLog.moduleName" placeholder="请选择">
                 <el-option
                   v-for="item in moduleName"
@@ -193,8 +191,15 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="节点IP" prop="nodeIP">
-              <el-input v-model="compressLog.nodeIP" ></el-input>
+            <el-form-item label="节点IP" prop="nodeIp">
+              <el-select v-model="compressLog.nodeIp" placeholder="请选择">
+                <el-option
+                  v-for="ip in ipList"
+                  :key="ip"
+                  :label="ip"
+                  :value="ip">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button @click="setCompressLog('compressLog')">查询</el-button>
@@ -212,15 +217,14 @@
               <el-radio-button label="5">TRACE</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="文件最大值" prop="log_size" disabled>
-            <el-input v-model="logConfigForm.log_size" ></el-input>
+          <el-form-item label="文件最大值" prop="log_size">
+            <el-input v-model="logConfigForm.log_size" disabled></el-input>
           </el-form-item>
-          <el-form-item label="文件保留数" prop="log_backup_index" disabled>
-            <el-input v-model="logConfigForm.log_backup_index" ></el-input>
+          <el-form-item label="文件保留数" prop="log_backup_index">
+            <el-input v-model="logConfigForm.log_backup_index" disabled></el-input>
           </el-form-item>
           <el-form-item class="clear">
             <el-button type="primary" @click="submitFileConfig('logConfigForm')">设置</el-button>
-            <el-button @click="resetForm('logConfigForm')">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -275,7 +279,7 @@
             value: '3',
             label: '直存云存储'
           }],
-
+          ipList:['10.192.71.185'],
           inAppFormRules:{
             listen_oss_port: [
               {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
@@ -350,7 +354,7 @@
 
           compressLog:{
             moduleName:'',
-            nodeIP:''
+            nodeIp:''
           },
 
           moduleName:[{
@@ -374,7 +378,10 @@
           }],
 
           compressRule:{
-            nodeIP: [
+            moduleName:[
+              {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
+            ],
+            nodeIp: [
               {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
               {validator:validate.ipv4,trigger:'blur'}
             ]
@@ -426,8 +433,6 @@
       getLogConfig () {
         //日志压缩
         this.getLogTarState();
-        //日志属性
-        this.getLogProperty();
       },
 
       getLogTarState () {
@@ -455,15 +460,6 @@
             });
         },'确认执行此操作?');
 
-      },
-
-      getLogProperty () {
-        http.getRequest('/config/sys/get_log_property', 'post',{})
-          .then(res => {
-            if (res.status) {
-             // this.compressLog = res.data;
-            }
-          });
       },
 
       //菜单点击事件
@@ -614,7 +610,16 @@
         this.$refs[form].validate((valid) => {
           if (valid) {
             //显示日志模块配置
-            this.logConfig = true;
+            http.getRequest('/config/sys/get_log_property', 'post',this.compressLog)
+              .then(res => {
+                if (res.status) {
+                  this.logConfigForm = JSON.parse(res.data.data);
+                  this.logConfigForm.module_name_select = this.compressLog.moduleName;
+                  this.logConfigForm.node_ip_select = this.compressLog.nodeIp;
+                  this.logConfig = true;
+                }
+              });
+
           }
         });
       },
@@ -639,11 +644,10 @@
 
       //设置日志属性
       submitFileConfig (form) {
-        this.$refs[form].validate((valid) => {
-          if (valid) {
-            alert('设置日志属性');
-          }
-        });
+        http.getRequest('/config/sys/set_log_property', 'post',this.logConfigForm)
+          .then(res => {
+
+          });
       }
     }
   }
