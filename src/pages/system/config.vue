@@ -279,7 +279,7 @@
             value: '3',
             label: '直存云存储'
           }],
-          ipList:['10.192.71.185'],
+          ipList:[],
           inAppFormRules:{
             listen_oss_port: [
               {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
@@ -433,8 +433,10 @@
       getLogConfig () {
         //日志压缩
         this.getLogTarState();
+        //获取节点列表
+        this.getIpList();
       },
-
+      //日志压缩状态
       getLogTarState () {
         http.getRequest('/config/sys/get_tar_log_status', 'post',{})
           .then(res => {
@@ -443,6 +445,20 @@
             }
           });
       },
+      //节点列表
+      getIpList () {
+        let that = this;
+        http.getRequest('/config/node/index_access', 'post',{})
+          .then(res => {
+            if (res.status) {
+              let list = res.data.list;
+              list.forEach(function(v){
+                  that.ipList.push(v.server_data_ip);
+              });
+            }
+          });
+      },
+
       //设置日志压缩属性
       setCompressState () {
         let that = this;
@@ -466,12 +482,6 @@
       handleClickSidebar (item) {
         let that = this;
         this.activeSidebar = item;
-
-        let formArr=['inAppForm','formImportCert','firewallConfigForm'];
-        formArr.forEach(function(v){
-            if (that.$refs[v])
-                that.resetForm(v);
-        });
 
         switch (item) {
           case '接入服务': {
@@ -644,9 +654,11 @@
 
       //设置日志属性
       submitFileConfig (form) {
+        util.showMask('设置中...');
         http.getRequest('/config/sys/set_log_property', 'post',this.logConfigForm)
           .then(res => {
-
+            util.hideMask();
+            util.alert(res.data,res.status ? 'success' : 'error');
           });
       }
     }
