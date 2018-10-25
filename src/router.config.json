@@ -40,14 +40,14 @@
     "menuCode": "110"
   },
   {
-    "path": "/cluster/group",
+    "path": "/group",
     "component": "cluster/group",
     "breadcrumb": ["menu.clusterGroup"],
     "router": ["/cluster/group"],
     "menuCode": "110"
   },
   {
-    "path": "/cluster/group/add",
+    "path": "/group/add",
     "component": "cluster/groupAdd",
     "breadcrumb": ["menu.clusterGroup", "menu.clusterGroupAdd"],
     "router": ["/cluster/group", "/cluster/group/add"],

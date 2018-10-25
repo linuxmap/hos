@@ -9,7 +9,7 @@
     "icon": "icon-cus icon-cluster1",
     "children": [
       {"title": "menu.clusterList", "router": "/cluster"},
-      {"title": "menu.clusterGroup", "router": "/cluster/group"}
+      {"title": "menu.clusterGroup", "router": "/group"}
     ]
   },
   {

@@ -46,7 +46,7 @@
         }, state, '-')
       },
       handleCreate () {
-        this.$router.push('/cluster/group/add')
+        this.$router.push('/group/add')
       }
     }
   }
