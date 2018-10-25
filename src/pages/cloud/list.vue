@@ -33,6 +33,8 @@
 <script>
   import pageTable from '@/components/pageTable'
   import util from '@/utils/util'
+
+
   export default {
     name: 'clusterList',
     components: { pageTable },
@@ -52,11 +54,15 @@
         util.jump('/cloud/add')
       },
       handleEdit (row) {
-        console.log(row.cloud_id)
         util.jump('/cloud/edit', {cloudId: row.cloud_id})
       },
       handleDelete (row) {
+        let that = this;
         util.confirm(() => {
+          http.getRequest('/config/cloud/delete', 'post', {cloud_ip: row.cloud_ip}).then(res => {
+            util.alert(res.data, res.status ? 'success' : 'error');
+            that.$refs.table.getData();
+          })
         },'确定执行此操作？')
       }
     }

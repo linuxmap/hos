@@ -3,10 +3,10 @@
     <div class="basicMes">
     <el-form ref="cloudForm" label-width="120px" :model="cloudForm" :rules="cloudRules" content-width="500px">
       <el-form-item label="云ID" prop="cloud_id">
-        <el-input v-model="cloudForm.cloud_id"></el-input>
+        <el-input v-model="cloudForm.cloud_id" disabled></el-input>
       </el-form-item>
       <el-form-item label="云存储IP" prop="cloud_ip">
-        <el-input v-model="cloudForm.cloud_ip"></el-input>
+        <el-input v-model="cloudForm.cloud_ip" disabled></el-input>
       </el-form-item>
       <el-form-item label="云存储端口" prop="cloud_port">
         <el-input v-model="cloudForm.cloud_port"></el-input>
@@ -37,7 +37,8 @@
 
 <script>
   import validates from 'index@/utils/form-validate'
-  import http from '@/libs/mockHttp'
+  //import http from '@/libs/mockHttp'
+  import http from 'index@/api/index';
   export default {
     name: 'cloudAdd',
     props: ['breadcrumbObj'],
@@ -80,12 +81,11 @@
       }
     },
     created () {
-      console.log(this.$route.query.cloudId)
       this.getById()
     },
     methods: {
       getById () {
-        http.getRequest('/mock/cloud/byId', 'get', {params: {cloudId: this.$route.query.cloudId}}).then(res => {
+        http.getRequest('/config/cloud/edit', 'get', {params: {cloudId: this.$route.query.cloudId}}).then(res => {
           this.cloudForm = res.data
         })
       },
