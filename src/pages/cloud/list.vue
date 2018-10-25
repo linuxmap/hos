@@ -39,7 +39,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
-        listUrl: '/mock/cloud/list',
+        listUrl: '/config/cloud/list',
         queryForm: null,
         dialogVisible: false,
         dataForm: {}

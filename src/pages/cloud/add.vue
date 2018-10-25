@@ -18,13 +18,13 @@
         <el-input v-model="cloudForm.cloud_user"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="cloud_pin">
-        <el-input v-model="cloudForm.cloud_pin" type="password"></el-input>
+        <vali-pass v-model="cloudForm.cloud_pin" @valiRisk="risk=arguments[0]"></vali-pass>
       </el-form-item>
       <el-form-item label="云存储访问key" prop="cloud_ak">
         <el-input v-model="cloudForm.cloud_ak" :minlength="3" :maxlength="64"></el-input>
       </el-form-item>
       <el-form-item label="协议加密key" prop="cloud_sk">
-        <el-input v-model="cloudForm.cloud_sk" :minlength="3" :maxlength="64"></el-input>
+        <el-input type="password" v-model="cloudForm.cloud_sk" :minlength="3" :maxlength="64"></el-input>
       </el-form-item>
       <el-form-item label="是否本云" prop="type">
         <el-radio-group v-model="cloudForm.type">
@@ -43,9 +43,15 @@
 
 <script>
   import validates from 'index@/utils/form-validate'
+  import http from 'index@/api/index';
+  import valiPass from '@/components/valiPass'  //密码校验组件
+
   export default {
     name: 'cloudAdd',
     props: ['breadcrumbObj'],
+    components: {
+      valiPass
+    },
     data() {
       return {
         cloudForm: {
@@ -68,12 +74,14 @@
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
             {validator: validates.port, trigger: 'blur'}
           ],
-          cloud_username: [
+          cloud_user: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
             {validator: validates.utils_string1, trigger: 'blur'}
           ],
           cloud_pin: [
-            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
+            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 3, max: 32, message: this.$t('common.rangeStr',{x:8,y:32}), trigger: 'blur'},
+            {validator:this.valiRisk,trigger: 'blur'}
           ],
           cloud_ak: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
@@ -89,9 +97,27 @@
     methods: {
       handleSubmit (form) {
         this.$refs[form].validate((valid) => {
+            if (valid) {
+              http.getRequest('/config/cloud/add', 'post', this.cloudForm)
+                .then(res => {
+                if (res.status) {
 
-        })
+                }
+              });
+            }
+        });
       },
+
+      //校验风险密码
+      valiRisk (rule, value, callback) {
+
+        if (this.risk) {
+          callback(new Error(this.$t('pass.v5')));
+        } else {
+          callback();
+        }
+      },
+
       resetForm (form) {
         this.$refs[form].resetFields();
       }

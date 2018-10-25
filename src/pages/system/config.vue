@@ -236,7 +236,6 @@
   import validate from 'index@/utils/form-validate'
   import util from 'index@/utils/util'
   import http from 'index@/api/index';
-  //import http from '@/libs/mockHttp'
 
   export default {
     name: 'clusterList',
