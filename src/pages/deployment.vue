@@ -144,17 +144,17 @@
             </el-table-column>
             <el-table-column prop="sys_time" label="数据目录" width="160">
               <template slot-scope="scope">
-                  <el-form :ref="'pathForm'+scope.$index" :rules="dataRules" :model="scope.row" class="pathForm">
-                    <el-form-item v-for="(item,index) in scope.row.pathForm"
-                                  :prop="`pathForm.${index}.catalog`"
-                                  :rules="pathRules"
-                                  :key="index">
-                      <el-input v-model="item.catalog"></el-input>
-                      <el-tooltip class="item" effect="dark" :content="index == 0 ? '添加自定义路径' : '删除'" placement="top" :enterable="false">
-                        <el-button :icon-border="index == 0 ? 'h-icon-plus' : 'h-icon-close'" @click="changeLogRow(index,scope.row.pathForm)"></el-button>
-                      </el-tooltip>
-                    </el-form-item>
-                  </el-form>
+                <el-form :ref="'pathForm'+scope.$index" :rules="dataRules" :model="scope.row" class="pathForm">
+                  <el-form-item v-for="(item,index) in scope.row.pathForm"
+                                :prop="`pathForm.${index}.catalog`"
+                                :rules="pathRules"
+                                :key="index">
+                    <el-input v-model="item.catalog"></el-input>
+                    <el-tooltip class="item" effect="dark" :content="index == 0 ? '添加自定义路径' : '删除'" placement="top" :enterable="false">
+                      <el-button :icon-border="index == 0 ? 'h-icon-plus' : 'h-icon-close'" @click="changeLogRow(index,scope.row.pathForm)"></el-button>
+                    </el-tooltip>
+                  </el-form-item>
+                </el-form>
               </template>
             </el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
@@ -189,8 +189,8 @@
 <script>
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
-  //import http from 'index@/api/index'
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index'
+  //import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'
@@ -274,7 +274,7 @@
         dataRules: {},
         pathRules: [
           {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
-         /* {validator: validate.path, trigger: 'blur change'}*/
+          /* {validator: validate.path, trigger: 'blur change'}*/
         ]
       }
     },
@@ -523,9 +523,9 @@
 
         let pathForms = [];
         this.tableData.forEach(function(v,i){
-            if (_this.$refs['pathForm'+i]) {
-              pathForms.push('pathForm'+i);
-            }
+          if (_this.$refs['pathForm'+i]) {
+            pathForms.push('pathForm'+i);
+          }
         });
 
         //只有一条节点数据时SSDB选中一个，否则选中两个
@@ -598,20 +598,20 @@
             }, k * 1000);
           })(i)
         }
-        console.log(_this.clusterCollection);
-        /* http.getRequest('/config/oneKey/createCluster', 'post', _this.clusterCollection, 1800000).then(res => {
-         _this.progress.show = false
-         if (res.status) {
-         util.refreshCloud();
-         _this.$alert(res.data, '', {
-         callback: action => {
-         _this.$router.push({
-         path: '/home/cloud/list'
-         });
-         }
-         });
-         } // end if
-         }); // end http*/
+
+        http.getRequest('/config/deploy/buildCluster', 'post', _this.clusterCollection, 1800000).then(res => {
+          _this.progress.show = false
+          if (res.status) {
+            util.refreshCloud();
+            _this.$alert(res.data, '', {
+              callback: action => {
+                _this.$router.push({
+                  path: '/home/cloud/list'
+                });
+              }
+            });
+          } // end if
+        }); // end http*/
       },
 
       //删除ip行
@@ -683,7 +683,7 @@
         if (index == 0) {
           //添加行
           path.push([{
-              catalog:''
+            catalog:''
           }]);
         } else {
           path.splice(index,1);
@@ -738,27 +738,27 @@
 
       //获取数据目录
       getCataPath (index,tag,row) {
-          let _this = this;
-          if (!tag || util.isInArray([0,1],index)) {
-              http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
-                if (res.status) {
-                  this.tableData[index].path = [];
+        let _this = this;
+        if (!tag || util.isInArray([0,1],index)) {
+          http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
+            if (res.status) {
+              this.tableData[index].path = [];
 
-                  let pathArr = res.data.data_path_list[0].data_path.split(',');
+              let pathArr = res.data.data_path_list[0].data_path.split(',');
 
-                  pathArr.forEach(function(v){
-                    _this.tableData[index].pathForm.push({
-                      catalog:v
-                    });
-                  });
-                  _this.tableData[index].path = res.data.data_path_list[0].data_path;
-
-                }
+              pathArr.forEach(function(v){
+                _this.tableData[index].pathForm.push({
+                  catalog:v
+                });
               });
-              return true;
-          } else {
-              return false;
-          }
+              _this.tableData[index].path = res.data.data_path_list[0].data_path;
+
+            }
+          });
+          return true;
+        } else {
+          return false;
+        }
       }
     }
   }
@@ -863,7 +863,7 @@
    // background: url(../../assets/images/exclamation.png);
    }
   .el-form-item__error{
-    //display:none;
+  //display:none;
   }
   }
   .nettag{

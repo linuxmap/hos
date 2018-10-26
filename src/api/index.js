@@ -19,6 +19,7 @@ export default {
     }
 
     method = method || 'post';
+    data = data || {};
     timeout && (http.defaults.timeout = timeout);
 
     if (header) {

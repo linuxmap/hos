@@ -40,18 +40,20 @@ mockAdapter.onPost('/mock/cluster/list').reply((config) => {
   })
 })
 
-mockAdapter.onPost('/mock/cluster/group/list').reply((config) => {
+mockAdapter.onPost('/config/group/groupList').reply((config) => {
   return new Promise((resolve, reject) => {
     const params = config.data
     const pageSize = 3
     const result = MockJS.mock({
       [`list|${pageSize}`]: [{
-        'id|+1': 1,
+        'count': 1,
         'group_name': `g@increment(1)`,
         group_id: /\d{9}/,
-        'server_ip|1': ['10.192.70.245', '10.192.70.238', '10.192.70.216'],
-        server_id: /\w{10}/,
-        'online_state|1': ['0', '1']
+        list: [{
+          'server_ip|1': ['10.192.70.245', '10.192.70.238', '10.192.70.216'],
+          server_id: /\w{10}/,
+          'online_state|1': ['0', '1']
+        }]
       }]
     })
     setTimeout(() => {
