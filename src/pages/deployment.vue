@@ -54,12 +54,12 @@
         <div style="min-height:150px;">
           <el-table
             border
+            max-height="1000"
             class="nodeList"
             empty-text=""
             :data="tableData"
             :default-sort="{prop: 'node_type', order: 'ascending'}"
             force-scroll
-            max-height="300"
             style="width: 100%">
             <el-table-column prop="local_ip" label="业务IP" width="120"></el-table-column>
             <!-- <el-table-column prop="data_ip" label="数据IP" width="120">
@@ -124,10 +124,9 @@
                 label="SSDB"
                 width="50">
                 <template scope="scope">
-                  <el-checkbox :checked="tableData.length <= 2"
-                               v-model="scope.row.SSDB"
+                  <el-checkbox v-model="scope.row.SSDB"
                                :disabled="tableData.length <= 2"
-                               change.native="getCataPath(scope.$index,false,scope.row)">
+                               @change="changeSSDBstate(scope.row.SSDB,scope.$index,scope.row)">
                   </el-checkbox>
                 </template>
               </el-table-column>
@@ -143,7 +142,7 @@
             </el-table-column>
             <el-table-column prop="sys_time" label="数据目录" width="160">
               <template slot-scope="scope">
-                <el-form :ref="'pathForm'+scope.$index" :rules="dataRules" :model="scope.row" class="pathForm">
+                <el-form v-if="scope.row.SSDB" :ref="'pathForm'+scope.$index" :rules="dataRules" :model="scope.row" class="pathForm">
                   <el-form-item v-for="(item,index) in scope.row.pathForm"
                                 :prop="`pathForm.${index}.catalog`"
                                 :rules="pathRules"
@@ -154,6 +153,7 @@
                     </el-tooltip>
                   </el-form-item>
                 </el-form>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
@@ -188,8 +188,8 @@
 <script>
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
-  import http from 'index@/api/index'
-  //import http from '@/libs/mockHttp'
+  //import http from 'index@/api/index'
+  import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'
@@ -370,9 +370,12 @@
             if (res.status) {
               res.data.pathForm=[];
               res.data.path = '';
+              res.data.SSDB = _this.tableData.length <= 1 ? true : false;
               _this.tableData.push(res.data);
               _this.adjustChecked();
 
+              //获取目录
+              _this.getCataPath(_this.tableData.length-1,true,res.data);
             }
           });
         } else { // IP段扫描添加
@@ -395,7 +398,10 @@
                 if (!isAdded) {
                   retData[i].pathForm=[];
                   retData[i].path = '';
+                  retData[i].SSDB = _this.tableData.length <= 1 ? true : false;
                   _this.tableData.push(retData[i]);
+                  //获取目录
+                  _this.getCataPath(_this.tableData.length-1,true,retData[i]);
                 }
                 _this.adjustChecked();
 
@@ -616,6 +622,11 @@
       delNode (ip) {
         let index = this.getIndex(ip);
         this.tableData.splice(index, 1);
+        let len = this.tableData.length;
+
+        this.tableData.forEach(item => {
+          item.SSDB = (item.$index >= (len - 2) || len <= 2 )
+        })
       },
 
       //更改网络配置的标记
@@ -722,9 +733,6 @@
             _this.setAllCheck(defaultCk[i], v, true);
           }
           _this.setAllCheck(defaultCk['all'], v, true);
-
-          //获取目录
-          _this.getCataPath(i,true,v);
         });
       },
 
@@ -734,11 +742,28 @@
         });
       },
 
+      //判断ssdb只能选中两行
+      changeSSDBstate (val , index, row) {
+        let checked = 0;
+        this.tableData.forEach(item => {
+          if (item.SSDB)
+            checked++;
+        });
+
+        if (val) {
+          if (checked > 2) {
+            util.alert('只能选择2个节点配置SSDB。');
+            this.tableData[index].SSDB = false;
+          } else {
+            this.getCataPath(index,false,row);
+          }
+        }
+
+      },
+
       //获取数据目录
       getCataPath (index,tag,row) {
         let _this = this;
-
-
         if (!tag || util.isInArray([0,1],index)) {
           http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
             if (res.status) {
@@ -754,6 +779,7 @@
 
             }
           });
+
           return true;
         } else {
           return false;
