@@ -15,6 +15,7 @@ import routes from '../router.config.json'
 Vue.use(Router)
 
 const Login = resolve => require(['index@/pages/login'], resolve)
+const initPass = resolve => require(['index@/pages/initPass'], resolve)
 const Home = resolve => require(['index@/pages/home'], resolve)
 const SvgViewer = resolve => require(['index@/pages/svgViewer'], resolve)
 
@@ -58,6 +59,10 @@ const router = new Router({
       component: Login
     },
     {
+      path: '/initPass',
+      component: initPass
+    },
+    {
       path: '/home',
       component: Home,
       children: createRoute(routes)
@@ -70,7 +75,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login' || to.path === '/register' || store.state.accessToken) {
+  if (to.path === '/login' || to.path === '/register' || to.path === '/initPass' || store.state.accessToken) {
     next()
   } else {
     next({
