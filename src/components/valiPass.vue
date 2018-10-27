@@ -93,12 +93,15 @@
         if (num <= 1) {
           this.valiPass.risk = true;
           this.$emit('valiRisk',true);
-        } else if (num == 2) {
-          this.valiPass.weak = true;
-        } else if (num == 3) {
-          this.valiPass.good = true;
         } else {
-          this.valiPass.strong = true;
+          this.$emit('valiRisk',false);
+          if (num == 2) {
+            this.valiPass.weak = true;
+          }  else if (num == 3) {
+            this.valiPass.good = true;
+          } else {
+            this.valiPass.strong = true;
+          }
         }
       },
       //获取风险验证的方法

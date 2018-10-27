@@ -128,7 +128,6 @@
                                v-model="scope.row.SSDB"
                                :disabled="tableData.length <= 2"
                                change.native="getCataPath(scope.$index,false,scope.row)">
-
                   </el-checkbox>
                 </template>
               </el-table-column>
@@ -555,10 +554,6 @@
       buildCluster () {
         let _this = this;
         let validCheck = true;
-        if (_this.manageCount % 2 == 0) {
-          util.alert('管理节点数量必须为奇数。');
-          return;
-        }
         if (!_this.hasOneTypeNode) {
           util.alert('管理节点类型必须相同。');
           return;
@@ -599,17 +594,20 @@
           })(i)
         }
 
+
+        _this.tableData.forEach(item => {
+          let paths = '';
+          item.pathForm.forEach(function(v,i){
+            paths += (i==0 ? '' : ',') + v.catalog;
+          });
+          item.path = paths;
+        });
+
         http.getRequest('/config/deploy/buildCluster', 'post', _this.clusterCollection, 1800000).then(res => {
           _this.progress.show = false
           if (res.status) {
             util.refreshCloud();
-            _this.$alert(res.data, '', {
-              callback: action => {
-                _this.$router.push({
-                  path: '/home/cloud/list'
-                });
-              }
-            });
+            util.alert(res.data,'success');
           } // end if
         }); // end http*/
       },
@@ -739,6 +737,8 @@
       //获取数据目录
       getCataPath (index,tag,row) {
         let _this = this;
+
+
         if (!tag || util.isInArray([0,1],index)) {
           http.getRequest('/config/deploy/getDataPath','post',{requestIp:row.local_ip}).then(res => {
             if (res.status) {
@@ -751,7 +751,6 @@
                   catalog:v
                 });
               });
-              _this.tableData[index].path = res.data.data_path_list[0].data_path;
 
             }
           });
