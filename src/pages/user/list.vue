@@ -4,10 +4,10 @@
     <div class="toolbar" ref="toolbar">
       <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('resetPwz')" :disabled="!selection.length">重置密码</el-button>
       <el-button type="iconButton" icon="h-icon-upload" @click="showDialog('uploadUser')">导入用户</el-button>
-      <el-button type="iconButton" icon="h-icon-download">下载模板</el-button>
+      <el-button type="iconButton" icon="h-icon-download" @click="downloadTmp">下载模板</el-button>
     </div>
     <!-- 列表 -->
-    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false" :select="true" 
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false" :select="true"
       :isSingleMode="true" @select-change="handleSelectChange">
       <el-table-column prop="user_name" label="账号"></el-table-column>
       <el-table-column prop="customer_name" label="姓名"></el-table-column>
@@ -37,7 +37,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSubmit('resetPwz')">确 定</el-button>
+        <el-button type="primary" @click="submitReset('resetPwz')">确 定</el-button>
         <el-button @click="dialogVisible.resetPwz = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -77,7 +77,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
-        listUrl: '/mock/user/list',
+        listUrl: '/config/hosUser/list',
         queryForm: null,
         dialogVisible: {
           resetPwz: false,
@@ -129,8 +129,18 @@
         this.$nextTick(() => {
           this.$refs[name] && this.$refs[name].resetFields();
         })
-        
+
       },
+
+      //重置密码
+      submitReset (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+
+          }
+        })
+      },
+
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
@@ -149,6 +159,11 @@
       },
       handleUploadClose () {
         this.fileList = []
+      },
+
+      //下载模板
+      downloadTmp () {
+
       }
     }
   }

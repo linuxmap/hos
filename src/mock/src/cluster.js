@@ -102,3 +102,23 @@ mockAdapter.onPost('/config/deploy/getDataPath').reply((config) => {
     }, 1000)
   })
 })
+
+mockAdapter.onPost('/config/group/asListNoGroup').reply((config) => {
+  return new Promise((resolve, reject) => {
+    const params = config.data
+    const pageSize = 3
+    const result = MockJS.mock({
+      [`list|${pageSize}`]: [{
+        'server_ip|1': ['10.192.71.154','10.192.71.144','10.192.71.114'],
+        'server_id': /\d{9}/,
+        'status|1': ['0','1']
+      }]
+    })
+    setTimeout(() => {
+      resolve([200, {
+        status: true,
+        data: result
+      }])
+    }, 1000)
+  })
+})

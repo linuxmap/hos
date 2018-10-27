@@ -47,7 +47,10 @@
                     v-for="(list,index) in ipList"
                     :key="list.server_id"
                     :label="list.server_ip"
-                    :value="list.server_id">
+                    :value="list.server_id"
+                    :disabled="list.status == 0">
+                    <span style="float: left">{{ list.server_ip }}</span>
+                    <span style="float: right; font-size: 13px" v-html="getServerStatus(list.status)"></span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -70,7 +73,6 @@
   </page-container>
 </template>
 <script>
-
 import http from 'index@/api/index';
 //import http from '@/libs/mockHttp';
 import util from '@/utils/util'
@@ -176,8 +178,17 @@ export default {
         .then(res => {
         if (res.status) {
           this.ipList = res.data;
+
         }
       })
+    },
+
+    //获取接入服务器状态 在线不在线
+    getServerStatus (state) {
+      return util.setTdStatus('config.node.onlineState',{
+        'success': [1],
+        'error': [0]
+      }, state, '-');
     },
 
     //删除接入服务器数据
