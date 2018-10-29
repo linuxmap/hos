@@ -67,8 +67,8 @@
    </div>
 </template>
 <script>
-  //import http from 'index@/api/index'
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index'
+ //import http from '@/libs/mockHttp'
   import token from 'index@/libs/token'
   import { use } from 'hui/lib/locale'
   import enLocale from 'hui/lib/locale/lang/en'
@@ -171,10 +171,14 @@
       signIn (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            // this.$router.push('/home')
-            http.getRequest('/platform/login', 'post', this.signin).then(res => {
+            let params = {
+              userName: this.signin.userName,
+              passWord: this.encrypt.encrypt(this.signin.passWord),
+              vCode: this.signin.vCode
+            };
+            http.getRequest('/platform/login', 'post', params).then(res => {
               if (res.status === true) {
-                token.set(res.data.user.userName)
+                token.set(res.data);
                 this.$router.push('/cluster')
               } else {
                 this.$message.error({
