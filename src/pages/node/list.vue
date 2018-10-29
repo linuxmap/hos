@@ -13,14 +13,14 @@
       @select-change="handleSelectChange">
       <el-table-column label="节点IP【业务/数据】" width="180">
         <template slot-scope="scope">
-          {{scope.row.serverIp + '/' + scope.row.serverDataIp}}
+          {{scope.row.server_ip + '/' + scope.row.server_data_ip}}
         </template>
       </el-table-column>
-      <el-table-column prop="serverId" label="节点ID" width="160"></el-table-column>
-      <el-table-column prop="groupId" label="组ID"></el-table-column>
+      <el-table-column prop="server_id" label="节点ID" width="160"></el-table-column>
+      <el-table-column prop="group_id" label="组ID"></el-table-column>
       <el-table-column label="在线状态">
         <template slot-scope="scope">
-          <span v-html="getStatus(scope.row.status)"></span>
+          <span v-html="getStatus(scope.row.hgw_status)"></span>
         </template>
       </el-table-column>
       <el-table-column prop="cpu" label="CPU消耗（%）"></el-table-column>
@@ -52,21 +52,20 @@
     </el-dialog>
 
     <!-- 升级 -->
-    <el-dialog title="节点升级" :area="600" :visible.sync="dialogVisible.upgrade" :close-on-click-modal="false"
-      @close="handleUpgradeClose">
+    <el-dialog title="节点升级" :area="600" :visible.sync="dialogVisible.upgrade" :close-on-click-modal="false">
       <el-form ref="upgrade" label-width="120px"  content-width="360px" :model="dataForm" :rules="upgradeRules">
         <el-form-item label="升级包" prop="file">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleFileChange"
-            :on-remove="handleFileRemove"
-            :file-list="fileList"
-            :multiple="false"
-            accept=".zip">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传zip文件，且不超过500kb</div>
-          </el-upload>
+          <h-upload
+              action="/config/node/unity_upgrade_dlg"
+              name="file"
+              text="请选择"
+              :auto-upload=false
+              ref="upload"
+              @change="chooseFile"
+              :on-success="uploadSuccess">
+              <input name="node_ip" type="hidden" :value="dataForm.server_ip"/>
+            </h-upload>
+            <span :title="dataForm.file">{{dataForm.file|formatFilename}}</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -128,7 +127,7 @@
         </div>
       </el-alert>
       <el-form ref="close" label-width="120px"  content-width="360px" :model="dataForm" :rules="closeFormRules">
-        <el-form-item label="登录密码" prop="login_password">
+        <el-form-item label="登录密码" prop="login_pin">
           <el-input v-model="dataForm.login_password"></el-input>
         </el-form-item>
       </el-form>
@@ -140,6 +139,7 @@
   </page-container>
 </template>
 <script>
+  import http from '@/api/index' 
   import pageTable from '@/components/pageTable'
   import util from '@/utils/util'
   import validates from '@/utils/form-validate'
@@ -152,7 +152,7 @@
     },
     data () {
       return {
-        listUrl: '/config/node/get_all_ip',
+        listUrl: '/config/node/index_access',
         queryForm: null,
         selection: [],
         dataForm: {},
@@ -186,7 +186,8 @@
           login_password: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
-        }
+        },
+        loading: null
       }
     },
     computed: {
@@ -214,23 +215,27 @@
           util.alert2({message: '请选择一个节点'})
           return
         }
-        switch (name) {
-          case 'businessIp':
-            this.dataForm = {
+        const switchFn = {
+          'businessIp': () => {
+            return {
               business_ip: '',
-              data_ip: ''
+              data_ip: '',
+              node_ip: this.selection[0].server_ip
             }
-            break;
-          case 'upgrade':
-            this.dataForm = {file: ''}
-            break;
-          case 'reload':
+          },
+          'upgrade': () => {
+            return {file: '', node_ip: this.selection[0].server_ip}
+          },
+          'reload': () => {
+            this.dataForm = {node_ip: this.selection[0].server_ip}
             this.handleReload()
-            break;
-          case 'close':
-            this.dataForm = {login_password: ''}
-            break;  
+            return this.dataForm     
+          },
+          'close': () => {
+            return {login_pin: '', nodeIPs: this.selection.join(',')}
+          }
         }
+        this.dataForm = (switchFn[name])()
         this.showDialog(name)
       },
       showDialog (name) {
@@ -239,30 +244,71 @@
           this.$refs[name] && this.$refs[name].resetFields();
         })
       },
-      // 重启
-      handleReload () {
-        util.confirm(() => {
-          console.log('执行重启')
-        },'确定执行此操作？')
-      },
       handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
+        this.$refs[name].validate(async (valid) => {
           if (valid) {
-            console.log('执行提交')
+            const switchFn = {
+              'businessIp': () => {
+                this.setBusinessDataIp()
+              },
+              'upgrade': () => {
+                this.handleUpgrade()
+              },
+              'close': () => {
+                this.handleClose()
+              }
+            }
+            const action = switchFn[name]
+            action && await action()
+            this.dialogVisible[name] = false
           } else {
-            console.log('表单不合法')
+            this.$message({type: 'warning', message: '请将表单填写完整'})
           }
         })
       },
-      handleFileChange (file, fileList) {
-        this.fileList = [file]
-        this.dataForm.file = file.url
+      async setBusinessDataIp () {
+        this.loading = this.$loading()
+        const result = await http.getRequest('/config/node/set_all_ip', 'post', this.dataForm)
+        this.loading.close()
+        this.$message({type: 'success', message: result.data})
+        this.dialogVisible.businessIp = false
       },
-      handleFileRemove (file, fileList) {
-        this.dataForm.file = '';
+      handleUpgrade () {
+        this.loading = this.$loading({text: '上传中...'})
+        this.$refs.upload.submit()
       },
-      handleUpgradeClose () {
-        this.fileList = []
+      //选择文件
+      chooseFile (name) {
+        this.dataForm.file = name;
+      },
+      //导入成功
+      uploadSuccess (response, file) {
+        this.loading.close()
+        this.$message({
+          type: response.status ? 'success' : 'error', 
+          message: response.data,
+          showClose: true,
+          duration: response.status ? 3000 : 0
+        })
+      },
+      // 重启
+      handleReload () {
+        util.confirm(async () => {
+          this.loading = this.$loading({text: '正在重启...'})
+          const res = await http.getRequest('/config/node/rebooting', 'post', this.dataForm)
+          this.loading.close()
+          if (res.status) {
+            this.$message({type: 'success', message: res.data})
+          }
+        },'确定执行此操作？')
+      },
+      async handleClose () {
+        this.loading = this.$loading()
+        const res = http.getRequest('/config/node/shutdown', 'post', this.dataForm)
+        this.loading.close()
+        if (res.status) {
+          this.$message({type: 'success', message: res.data})
+        }
       },
       handleSearch () {
       },
