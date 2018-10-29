@@ -76,12 +76,12 @@
 
     <!-- 节点扩容 -->
     <el-dialog title="节点扩容" :area="600" :visible.sync="dialogVisible.expand" :close-on-click-modal="false">
-      <el-form ref="expand" :inline="true" :model="expandForm">
-        <el-form-item label="节点IP" prop="ip">
-          <el-input v-model="expandForm.ip"></el-input>
+      <el-form ref="expand" :inline="true" :model="expandForm" :rules="businessIpRules">
+        <el-form-item label="节点IP" prop="node_ip">
+          <el-input v-model="expandForm.node_ip"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">检测并添加</el-button>
+          <el-button type="primary" @click="checkIp">检测并添加</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -171,6 +171,9 @@
           data_ip: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
             {validator: validates.ipv4, trigger: 'blur change' }
+          ],
+          node_ip: [
+            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
         },
         fileList: [],
@@ -239,6 +242,9 @@
         this.showDialog(name)
       },
       showDialog (name) {
+        if (name === 'expand') {
+          this.expandList = []
+        }
         this.dialogVisible[name] = true;
         this.$nextTick(() => {
           this.$refs[name] && this.$refs[name].resetFields();
@@ -310,7 +316,23 @@
           this.$message({type: 'success', message: res.data})
         }
       },
-      handleSearch () {
+      checkIp () {
+        this.$refs.expand.validate(async (valid) => {
+          this.loading = this.$loading()
+          const res = await http.getRequest('/config/node/get_node_info', 'post', this.expandForm)
+          if (res.status) {
+            const payload = {
+              addNodeList: ''
+            }
+            const result = await http.getRequest('/config/node/expand_node', 'post', payload)
+            if (result.status) {
+            } else {
+            }
+          } else {
+            this.loading.close()
+            this.$message({type: 'warning', message: 'ip不存在'})
+          }
+        })
       },
       gotoStorageVolumes (row) {
         util.jump('/node/volumes', {id: row.id})
