@@ -3,7 +3,7 @@
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
       <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('resetPwz')" :disabled="!selection.length">重置密码</el-button>
-      <el-button type="iconButton" icon="h-icon-upload" @click="showDialog('uploadUser')">导入用户</el-button>
+      <el-button type="iconButton" icon="h-icon-import" @click="showDialog('uploadUser')">导入用户</el-button>
       <el-button type="iconButton" icon="h-icon-download" @click="downloadTmp">下载模板</el-button>
     </div>
     <!-- 列表 -->
@@ -18,25 +18,26 @@
     </page-table>
 
     <!--start输入密码框-->
-    <enter-pass title="重置密码" :passDlg="passDlg" @closeDlg="passDlg = false" @submit="submitResetPass"></enter-pass>
+    <enter-pass title="重置密码" :step="true" :passDlg="passDlg" @closeDlg="passDlg = false" @submit="submitResetPass"></enter-pass>
     <!--end输入密码框-->
 
     <!-- 导入用户 -->
-    <el-dialog title="导入用户" :area="600" :visible.sync="dialogVisible.uploadUser" :close-on-click-modal="false"
-      @close="handleUploadClose">
+    <el-dialog title="导入用户" :area="600" :visible.sync="dialogVisible.uploadUser" :close-on-click-modal="false">
       <el-form ref="uploadUser" label-width="120px"  content-width="360px" :model="dataForm" :rules="uploadRules">
-        <el-form-item label="导入文件" prop="file">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleFileChange"
-            :on-remove="handleFileRemove"
-            :file-list="fileList"
-            :multiple="false"
-            accept=".txt">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传txt文件，且不超过500kb</div>
-          </el-upload>
+        <el-form-item label="导入文件" prop="file" class="is-required" :class="{noTag:noTag}">
+          <h-upload
+            action="/config/hosUser/import_user"
+            name="file"
+            type="primary"
+            text="请选择"
+            :auto-upload=false
+            accept=".txt"
+            ref="upload"
+            @change="chooseFile"
+            :on-success="uploadSuccess">
+            <input name="token" type="hidden" :value="$store.state.accessToken"/>
+          </h-upload>
+          {{fileName}}
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -51,6 +52,9 @@
   import util from '@/utils/util'
   import { mapState } from 'vuex'
   import enterPass from 'index@/components/enterPass.vue';
+  import http from 'index@/api/index';
+  import { JSEncrypt } from 'jsencrypt';
+
   export default {
     name: 'clusterList',
     components: { pageTable,enterPass },
@@ -58,6 +62,8 @@
     data () {
       return {
         util:util,
+        fileName:'',
+        noTag: false,
         listUrl: '/config/hosUser/list',
         queryForm: null,
         dialogVisible: {
@@ -90,6 +96,10 @@
       }
     },
     created () {
+      //设置公钥
+      this.encrypt = new JSEncrypt();
+      let publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKZKgabcPik14D8DSWVMMNjo+08NQNxRTjH6bBlD8CaAviLdN+EVcBR4wCpSQrzd1gngafZGVzBFWKitxh5fZcAHq3BJjhtVvpsuRgxLNmgWk8Mt1nzxSkGqe5hiWZ5i2p9dN/iq6kZi0cPlkIv55D4AjD6g82durpL4qKKCVm6wIDAQAB";
+      this.encrypt.setPublicKey(publicKey);
     },
     methods: {
       handleSelectChange (selection) {
@@ -115,28 +125,26 @@
       },
 
       //重置密码
-      submitResetPass (name) {
-        alert('重置密码');
+      submitResetPass (pass) {
+        http.getRequest('/config/hosUser/reset_password', 'post',
+          {user_name: this.selection[0].user_name,user_pin:this.encrypt.encrypt(pass)})
+          .then(res => {
+            if (res.status) {
+                util.alert('重置成功','success');
+                this.passDlg = false;
+            } else {
+                util.alert(res.data);
+            }
+        })
       },
 
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            console.log('执行提交')
-          } else {
-            console.log('表单不合法')
+            util.showMask('模板导入中...');
+            this.$refs.upload.submit();
           }
         })
-      },
-      handleFileChange (file, fileList) {
-        this.fileList = [file]
-        this.dataForm.file = file.url
-      },
-      handleFileRemove (file, fileList) {
-        this.dataForm.file = '';
-      },
-      handleUploadClose () {
-        this.fileList = []
       },
 
       tplDoNull(row, column, val) {
@@ -145,8 +153,31 @@
 
       //下载模板
       downloadTmp () {
+        let _token = window.localStorage.accessToken;
+        window.open('/config/hosUser/download?token=' + _token);
+      },
 
-      }
+      //选择文件
+      chooseFile (name) {
+        this.noTag = true;
+        this.dataForm.file = name;
+        this.fileName = name;
+      },
+
+      uploadSuccess (response, file) {
+        util.hideMask();
+        this.fileName = '';
+        this.noTag = false;
+        if (response.status) {
+          util.alert(response.data, "success");
+          this.dialogVisible.uploadUser = false;
+        } else {
+          util.alert(response.data)
+        }
+        this.fileName = '';
+        //刷新页面
+        this.$refs.table.getData();
+      },
     }
   }
 </script>

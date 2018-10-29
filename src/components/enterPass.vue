@@ -37,7 +37,22 @@
   import { JSEncrypt } from 'jsencrypt';
 
   export default {
-    props: ['passDlg','title','showLoad'],
+   // props: ['passDlg','title','showLoad'],
+    props:{
+       passDlg: {
+         type: Boolean,
+         required: true
+       },
+       title: {
+         type: String
+       },
+       showLoad:{
+          type: Boolean
+       },
+       step: {
+          type: Boolean   //一次校验
+       }
+    },
     data () {
       return {
         loadingNode: false,
@@ -68,15 +83,20 @@
       submitEnterPass () {
         this.$refs.pass.validate((valid) => {
           if (valid) {
-            http.getRequest('/config/user/validatePin', 'post', {'password': this.encrypt.encrypt(this.passForm.passWord)})
-              .then(res => {
-                if (res.status) {
-                  this.closePassDialog();
-                  this.$emit('submit');
-                } else {
-                  util.alert('用户密码错误，请重新输入。');
-                }
-              });
+            if (this.step) {
+              this.$emit('submit',this.passForm.passWord);
+            } else {
+              http.getRequest('/config/user/validatePin', 'post', {'password': this.encrypt.encrypt(this.passForm.passWord)})
+                .then(res => {
+                  if (res.status) {
+                    this.closePassDialog();
+                    this.$emit('submit');
+                  } else {
+                    util.alert('用户密码错误，请重新输入。');
+                  }
+                });
+            }
+
           }
         });
       }
