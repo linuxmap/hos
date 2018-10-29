@@ -3,8 +3,39 @@ let data = {
   log: {},
   bucket:{},
   node: {},
-  cluster:{}
+  common:{},
+  cluster:{},
+  cloud:{}
 };
+
+// ====================== Common ======================
+data.common.innerServerError      = '服务器内部错误。';
+data.common.requestTimeout        = '请求超时。';
+data.common.tbAction              = '操作';
+data.common.tbNodeIp              = '节点IP';
+data.common.tbOnline              = '在线状态';
+data.common.tplOnlineState1       = '在线';
+data.common.tplOnlineState0       = '离线';
+data.common.tbRunningState        = '运行状态';
+data.common.tplRunningState1      = '正常';
+data.common.tplRunningState2      = '异常';
+data.common.tplRunningState3      = '不可用';
+data.common.tplNormal             = '正常';
+data.common.tplAbnormal           = '异常';
+data.common.tplUnavailable        = '不可用';
+data.common.tplLow                = '低';
+data.common.tplMedium             = '中';
+data.common.tplHigh               = '高';
+data.common.tplFullSpeed          = '全速';
+data.common.tbConsumption         = '消耗[CPU/Memory]（%）';
+data.common.tbNetworkIO           = '网络[in/out]（Mbps）';
+data.common.tbVersion             = '版本';
+data.common.btnOK                 = '确 定';
+data.common.btnCancel             = '取 消';
+data.common.confirm_on            = '确定开启？'
+data.common.confirm_off           = '确定关闭？'
+data.common.btnSet                = '设置';
+data.common.noChange              = '修改信息没有变化。';
 
 // ====================== 校验 ======================
 data.validator.required = '该输入项为必填项。';
@@ -100,8 +131,9 @@ data.cluster.tbTimeOsdOffline = '存储节点下线启动重构(分钟)';
 data.cluster.dlgCreateCluster0 = '组建集群失败';
 data.cluster.setParam = '设置参数';
 data.cluster.expandNode = '集群扩容';
-
 data.cluster.status1 = '已初始化';
 data.cluster.status0 = '未初始化';
+
+data.cloud.deleteCloudMsg = '1、{x}会造成数据丢失，请慎重操作。\n2、通过密码验证才能执行此操作。';
 
 export default data;

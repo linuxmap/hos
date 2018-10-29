@@ -10,37 +10,16 @@
     <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="false" :select="true"
       :isSingleMode="true" @select-change="handleSelectChange">
       <el-table-column prop="user_name" label="账号"></el-table-column>
-      <el-table-column prop="customer_name" label="姓名"></el-table-column>
-      <el-table-column prop="mail_box" label="邮箱"></el-table-column>
-      <el-table-column prop="telephone_num" label="联系电话"></el-table-column>
-      <el-table-column prop="user_create_time" label="创建时间"></el-table-column>
+      <el-table-column prop="customer_name" label="姓名" :formatter="tplDoNull"></el-table-column>
+      <el-table-column prop="mail_box" label="邮箱" :formatter="tplDoNull">
+      </el-table-column>
+      <el-table-column prop="telephone_num" label="联系电话" :formatter="tplDoNull"></el-table-column>
+      <el-table-column prop="user_create_time" label="创建时间" :formatter="tplDoNull"></el-table-column>
     </page-table>
 
-    <!-- 重置密码 -->
-    <el-dialog title="重置密码" :area="600" :visible.sync="dialogVisible.resetPwz" :close-on-click-modal="false">
-      <el-alert
-        title="提示"
-        type="error"
-        simple
-        show-icon
-        icon="h-icon-circle_info"
-        :closable="false"
-        style="margin-bottom: 20px;">
-        <div style="color: rgba(0,0,0,.7)">
-          <p>1、文本框输入yes, 则执行密码重置操作</p>
-          <p>2、用户获得新密码, 成功登录系统后, 请先修改密码</p>
-        </div>
-      </el-alert>
-      <el-form ref="resetPwz" label-width="120px"  content-width="360px" :model="dataForm" :rules="resetPwzRules">
-        <el-form-item label="确定重置密码" prop="key">
-          <el-input v-model="dataForm.key"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitReset('resetPwz')">确 定</el-button>
-        <el-button @click="dialogVisible.resetPwz = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <!--start输入密码框-->
+    <enter-pass title="重置密码" :passDlg="passDlg" @closeDlg="passDlg = false" @submit="submitResetPass"></enter-pass>
+    <!--end输入密码框-->
 
     <!-- 导入用户 -->
     <el-dialog title="导入用户" :area="600" :visible.sync="dialogVisible.uploadUser" :close-on-click-modal="false"
@@ -71,12 +50,14 @@
   import pageTable from '@/components/pageTable'
   import util from '@/utils/util'
   import { mapState } from 'vuex'
+  import enterPass from 'index@/components/enterPass.vue';
   export default {
     name: 'clusterList',
-    components: { pageTable },
+    components: { pageTable,enterPass },
     props: ['breadcrumbObj'],
     data () {
       return {
+        util:util,
         listUrl: '/config/hosUser/list',
         queryForm: null,
         dialogVisible: {
@@ -96,7 +77,8 @@
           ]
         },
         fileList: [],
-        selection: []
+        selection: [],
+        passDlg: false
       }
     },
     computed: {
@@ -116,10 +98,10 @@
       checkSelection (name) {
         if (this.selection && !this.selection.length) {
           util.alert2({message: '请选择一个节点'})
-          return
+          return;
         }
         this.dataForm = {key: ''}
-        this.showDialog(name)
+        this.passDlg = true;
       },
       showDialog (name) {
         this.dialogVisible[name] = true;
@@ -133,12 +115,8 @@
       },
 
       //重置密码
-      submitReset (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-
-          }
-        })
+      submitResetPass (name) {
+        alert('重置密码');
       },
 
       handleSubmit (name) {
@@ -159,6 +137,10 @@
       },
       handleUploadClose () {
         this.fileList = []
+      },
+
+      tplDoNull(row, column, val) {
+        return util.tplDoNull(val,'--');
       },
 
       //下载模板

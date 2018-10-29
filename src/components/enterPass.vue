@@ -15,8 +15,8 @@
       :rules="passRules"
       message-position="right">
       <div class="el-alert el-alert--error is-simple" style="margin-bottom:15px;">
-        <i class="el-alert__icon el-icon-warning is-big"></i>
-        <div class="el-alert__content">
+        <i class="el-alert__icon el-icon-warning is-big" style="vertical-align: middle"></i>
+        <div class="el-alert__content" style="padding-left:10px">
           <div class="el-alert__title">{{$t("config.cloud.deleteCloudMsg",{x:title})}}</div>
         </div>
       </div>
@@ -46,7 +46,7 @@
         },
         passRules: {
           passWord: [
-            { required: true, message: this.$t('config.validator.ip'), trigger: 'blur' }
+            { required: true, message: '请输入密码', trigger: 'blur' }
           ]
         }
       }

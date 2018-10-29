@@ -3,8 +3,37 @@ let data = {
   bucket: {},
   validator:{},
   node: {},
-  cluster:{}
+  common:{},
+  cluster:{},
+  cloud:{}
 };
+
+// ====================== Common ======================
+data.common.innerServerError      = 'Internal Server Error.';
+data.common.requestTimeout        = 'Request timeout.';
+data.common.tbAction              = 'Operation';
+data.common.tbNodeIp              = 'IP Address';
+data.common.tbOnline = 'Online State';
+data.common.tplOnlineState1 = 'Online';
+data.common.tplOnlineState0 = 'Offline';
+data.common.tbRunningState = 'Running State';
+data.common.tplRunningState1 = 'Normal';
+data.common.tplRunningState2 = 'Abnormal';
+data.common.tplRunningState3 = 'Unavailable';
+data.common.tplNormal = 'Normal';
+data.common.tplAbnormal = 'Abnormal';
+data.common.tplUnavailable = 'Unavailable';
+data.common.tplLow = 'Low';
+data.common.tplMedium = 'Medium';
+data.common.tplHigh = 'High';
+data.common.tplFullSpeed = 'Full Speed';
+data.common.tbConsumption = 'Consumption [CPU/Memory] (%)';
+data.common.tbNetworkIO = 'Network [in/out] (Mbps)';
+data.common.tbVersion = 'Version';
+data.common.btnOK = 'OK';
+data.common.btnCancel = 'Cancel';
+data.common.btnSet = 'Set';
+data.common.noChange = 'The information has not changed.';
 
 // ====================== 校验 ======================
 data.validator.ip = 'IP address is required.';
@@ -98,8 +127,9 @@ data.cluster.tbTimeOsdOffline = '存储节点下线启动重构';
 data.cluster.dlgCreateCluster0 = 'Creating cluster failed.';
 data.cluster.setParam = '设置参数';
 data.cluster.expandNode = '集群扩容';
-
 data.cluster.status1 = '已初始化';
 data.cluster.status0 = '未初始化';
+
+data.cloud.deleteCloudMsg = '1、{x}会造成数据丢失，请慎重操作。\n2、通过密码验证才能执行此操作。';
 
 export default data;
