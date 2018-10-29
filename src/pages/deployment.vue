@@ -156,11 +156,8 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="190" class-name="netSet">
+            <el-table-column prop="address" :label="$t('config.cluster.tbAction')" width="110" class-name="netSet">
               <template slot-scope="scope">
-                <el-button type="text" class="netSetBtn" size="small" @click="netCardDlg = true;netCardIp=scope.row.local_ip;nodeType = scope.row.node_type">
-                  网络配置<i v-if="scope.row.isSet == '0'" class="nettag h-icon-circle_notice"></i><i v-else-if="scope.row.isSet == '1'" class="nettag h-icon-circle_success"></i><i style="visibility: hidden" v-else class="nettag h-icon-circle_notice"></i>
-                </el-button>
                 <el-button type="text" size="small" @click="renewNode(scope.row.local_ip)" ref="refreshBtn">
                   {{$t('config.cluster.btnRefresh')}}
                 </el-button>

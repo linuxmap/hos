@@ -1,3 +1,4 @@
+<!--设置业务IP、数据IP，修改虚拟IP，网卡绑定、解绑，修改绑定模式这些功能-->
 <style lang="less">
   .netCard {
   .el-form-item__label {
@@ -28,8 +29,8 @@
   }
   .ipForm{
     position:absolute;
-    right:-20px;
-    top:0px;
+    right: 150px;
+    top: 12px;
   }
   .ipWrap{
     position:relative;
@@ -116,7 +117,7 @@
       :Dheight="nodeIp ? 200 :(height-200)/2"
       :width="290">
       <el-table-column type="selection" width="40" align="center" :selectable="selectable"></el-table-column>
-      <el-table-column type="index" width="50" :label="$t('overview.alarm.th1')" class-name="optBtn" align="center"></el-table-column>
+      <el-table-column type="index" width="50" :label="$t('common.index')" class-name="optBtn" align="center"></el-table-column>
       <el-table-column prop="name" label="网口名称" min-width="100">
         <template scope="scope">{{ scope.row.name || '--' }}</template>
       </el-table-column>
@@ -148,7 +149,7 @@
     </page-table>
     <!--网口列表 end -->
 
-    <div class="toolbar" ref="toolbar" style="margin: 40px 0 0 0 ;">
+    <div class="toolbar" ref="toolbar" style="margin: 15px 0 0 0 ;">
       <!-- 一键部署和集群部署  管理节点设置ip的功能屏蔽 -->
       <el-button
         v-show="!deployment || (deployment && nodeType != '1')"
