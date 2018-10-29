@@ -152,7 +152,7 @@
     },
     data () {
       return {
-        listUrl: '/mock/node/list',
+        listUrl: '/config/node/get_all_ip',
         queryForm: null,
         selection: [],
         dataForm: {},
