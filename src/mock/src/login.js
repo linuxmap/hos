@@ -6,7 +6,7 @@ mockAdapter.onPost('/platform/login').reply(config => {
   const { userName, passWord } = JSON.parse(config.data)
   const user = {}
   return new Promise((resolve, reject) => {
-    if (userName === userInfo.userName && passWord === userInfo.passWord) {
+   /* if (userName === userInfo.userName && passWord === userInfo.passWord) {*/
       user.userName = userName
       resolve([200, {
         status: true,
@@ -15,13 +15,13 @@ mockAdapter.onPost('/platform/login').reply(config => {
           user: user
         }
       }])
-    } else {
+    /*} else {
       resolve([200, {
         status: false,
         data: {
           msg: 'login error'
         }
       }])
-    }
+    }*/
   })
 })

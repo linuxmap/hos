@@ -68,7 +68,7 @@
 </template>
 <script>
   import http from 'index@/api/index'
- //import http from '@/libs/mockHttp'
+  //import http from '@/libs/mockHttp'
   import token from 'index@/libs/token'
   import { use } from 'hui/lib/locale'
   import enLocale from 'hui/lib/locale/lang/en'
@@ -142,6 +142,14 @@
       }
     },
     created () {
+      //判断是否初始化密码
+      http.getRequest('/platform/login/isInitPass', 'post')
+        .then(res => {
+          if (res.status && !res.data) {
+            this.$router.push('/initPass');
+          }
+        });
+
       // 测试 store 模块
       this.$store.commit('test/asignTestInfo', {age: 123})
       // console.log(this.$store.state.test.testInfo)
