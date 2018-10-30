@@ -1,5 +1,10 @@
 [
   {
+    "title": "menu.main",
+    "icon": "h-icon-home",
+    "router": "/main"
+  },
+  {
     "title": "menu.deployment",
     "icon": "h-icon-stick",
     "router": "/deployment"

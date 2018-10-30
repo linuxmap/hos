@@ -148,7 +148,10 @@
     name: 'clusterList',
     components: { pageTable },
     props: {
-      breadcrumbObj: {}
+      breadcrumbObj: {
+        type: Object,
+        default: {}
+      }
     },
     data () {
       return {

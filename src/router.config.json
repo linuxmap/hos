@@ -115,5 +115,10 @@
     "breadcrumb": ["menu.config"],
     "router": ["/configuration"],
     "menuCode": ["115"]
+  },
+  {
+    "path": "/main",
+    "component": "main/main",
+    "menuCode": ["116"]
   }
 ]
