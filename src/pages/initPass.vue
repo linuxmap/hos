@@ -13,13 +13,13 @@
           <el-form-item label="管理员信息" class="title">
           </el-form-item>
           <el-form-item label="管理员帐号">
-            <el-input value="sysadmin" disabled></el-input>
+            <el-input v-model="initForm.username" disabled></el-input>
           </el-form-item>
           <el-form-item label="初始化密码" prop="password">
-            <vali-pass v-model="formImport.password" @valiRisk="risk=arguments[0]"></vali-pass>
+            <vali-pass v-model="initForm.password" @valiRisk="risk=arguments[0]"></vali-pass>
           </el-form-item>
-          <el-form-item label="确认密码" prop="confirm_password">
-            <el-input type="password" v-model="formImport.confirm_password"></el-input>
+          <el-form-item label="确认密码" prop="newPassword">
+            <el-input type="password" v-model="initForm.newPassword"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="buildCount('initForm')">创建帐号</el-button>
@@ -34,6 +34,7 @@
   import util from 'index@/utils/util'
   import http from 'index@/api/index'
   import valiPass from '@/components/valiPass'  //密码校验组件
+  import { JSEncrypt } from 'jsencrypt'
 
   export default {
     components: {
@@ -44,11 +45,9 @@
         active: 0,
         labelPosition: 'right',
         initForm: {
-          branch_company: '',
-          project_name: '',
-          applicant_name: '',
-          applicant_tel:'',
-          description:''
+          username: 'sysadmin',
+          password: '',
+          newPassword: ''
         },
         valiPass: {
           show:false, //密码强度校验
@@ -64,17 +63,11 @@
             {min: 8, max: 16, message: this.$t('common.rangeStr', {x: 8, y: 16}), trigger: 'blur'},
             {validator:this.valiRisk,trigger:'blur'}
           ],
-          confirm_password: [
+          newPassword: [
             { required: true,message: this.$t('pass.v3'),trigger: 'blur'   },
             { min:8,max:16,message: this.$t('pass.length',{x:8,y:16}),trigger: 'blur'   },
             {validator:this.validatePass,trigger:'blur'}
           ]
-        },
-
-        formImport: {
-          storos:'',
-          password:'',
-          confirm_password:''
         },
         noTag: false,
         fileName: '',
@@ -83,6 +76,18 @@
     },
     created () {
 
+      //判断是否初始化密码
+      http.getRequest('/platform/login/isInitPass', 'post')
+        .then(res => {
+        if (res.status && res.data) {
+        this.$router.push('/login');
+      }
+    });
+
+      //设置公钥
+      this.encrypt = new JSEncrypt();
+      let publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKZKgabcPik14D8DSWVMMNjo+08NQNxRTjH6bBlD8CaAviLdN+EVcBR4wCpSQrzd1gngafZGVzBFWKitxh5fZcAHq3BJjhtVvpsuRgxLNmgWk8Mt1nzxSkGqe5hiWZ5i2p9dN/iq6kZi0cPlkIv55D4AjD6g82durpL4qKKCVm6wIDAQAB";
+      this.encrypt.setPublicKey(publicKey);
     },
     methods: {
 
@@ -116,7 +121,19 @@
       buildCount (form) {
         this.$refs[form].validate((valid) => {
           if (valid) {
-            alert('创建帐号');
+            let params = {
+              username: this.initForm.username,
+              password: this.encrypt.encrypt(this.initForm.password),
+              newPassword: this.encrypt.encrypt(this.initForm.newPassword)
+            };
+            http.getRequest('/platform/login/initPin', 'post', params).then(res => {
+              if (res.status) {
+                util.alert('初始化密码成功','success');
+                this.$router.push('/login');
+              } else {
+                util.alert(res.data);
+              }
+            });
           }
         })
       }

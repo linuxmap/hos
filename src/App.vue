@@ -22,6 +22,7 @@ export default {
     }
   },
   created () {
+
   }
 }
 </script>

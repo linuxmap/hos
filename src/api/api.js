@@ -20,9 +20,9 @@ http.interceptors.response.use(function (response) {
     window.localStorage.removeItem('gDeployMode');
     window.localStorage.removeItem('gCloudType');
     window.sessionStorage.removeItem('clouds');
-    vm.$store.dispatch('setToken', null);
-    vm.$store.dispatch('setMask', false);
-    router.push({ path: '/login' });
+   // vm.$store.dispatch('setToken', null);
+   // vm.$store.dispatch('setMask', false);
+   // router.push({ path: '/login' });
   }
   //没有权限
   if (response.data.data === 'noPermission' ){

@@ -69,7 +69,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
-        listUrl: '/mock/cluster/list',
+        listUrl: '/config/cloud/getCloud',
         queryForm: null,
         dialogVisible: false,
         dataForm: {},
