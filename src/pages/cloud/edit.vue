@@ -48,6 +48,7 @@
         cloudRules: {
           cloud_id: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 1, max: 64, message: this.$t('common.rangeStr',{x: 1, y: 64}), trigger: 'blur'},
             {validator: validates.utils_string1, trigger: 'blur change'}
           ],
           cloud_ip: [
@@ -71,10 +72,12 @@
           ],
           cloud_ak: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 3, max: 64, message: this.$t('common.rangeStr',{x: 3, y: 64}), trigger: 'blur'},
             {validator: validates.utils_string, trigger: 'blur'}
           ],
           cloud_sk: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 3, max: 64, message: this.$t('common.rangeStr',{x: 3, y: 64}), trigger: 'blur'},
             {validator: validates.utils_string, trigger: 'blur'}
           ]
         }

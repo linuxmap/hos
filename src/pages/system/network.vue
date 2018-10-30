@@ -119,27 +119,27 @@
       <el-table-column type="selection" width="40" align="center" :selectable="selectable"></el-table-column>
       <el-table-column type="index" width="50" :label="$t('common.index')" class-name="optBtn" align="center"></el-table-column>
       <el-table-column prop="name" label="网口名称" min-width="100">
-        <template scope="scope">{{ scope.row.name || '--' }}</template>
+        <template slot-scope="scope">{{ scope.row.name || '--' }}</template>
       </el-table-column>
       <el-table-column prop="ip" label="IP地址" :min-width="nodeIp ? 110 : 140">
-        <template scope="scope">{{ scope.row.ip || '--' }}</template>
+        <template slot-scope="scope">{{ scope.row.ip || '--' }}</template>
       </el-table-column>
       <el-table-column prop="netmask" label="子网掩码" :min-width="nodeIp ? 110 : 140">
-        <template scope="scope">{{ scope.row.netmask || '--' }}</template>
+        <template slot-scope="scope">{{ scope.row.netmask || '--' }}</template>
       </el-table-column>
       <el-table-column prop="gateway" label="网关" :min-width="nodeIp ? 110 : 140">
-        <template scope="scope">{{ scope.row.gateway || '--' }}</template>
+        <template slot-scope="scope">{{ scope.row.gateway || '--' }}</template>
       </el-table-column>
       <el-table-column prop="mac" label="MAC" :min-width="nodeIp ? 140 : 180">
-        <template scope="scope">{{ scope.row.mac || '--' }}</template>
+        <template slot-scope="scope">{{ scope.row.mac || '--' }}</template>
       </el-table-column>
       <el-table-column prop="linkstatus" label='状态'>
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-html="util.showConnectStatus(scope.row.linkstatus)"></span>
         </template>
       </el-table-column>
       <el-table-column prop="speed" label="速度（Mbps）" align="right" min-width="120">
-        <template scope="scope">{{ scope.row.speed || '0' }}</template>
+        <template slot-scope="scope">{{ scope.row.speed || '0' }}</template>
       </el-table-column>
       <el-table-column prop="type" label="网口类型" :min-width="nodeIp ? 140 : 180">
         <template slot-scope="scope">
@@ -172,33 +172,33 @@
       :nopage="true"
       fit=true>
       <el-table-column prop="bond" label="绑定名称" min-width="100">
-        <template scope="scope"> {{scope.row.bond || '--'}}</template>
+        <template slot-scope="scope"> {{scope.row.bond || '--'}}</template>
       </el-table-column>
       <el-table-column prop="ip" label="IP地址" :min-width="nodeIp ? 110 : 110">
-        <template scope="scope"> {{scope.row.ip || '--'}}</template>
+        <template slot-scope="scope"> {{scope.row.ip || '--'}}</template>
       </el-table-column>
       <el-table-column prop="netmask" label="子网掩码" :min-width="nodeIp ? 110 : 110">
-        <template scope="scope"> {{scope.row.netmask || '--'}}</template>
+        <template slot-scope="scope"> {{scope.row.netmask || '--'}}</template>
       </el-table-column>
       <el-table-column prop="gateway" label="网关" :min-width="nodeIp ? 110 : 110">
-        <template scope="scope"> {{ scope.row.gateway || '--' }}</template>
+        <template slot-scope="scope"> {{ scope.row.gateway || '--' }}</template>
       </el-table-column>
       <el-table-column prop="name" label="网口名称" min-width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span class="splitDataTop">
             <span class="splitData" v-for="(obj,index) in scope.row.netlist" v-html="obj.name || '--'"></span>
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="mac" label="MAC" :min-width="nodeIp ? 110 : 130">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span class="splitDataTop">
             <span class="splitData" v-for="(obj,index) in scope.row.netlist" v-html="obj.mac || '--'"></span>
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="linkstatus" label='状态' :min-width="nodeIp ? 110 : 110">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span class="splitDataTop">
             <span class="splitData" v-for="(obj,index) in scope.row.netlist"
                   v-html="util.showConnectStatus(obj.linkstatus)"></span>
@@ -206,14 +206,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="speed" label="速度（Mbps）" align="right" :min-width="nodeIp ? 110 : 110">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span class="splitDataTop">
             <span class="splitData" v-for="(obj,index) in scope.row.netlist" v-html="obj.speed || '--'"></span>
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="bond_mode" label="绑定模式" :min-width="nodeIp ? 110 : 110">
-        <template scope="scope">{{util.showBindingMode(scope.row.bond_mode)}}</template>
+        <template slot-scope="scope">{{util.showBindingMode(scope.row.bond_mode)}}</template>
       </el-table-column>
     </page-table>
     <!--已绑定列表数据加载 end-->

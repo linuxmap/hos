@@ -1,5 +1,5 @@
 <template>
-  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="true">
+  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="true" v-loading.fullscreen.lock="loading">
     <!-- 左侧树 -->
     <sidebar v-if="showSideBar" slot="pageSidebar" :currentKey="currentId" :treeData="treeData" @selectTreeNode="getNodeList"
       placeholder="请输入节点IP"></sidebar>
@@ -7,9 +7,9 @@
       <el-tab-pane label="存储卷列表">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">
-          <el-button type="iconButton" icon="icons icon-format" @click="handleSystemFormat">系统格式化</el-button>
-          <el-button type="iconButton" icon="icons icon-format" @click="handleVolumeFormat" :disabled="!selection.length">卷格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete" :disabled="!selection.length">删除不在线设备</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="checkSelection('systemFormat')">系统格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="checkSelection('volumeFormat')" :disabled="!selection.length">卷格式化</el-button>
+          <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteDevice')" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
           @select-change="handleSelectChange">
@@ -66,7 +66,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSubmit('dataForm')">确 定</el-button>
+        <el-button type="primary" @click="handleSubmit(formName)">确 定</el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -76,8 +76,8 @@
 <script>
   import sidebar from 'index@/components/sidebar'
   import pageTable from '@/components/pageTable'
-  // import http from 'index@/api/index'
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index'
+  // import http from '@/libs/mockHttp'
   import util from 'index@/utils/util'
   import { mapState } from 'vuex'
 
@@ -99,12 +99,12 @@
           children:[],
           forbidden: true,
         }],
-        currentId: parseInt(this.$route.query.id) + 1,
+        currentId: 1,
         tableData: [],
         listUrl: '',
         selection: [],
         queryForm: null,
-        loading: null,
+        loading: false,
         dialogVisible: false,
         dataForm: {},
         dataFormRules: {
@@ -112,7 +112,8 @@
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
         },
-        title: ''
+        title: '',
+        formName: ''
       }
     },
     computed: {
@@ -124,68 +125,89 @@
       }
     },
     created () {
-      this.getTreeData()
+      this.getTreeData(this.$route.query.server_ip)
     },
     methods: {
-      async getTreeData () {
-        this.loading = this.$loading()
-        const res = await http.getRequest('/mock/node/list', 'post')
+      async getTreeData (serverIp) {
+        this.loading = true
+        const res = await http.getRequest('/config/node/get_all_ip', 'post', {node_ip: serverIp})
         const list = res.data.list || []
         this.treeData[0].children = []
-        list.forEach(item => {
-          item.id = item.id + 1
-          item.label = item.serverIp + '/' + item.serverDataIp
+        list.forEach((item, index) => {
+          item.id = index + 1
+          item.label = item.server_ip + '/' + item.server_data_ip
+          if (item.server_ip === serverIp) {
+            this.currentId = item.id
+          }
           this.treeData[0].children.push(item)
         })
-        this.loading.close()
+        this.loading = false
         this.showSideBar = true
       },
       async getNodeList (data) {
         if (data.id === 1) {
           this.listUrl = ''
         } else {
-          this.listUrl = '/mock/volume/list'
-          this.queryForm = {id: this.$route.query.id}
+          this.listUrl = '/config/node/index_disk'
+          this.queryForm = {selected_server_ip: data.server_ip}
           this.$refs.table.getData()
         }
       },
       handleSelectChange (selection) {
         this.selection = selection;
       },
-      handleSystemFormat () {
-        this.title = '系统格式化'
-        this.showDialog('dataForm')
-      },
-      handleVolumeFormat () {
-        this.title = '提示'
-        this.checkSelection()
-        this.showDialog('dataForm')
-      },
-      handleDelete () {
-        const isAllOffline = this.selection.every(item => item.device_online === '0')
-        if (isAllOffline) {
-        } else {
-          util.alert2({message: '请选择不在线设备'})
-        }
-      },
-      checkSelection () {
+      checkSelection (name) {
         if (this.selection && !this.selection.length) {
           util.alert2({message: '请选择一个存储卷'})
           return
         }
+        if (name === 'systemFormat') {
+          this.title = '系统格式化'
+        } else if (name === 'volumeFormat') {
+          this.title = '提示'
+        } else if (name === 'deleteDevice') {
+          this.title = '删除设备'
+          const isAllOffline = this.selection.every(item => item.device_online === '0')
+          if (!isAllOffline) {
+            util.alert2({message: '请选择不在线设备'})
+            return
+          }
+        }
+        this.formName = name
+        this.showDialog(name)
       },
       showDialog (name) {
         this.dialogVisible = true;
         this.$nextTick(() => {
-          this.$refs[name] && this.$refs[name].resetFields();
+          this.$refs.dataForm && this.$refs.dataForm.resetFields();
         })
       },
       handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
+        this.$refs[name].validate(async (valid) => {
           if (valid) {
-            console.log('执行提交')
+            const selectFn = {
+              'systemFormat': async () => {
+                const res = await http.getRequest('/config/node/format_system', 'post', this.dataForm)
+                return res
+              },
+              'volumeFormat': async () => {
+                const res = await http.getRequest('/config/node/format_volume', 'post', this.dataForm)
+                return res
+              },
+              'deleteDevice': async () => {
+                const res = await http.getRequet('/config/node/deleting_offline_device', 'post', this.dataForm)
+                return res
+              }
+            }
+            const action = selectFn[name]
+            if (!action) return
+            this.loading = true
+            const result = await action()
+            this.loading = false
+            this.dialogVisible = false
+            this.$message({type: result.status ? 'success' : 'error', message: result.data})
           } else {
-            console.log('表单不合法')
+            console.log('请填写登录密码')
           }
         })
       },

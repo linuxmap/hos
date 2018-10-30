@@ -2,6 +2,8 @@
  * 过滤器
  */
 /* eslint-disable */
+import util from '@/utils/util'
+
 // 是否内部云
 export const isInnnerCloud = (value) => {
   switch (parseInt(value)) {
@@ -36,4 +38,11 @@ export const deviceType = (value) => {
     case 6: return 'SSD设备'
     default: return '--'
   }
+}
+
+export const formatFilename = (value) => {
+  if (!value) {
+    return ''
+  }
+  return util.formatFileName(value)
 }

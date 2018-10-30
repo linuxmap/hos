@@ -3,7 +3,7 @@
     <div class="basicMes">
     <el-form ref="cloudForm" label-width="120px" :model="cloudForm" :rules="cloudRules" content-width="500px">
       <el-form-item label="云ID" prop="cloud_id">
-        <el-input v-model="cloudForm.cloud_id" :minlength="1" :maxlength="64"></el-input>
+        <el-input v-model="cloudForm.cloud_id"></el-input>
       </el-form-item>
       <el-form-item label="云存储IP" prop="cloud_ip">
         <el-input v-model="cloudForm.cloud_ip"></el-input>
@@ -21,10 +21,10 @@
         <vali-pass v-model="cloudForm.cloud_pin" @valiRisk="risk=arguments[0]"></vali-pass>
       </el-form-item>
       <el-form-item label="云存储访问key" prop="cloud_ak">
-        <el-input v-model="cloudForm.cloud_ak" :minlength="3" :maxlength="64"></el-input>
+        <el-input v-model="cloudForm.cloud_ak"></el-input>
       </el-form-item>
       <el-form-item label="协议加密key" prop="cloud_sk">
-        <el-input type="password" v-model="cloudForm.cloud_sk" :minlength="3" :maxlength="64"></el-input>
+        <el-input type="password" v-model="cloudForm.cloud_sk"></el-input>
       </el-form-item>
       <el-form-item label="是否本云" prop="type">
         <el-radio-group v-model="cloudForm.type">
@@ -60,6 +60,7 @@
         cloudRules: {
           cloud_id: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 1, max: 64, message: this.$t('common.rangeStr',{x:1, y:64}), trigger: 'blur'},
             {validator: validates.utils_string1, trigger: 'blur change'}
           ],
           cloud_ip: [
@@ -80,15 +81,17 @@
           ],
           cloud_pin: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
-            {min: 3, max: 32, message: this.$t('common.rangeStr',{x:8,y:32}), trigger: 'blur'},
+            {min: 3, max: 32, message: this.$t('common.rangeStr',{x: 3,y: 32}), trigger: 'blur'},
             {validator:this.valiRisk,trigger: 'blur'}
           ],
           cloud_ak: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 3, max: 64, message: this.$t('common.rangeStr',{x: 3, y: 64}), trigger: 'blur'},
             {validator: validates.utils_string, trigger: 'blur'}
           ],
           cloud_sk: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
+            {min: 3, max: 64, message: this.$t('common.rangeStr',{x: 3, y: 64}), trigger: 'blur'},
             {validator: validates.utils_string, trigger: 'blur'}
           ]
         }

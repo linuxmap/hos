@@ -48,6 +48,7 @@ pass.length = '密码长度应为 {x}-{y} 位字符。';
 pass.success = 'Edited.';
 
 let menu = {};
+menu.main = '首页';
 menu.user = '用户中心';
 menu.userInfo = '用户信息';
 menu.space = '存储空间';

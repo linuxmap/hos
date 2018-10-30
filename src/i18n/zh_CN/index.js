@@ -49,6 +49,7 @@ pass.success = '修改成功。';
 
 let menu = {};
 
+menu.main = '首页';
 menu.user = '用户中心';
 menu.userInfo = '用户信息';
 menu.space = '存储空间';

@@ -58,6 +58,10 @@ module.exports = {
       '115': [{
         'title': 'menu.system',
         'router': '/network'
+      }],
+      '116': [{
+        'title': 'menu.main',
+        'router': '/main'
       }]
     }
   }

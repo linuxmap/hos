@@ -93,7 +93,7 @@
                 prop="DRServer"
                 label="DRServer"
                 width="62">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.DRServer" @change.native="handleCheckedChange(scope.row.local_ip,'DRServer')"></el-checkbox>
                 </template>
               </el-table-column>
@@ -103,7 +103,7 @@
                 label="BKDRServer"
                 v-model="tableData.BKDRServer"
                 width="78">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox  v-model="scope.row.BKDRServer" @change.native="handleCheckedChange(scope.row.local_ip,'BKDRServer')"></el-checkbox>
                 </template>
               </el-table-column>
@@ -112,7 +112,7 @@
                 prop="RLServer"
                 label="RLServer"
                 width="60">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.RLServer" disabled></el-checkbox>
                 </template>
               </el-table-column>
@@ -123,7 +123,7 @@
                 prop="SSDB"
                 label="SSDB"
                 width="50">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.SSDB"
                                :disabled="tableData.length <= 2"
                                @change="changeSSDBstate(scope.row.SSDB,scope.$index,scope.row)">
@@ -135,7 +135,7 @@
                 prop="ZK"
                 label="ZK"
                 width="62">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-checkbox checked disabled></el-checkbox>
                 </template>
               </el-table-column>
