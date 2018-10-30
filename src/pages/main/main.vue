@@ -41,14 +41,14 @@
             <div class="title-content">全部应用</div>
           </div>
           <div class="navigation-panel">
-            <div class="navigation-item">
+            <div class="navigation-item" @click="$router.push('/cluster')">
               <a href="#"></a>
               <a href="#"></a>
               <a href="#"></a>
               <a href="#"></a>
               <div class='box'></div>
             </div>
-            <div class="navigation-item">
+            <div class="navigation-item" @click="$router.push('/node')">
               <a href="#"></a>
               <a href="#"></a>
               <a href="#"></a>
@@ -259,7 +259,7 @@
       transition-delay: .15s;
     }
     .navigation-item:nth-child(1) .box:before {
-      content: "\f09a";
+      content: url('../../assets/images/home/cluster.png');
       background: #79C1EE;
     }
     .navigation-item:nth-child(1) .box:after {
@@ -267,7 +267,7 @@
       background: #79C1EE;
     }
     .navigation-item:nth-child(2) .box:before {
-      content: "\f099";
+      content: url('../../assets/images/home/node.png');
       background: #7ECDC8;
     }
     .navigation-item:nth-child(2) .box:after {
