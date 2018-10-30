@@ -1,5 +1,5 @@
 <template>
-  <page-container :breadcrumb="i18nBreadcrumb">
+  <page-container :breadcrumb="i18nBreadcrumb" v-loading.fullscreen.lock="loading">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
       <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')" :disabled="!selection.length">设置业务/数据IP</el-button>
@@ -190,7 +190,7 @@
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
         },
-        loading: null
+        loading: false
       }
     },
     computed: {
@@ -262,6 +262,9 @@
               },
               'close': () => {
                 this.handleClose()
+              },
+              'expand': () => {
+                this.handleExpand()
               }
             }
             const action = switchFn[name]
@@ -273,14 +276,14 @@
         })
       },
       async setBusinessDataIp () {
-        this.loading = this.$loading()
+        this.loading = true
         const result = await http.getRequest('/config/node/set_all_ip', 'post', this.dataForm)
-        this.loading.close()
+        this.loading = false
         this.$message({type: 'success', message: result.data})
         this.dialogVisible.businessIp = false
       },
       handleUpgrade () {
-        this.loading = this.$loading({text: '上传中...'})
+        this.loading = true
         this.$refs.upload.submit()
       },
       //选择文件
@@ -289,7 +292,7 @@
       },
       //导入成功
       uploadSuccess (response, file) {
-        this.loading.close()
+        this.loading = false
         this.$message({
           type: response.status ? 'success' : 'error', 
           message: response.data,
@@ -300,42 +303,51 @@
       // 重启
       handleReload () {
         util.confirm(async () => {
-          this.loading = this.$loading({text: '正在重启...'})
+          this.loading = true
           const res = await http.getRequest('/config/node/rebooting', 'post', this.dataForm)
-          this.loading.close()
+          this.loading = false
           if (res.status) {
             this.$message({type: 'success', message: res.data})
           }
         },'确定执行此操作？')
       },
       async handleClose () {
-        this.loading = this.$loading()
+        this.loading = true
         const res = http.getRequest('/config/node/shutdown', 'post', this.dataForm)
-        this.loading.close()
+        this.loading = false
         if (res.status) {
           this.$message({type: 'success', message: res.data})
         }
       },
       checkIp () {
         this.$refs.expand.validate(async (valid) => {
-          this.loading = this.$loading()
+          if (!valid) return
+          this.loading = true
           const res = await http.getRequest('/config/node/get_node_info', 'post', this.expandForm)
-          if (res.status) {
-            const payload = {
-              addNodeList: ''
-            }
-            const result = await http.getRequest('/config/node/expand_node', 'post', payload)
-            if (result.status) {
+          if (res.status && res.data) {
+            if (typeof res.data === 'string') {
+              this.$message({type: 'warning', message: res.data})
             } else {
+              this.expandList.append(result.data.list)
+              this.handleExpand()
             }
+            this.loading = false
           } else {
-            this.loading.close()
+            this.loading = false
             this.$message({type: 'warning', message: 'ip不存在'})
           }
         })
       },
+      async handleExpand () {
+        this.loading = true
+        const result = await http.getRequest('/config/node/expand_node', 'post', {addNodeList: this.expandList})
+        this.loading = false
+        if (result.status) {
+          this.$message({type: 'success', message: result.data})
+        }
+      },
       gotoStorageVolumes (row) {
-        util.jump('/node/volumes', {id: row.id})
+        util.jump('/node/volumes', {server_ip: row.server_ip})
       }
     }
   }

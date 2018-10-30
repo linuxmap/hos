@@ -74,15 +74,15 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.path === '/login' || to.path === '/register' || to.path === '/initPass' || store.state.accessToken) {
-    next()
-  } else {
-    next({
-      path: '/login',
-      query: {redirect: to.fullPath}
-    })
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/login' || to.path === '/register' || to.path === '/initPass' || store.state.accessToken) {
+//     next()
+//   } else {
+//     next({
+//       path: '/login',
+//       query: {redirect: to.fullPath}
+//     })
+//   }
+// })
 
 export default router
