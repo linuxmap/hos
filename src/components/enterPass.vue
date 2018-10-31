@@ -84,7 +84,7 @@
         this.$refs.pass.validate((valid) => {
           if (valid) {
             if (this.step) {
-              this.$emit('submit',this.passForm.passWord);
+              this.$emit('submit',this.encrypt.encrypt(this.passForm.passWord));
             } else {
               http.getRequest('/config/user/validatePin', 'post', {'password': this.encrypt.encrypt(this.passForm.passWord)})
                 .then(res => {

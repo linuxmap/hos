@@ -95,12 +95,6 @@
         return style
       }
     },
-    created () {
-      //设置公钥
-      this.encrypt = new JSEncrypt();
-      let publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKZKgabcPik14D8DSWVMMNjo+08NQNxRTjH6bBlD8CaAviLdN+EVcBR4wCpSQrzd1gngafZGVzBFWKitxh5fZcAHq3BJjhtVvpsuRgxLNmgWk8Mt1nzxSkGqe5hiWZ5i2p9dN/iq6kZi0cPlkIv55D4AjD6g82durpL4qKKCVm6wIDAQAB";
-      this.encrypt.setPublicKey(publicKey);
-    },
     methods: {
       handleSelectChange (selection) {
         this.selection = selection;
@@ -127,7 +121,7 @@
       //重置密码
       submitResetPass (pass) {
         http.getRequest('/config/hosUser/reset_password', 'post',
-          {user_name: this.selection[0].user_name,user_pin:this.encrypt.encrypt(pass)})
+          {user_name: this.selection[0].user_name,user_pin:pass})
           .then(res => {
             if (res.status) {
                 util.alert('重置成功','success');

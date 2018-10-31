@@ -1501,6 +1501,24 @@ let utils = {
     } else {
       return hexColor
     }
+  },
+
+  //判断是否json字符串
+  isJSON(str) {
+    if (typeof str == 'string') {
+      try {
+        var obj=JSON.parse(str);
+        if(typeof obj == 'object' && obj ){
+          return true;
+        }else{
+          return false;
+        }
+
+      } catch(e) {
+        console.log('error：'+str+'!!!'+e);
+        return false;
+      }
+    }
   }
 };
 

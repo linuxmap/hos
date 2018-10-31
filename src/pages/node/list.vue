@@ -2,14 +2,14 @@
   <page-container :breadcrumb="i18nBreadcrumb" v-loading.fullscreen.lock="loading">
     <!-- 工具条 -->
     <div class="toolbar" ref="toolbar">
-      <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')" :disabled="!selection.length">设置业务/数据IP</el-button>
-      <el-button type="iconButton" icon="h-icon-arrow_up" @click="checkSelection('upgrade')" :disabled="!selection.length">节点升级</el-button>
+      <el-button type="iconButton" icon="h-icon-edit" @click="checkSelection('businessIp')" :disabled="selection.length != 1">设置业务/数据IP</el-button>
+      <el-button type="iconButton" icon="h-icon-arrow_up" @click="checkSelection('upgrade')" :disabled="selection.length != 1">节点升级</el-button>
       <el-button type="iconButton" icon="h-icon-plus" @click="showDialog('expand')">节点扩容</el-button>
-      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('reload')" :disabled="!selection.length">重启节点</el-button>
-      <el-button type="iconButton" icon="h-icon-close" @click="checkSelection('close')" :disabled="!selection.length">关闭节点</el-button>
+      <el-button type="iconButton" icon="h-icon-flash" @click="checkSelection('reload')" :disabled="selection.length != 1 || selection[0].status==0">重启节点</el-button>
+      <el-button type="iconButton" icon="h-icon-close" @click="passDlg=true" :disabled="!selection.length">关闭节点</el-button>
     </div>
     <!-- 列表 -->
-    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
+    <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true"
       @select-change="handleSelectChange">
       <el-table-column label="节点IP【业务/数据】" width="180">
         <template slot-scope="scope">
@@ -23,9 +23,9 @@
           <span v-html="getStatus(scope.row.hgw_status)"></span>
         </template>
       </el-table-column>
-      <el-table-column prop="cpu" label="CPU消耗（%）"></el-table-column>
-      <el-table-column prop="mem" label="内存消耗（%）"></el-table-column>
-      <el-table-column prop="net" label="网络【in/out】（mbps）"></el-table-column>
+      <el-table-column prop="cpu" label="CPU消耗（%）" align="right"></el-table-column>
+      <el-table-column prop="mem" label="内存消耗（%）" align="right"></el-table-column>
+      <el-table-column prop="net" label="网络【in/out】（mbps）" align="right"></el-table-column>
       <el-table-column width="110" label="操作" align="center">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="存储卷" placement="top" :enterable="false">
@@ -36,8 +36,8 @@
     </page-table>
 
     <!-- 设置业务/数据IP -->
-    <el-dialog title="设置业务/数据IP" :area="600" :visible.sync="dialogVisible.businessIp" :close-on-click-modal="false">
-      <el-form ref="businessIp" label-width="120px"  content-width="360px" :model="dataForm" :rules="businessIpRules">
+    <el-dialog title="设置业务/数据IP" :area="560" :visible.sync="dialogVisible.businessIp" :close-on-click-modal="false">
+      <el-form ref="businessIp" label-width="120px"  content-width="300px" :model="dataForm" :rules="businessIpRules">
         <el-form-item label="业务IP" prop="business_ip">
           <el-input v-model="dataForm.business_ip"></el-input>
         </el-form-item>
@@ -52,17 +52,19 @@
     </el-dialog>
 
     <!-- 升级 -->
-    <el-dialog title="节点升级" :area="600" :visible.sync="dialogVisible.upgrade" :close-on-click-modal="false">
-      <el-form ref="upgrade" label-width="120px"  content-width="360px" :model="dataForm" :rules="upgradeRules">
+    <el-dialog title="节点升级" :area="560" :visible.sync="dialogVisible.upgrade" :close-on-click-modal="false">
+      <el-form ref="upgrade" label-width="120px"  content-width="300px" :model="dataForm" :rules="upgradeRules">
         <el-form-item label="升级包" prop="file">
           <h-upload
               action="/config/node/unity_upgrade_dlg"
               name="file"
               text="请选择"
+              accept=".bin"
               :auto-upload=false
               ref="upload"
               @change="chooseFile"
               :on-success="uploadSuccess">
+              <input name="token" type="hidden" :value="$store.state.accessToken"/>
               <input name="node_ip" type="hidden" :value="dataForm.server_ip"/>
             </h-upload>
             <span :title="dataForm.file">{{dataForm.file|formatFilename}}</span>
@@ -89,19 +91,19 @@
         height="400">
         <el-table-column
           label="节点IP"
-          prop="server_ip"
+          prop="local_ip"
           width="35%">
         </el-table-column>
         <el-table-column
           label="主机名"
-          prop="server_name"
+          prop="hostname"
           width="35%">
         </el-table-column>
         <el-table-column
           label="操作"
           width="30%">
           <template slot-scope="scope">
-            <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete(scope.row)"></el-button>
+            <el-button type="iconButton" icon="h-icon-trashcan" @click="handleDelete(scope.$index)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,8 +113,12 @@
       </div>
     </el-dialog>
 
+    <!--start输入密码框-->
+    <enter-pass title="关闭节点" :step="true" :passDlg="passDlg" @closeDlg="passDlg = false" @submit="handleClose"></enter-pass>
+    <!--end输入密码框-->
+
     <!-- 关闭节点 -->
-    <el-dialog title="关闭节点" :area="600" :visible.sync="dialogVisible.close" :close-on-click-modal="false">
+    <!--<el-dialog title="关闭节点" :area="600" :visible.sync="dialogVisible.close" :close-on-click-modal="false">
       <el-alert
         title="提示"
         type="error"
@@ -135,18 +141,20 @@
         <el-button type="primary" @click="handleSubmit('close')">确 定</el-button>
         <el-button @click="dialogVisible.close = false">取 消</el-button>
       </div>
-    </el-dialog>
+    </el-dialog>-->
   </page-container>
 </template>
 <script>
-  import http from '@/api/index' 
+  import http from '@/api/index'
   import pageTable from '@/components/pageTable'
   import util from '@/utils/util'
   import validates from '@/utils/form-validate'
   import { mapState } from 'vuex'
+  import enterPass from 'index@/components/enterPass.vue';
+
   export default {
     name: 'clusterList',
-    components: { pageTable },
+    components: { pageTable , enterPass },
     props: {
       breadcrumbObj: {
         type: Object,
@@ -193,7 +201,8 @@
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
           ]
         },
-        loading: false
+        loading: false,
+        passDlg: false
       }
     },
     computed: {
@@ -224,8 +233,8 @@
         const switchFn = {
           'businessIp': () => {
             return {
-              business_ip: '',
-              data_ip: '',
+              business_ip: this.selection[0].server_ip,
+              data_ip: this.selection[0].server_data_ip,
               node_ip: this.selection[0].server_ip
             }
           },
@@ -235,7 +244,7 @@
           'reload': () => {
             this.dataForm = {node_ip: this.selection[0].server_ip}
             this.handleReload()
-            return this.dataForm     
+            return this.dataForm
           },
           'close': () => {
             return {login_pin: '', nodeIPs: this.selection.join(',')}
@@ -253,6 +262,7 @@
           this.$refs[name] && this.$refs[name].resetFields();
         })
       },
+
       handleSubmit (name) {
         this.$refs[name].validate(async (valid) => {
           if (valid) {
@@ -262,9 +272,6 @@
               },
               'upgrade': () => {
                 this.handleUpgrade()
-              },
-              'close': () => {
-                this.handleClose()
               },
               'expand': () => {
                 this.handleExpand()
@@ -297,7 +304,7 @@
       uploadSuccess (response, file) {
         this.loading = false
         this.$message({
-          type: response.status ? 'success' : 'error', 
+          type: response.status ? 'success' : 'error',
           message: response.data,
           showClose: true,
           duration: response.status ? 3000 : 0
@@ -305,45 +312,67 @@
       },
       // 重启
       handleReload () {
+        let that = this;
         util.confirm(async () => {
-          this.loading = true
-          const res = await http.getRequest('/config/node/rebooting', 'post', this.dataForm)
-          this.loading = false
+          util.showMask('节点重启中，请稍候...');
+          const res = await http.getRequest('/config/node/rebooting', 'post', {node_ip:that.selection[0].server_ip})
+          util.hideMask();
           if (res.status) {
-            this.$message({type: 'success', message: res.data})
+           util.alert(res.data,'success');
           }
         },'确定执行此操作？')
       },
-      async handleClose () {
-        this.loading = true
-        const res = http.getRequest('/config/node/shutdown', 'post', this.dataForm)
-        this.loading = false
+
+      async handleClose (pass) {
+        let ipList = '';
+        this.selection.forEach(function(v,i){
+            ipList += (i==0 ? '' : ',') + v.server_ip;
+        });
+
+        util.showMask('节点关闭中，请稍候...');
+        const res = http.getRequest('/config/node/shutdown', 'post', {nodeIPs:ipList, login_pin:pass})
+        util.hideMask();
         if (res.status) {
           this.$message({type: 'success', message: res.data})
         }
       },
+      //检测并添加
       checkIp () {
         this.$refs.expand.validate(async (valid) => {
           if (!valid) return
-          this.loading = true
+          util.showMask('节点扩容中...');
           const res = await http.getRequest('/config/node/get_node_info', 'post', this.expandForm)
-          if (res.status && res.data) {
-            if (typeof res.data === 'string') {
-              this.$message({type: 'warning', message: res.data})
+          util.hideMask();
+
+          if (res.status) {
+            if (util.isJSON(res.data)) {
+              const obj =  JSON.parse(res.data)
+              if (obj.node_type == 1) {
+                util.alert('请添加存储节点进行扩容');
+              } else {
+                this.expandList.push(obj);
+              }
             } else {
-              this.expandList.append(result.data.list)
-              this.handleExpand()
+              util.alert(res.data);
             }
-            this.loading = false
-          } else {
-            this.loading = false
-            this.$message({type: 'warning', message: 'ip不存在'})
           }
         })
       },
+
+      //删除可扩容的节点IP
+      handleDelete (index) {
+        this.expandList.splice(index,1);
+      },
+
       async handleExpand () {
         this.loading = true
-        const result = await http.getRequest('/config/node/expand_node', 'post', {addNodeList: this.expandList})
+        let ipList = '';
+
+        this.expandList.forEach(function(v,i){
+          ipList += (i==0 ? '' : ',') + v.local_ip;
+        });
+
+        const result = await http.getRequest('/config/node/expand_node', 'post', {addNodeList: ipList})
         this.loading = false
         if (result.status) {
           this.$message({type: 'success', message: result.data})
