@@ -185,8 +185,8 @@
 <script>
   import editInput from 'index@/components/editInput.vue'
   import util from 'index@/utils/util'
-  //import http from 'index@/api/index'
-  import http from '@/libs/mockHttp'
+  import http from 'index@/api/index'
+  //import http from '@/libs/mockHttp'
   import validate from 'index@/utils/form-validate'
   import { Loading } from 'hui'
   import collUtil from 'index@/utils/collUtil'

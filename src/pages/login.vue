@@ -187,7 +187,7 @@
                   // 登录成功后重置token
                   token.set(res.data);
                   window.localStorage.setItem('user', this.signin.userName);
-                  this.$router.push({ path: this.$route.query.redirect || '/home' })
+                  this.$router.push('/deployment')
                 } else {
                   this.error_txt = res.data.msg;
                   this.signin.vCode = '';
