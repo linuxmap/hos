@@ -1,5 +1,10 @@
 [
   {
+    "title": "menu.main",
+    "icon": "h-icon-home",
+    "router": "/main"
+  },
+  {
     "title": "menu.deployment",
     "icon": "h-icon-stick",
     "router": "/deployment"
@@ -16,6 +21,11 @@
     "title": "menu.node",
     "router": "/node",
     "icon": "h-icon-control_pole"
+  },
+  {
+    "title": "menu.domain",
+    "router": "/domain",
+    "icon": "h-icon-internet"
   },
   {
     "title": "menu.cloud",

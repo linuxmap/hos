@@ -7,8 +7,8 @@
       <el-tab-pane label="存储卷列表">
         <!-- 工具条 -->
         <div class="toolbar" ref="toolbar">
-          <el-button type="iconButton" icon="icons icon-format" @click="checkSelection('systemFormat')">系统格式化</el-button>
-          <el-button type="iconButton" icon="icons icon-format" @click="checkSelection('volumeFormat')" :disabled="!selection.length">卷格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="passDlg = true;optNow = 'systemFormat'">系统格式化</el-button>
+          <el-button type="iconButton" icon="icons icon-format" @click="passDlg = true;optNow = 'volumeFormat'" :disabled="!selection.length">卷格式化</el-button>
           <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteDevice')" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
@@ -37,40 +37,17 @@
             </template>
           </el-table-column>
           <el-table-column prop="device_id" label="ID" width="180"></el-table-column>
-          <el-table-column label="容量（GB）【总/空闲】" width="120">
+          <el-table-column label="容量（GB）【总/空闲】" width="120" align="right">
             <template slot-scope="scope">
-              {{scope.row.total_block + '/' + scope.row.free_block}}
+              <span v-html="getSpaceRes(scope.row)"></span>
             </template>
           </el-table-column>
         </page-table>
       </el-tab-pane>
     </el-tabs>
-
-    <!-- 弹出框 -->
-    <el-dialog :title="title" :area="600" :visible.sync="dialogVisible" :close-on-click-modal="false">
-      <el-alert
-        title="提示"
-        type="error"
-        simple
-        show-icon
-        icon="h-icon-circle_info"
-        :closable="false"
-        style="margin-bottom: 20px;">
-        <div style="color: rgba(0,0,0,.7)">
-          <p>1、格式化会造成数据丢失，请慎重操作。</p>
-          <p>2、通过密码验证才能执行此操作。</p>
-        </div>
-      </el-alert>
-      <el-form ref="dataForm" label-width="120px"  content-width="360px" :model="dataForm" :rules="dataFormRules">
-        <el-form-item label="登录密码" prop="login_password">
-          <el-input v-model="dataForm.login_password"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSubmit(formName)">确 定</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <!--start输入密码框-->
+    <enter-pass :title="title" :step="true" :passDlg="passDlg" @closeDlg="passDlg = false" @submit="handlerEvent"></enter-pass>
+    <!--end输入密码框-->
   </page-container>
 </template>
 
@@ -81,10 +58,11 @@
   // import http from '@/libs/mockHttp'
   import util from 'index@/utils/util'
   import { mapState } from 'vuex'
+  import enterPass from 'index@/components/enterPass.vue';
 
   export default {
     name: 'volumes',
-    components: { sidebar, pageTable },
+    components: { sidebar, pageTable, enterPass },
     props: {
       breadcrumbObj: {
         type: Object,
@@ -93,9 +71,10 @@
     },
     data () {
       return {
+        util:util,
         showSideBar: false,
         treeData:[{
-          id: 1,
+          id: 0,
           label: '节点IP [业务/数据]',
           children:[],
           forbidden: true,
@@ -109,14 +88,10 @@
         },
         loading: false,
         dialogVisible: false,
-        dataForm: {},
-        dataFormRules: {
-          login_password: [
-            {required: true, message: this.$t('config.validator.required'), trigger: 'blur'}
-          ]
-        },
         title: '',
-        formName: ''
+        passDlg: false,
+        optNow:'',  //当前操作标记
+        selectIp: this.$route.query.server_ip //当前树节点选中的ip
       }
     },
     computed: {
@@ -147,11 +122,13 @@
         this.loading = false
         this.showSideBar = true
       },
+
       async getNodeList (data) {
-        if (data.id === 1) {
+        if (data.id === 0) {
           this.listUrl = ''
         } else {
           this.listUrl = '/config/node/index_disk'
+          this.selectIp = data.server_ip
           this.queryForm = {selected_server_ip: data.server_ip}
           this.$refs.table.getData()
         }
@@ -159,15 +136,49 @@
       handleSelectChange (selection) {
         this.selection = selection;
       },
-      checkSelection (name) {
-        if (this.selection && !this.selection.length) {
+
+      //确认密码框的继续操作
+      async handlerEvent (pass) {
+
+        const selectFn = {
+          'systemFormat': async () => {
+            const res = await http.getRequest('/config/node/format_system', 'post', {server_ip: this.selectIp , login_pin: pass })
+            return res
+          },
+          'volumeFormat': async () => {
+            const res = await http.getRequest('/config/node/format_volume', 'post', {server_ip: this.selectIp, deviceName: this.selection[0].device_name , login_pin: pass })
+            return res
+          },
+          'deleteDevice': async () => {
+            const res = await http.getRequet('/config/node/deleting_offline_device', 'post', this.dataForm)
+            return res
+          }
+        }
+        const action = selectFn[this.optNow]
+        if (!action) return
+        this.loading = true
+        const result = await action()
+        this.loading = false
+
+        if (result.status) {
+          this.passDlg = false;
+          util.alert(result.data,'success');
+        } else {
+          util.alert(result.data);
+        }
+
+        this.$message({type: result.status ? 'success' : 'error', message: result.data})
+      },
+
+   /*   checkSelection (name) {
+        if (name !== 'systemFormat' && this.selection && !this.selection.length) {
           util.alert2({message: '请选择一个存储卷'})
           return
         }
         if (name === 'systemFormat') {
           this.title = '系统格式化'
         } else if (name === 'volumeFormat') {
-          this.title = '提示'
+          this.title = '卷格式化'
         } else if (name === 'deleteDevice') {
           this.title = '删除设备'
           const isAllOffline = this.selection.every(item => item.device_online === '0')
@@ -176,39 +187,11 @@
             return
           }
         }
-        this.formName = name
-        this.showDialog(name)
-      },
-      showDialog (name) {
-        this.dialogVisible = true;
-        this.$nextTick(() => {
-          this.$refs.dataForm && this.$refs.dataForm.resetFields();
-        })
-      },
+      },*/
       handleSubmit (name) {
         this.$refs[name].validate(async (valid) => {
           if (valid) {
-            const selectFn = {
-              'systemFormat': async () => {
-                const res = await http.getRequest('/config/node/format_system', 'post', this.dataForm)
-                return res
-              },
-              'volumeFormat': async () => {
-                const res = await http.getRequest('/config/node/format_volume', 'post', this.dataForm)
-                return res
-              },
-              'deleteDevice': async () => {
-                const res = await http.getRequet('/config/node/deleting_offline_device', 'post', this.dataForm)
-                return res
-              }
-            }
-            const action = selectFn[name]
-            if (!action) return
-            this.loading = true
-            const result = await action()
-            this.loading = false
-            this.dialogVisible = false
-            this.$message({type: result.status ? 'success' : 'error', message: result.data})
+
           } else {
             console.log('请填写登录密码')
           }
@@ -219,6 +202,13 @@
           error,
           success
         }, state, '-')
+      },
+
+      //获取容量数据
+      getSpaceRes (row) {
+        const totalSize = parseInt(row.total_block) * parseInt(row.block_size);
+        const freeSize = parseInt(row.free_block) * parseInt(row.block_size);
+        return util.Mb2Gb(totalSize, 0) + "/" + util.Mb2Gb(freeSize, 0);
       }
     }
   }

@@ -1519,7 +1519,28 @@ let utils = {
         return false;
       }
     }
+  },
+
+  Mb2Gb(data, digit) {
+    if (typeof digit == "undefined") {
+      digit = 2;
+    }
+
+    if (!this.isNumber(data)) return '0';
+    if (this.checkNull(data)) return '0';
+
+    var val = parseInt(data) / 1024;
+
+    return val.toFixed(digit);
+  },
+
+  // 数字判断
+  isNumber(v) {
+    if (v == '') return false;
+
+    return /^-?\d+$/i.test(v);
   }
+
 };
 
 function openWindow (name) {

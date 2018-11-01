@@ -65,7 +65,7 @@
               @change="chooseFile"
               :on-success="uploadSuccess">
               <input name="token" type="hidden" :value="$store.state.accessToken"/>
-              <input name="node_ip" type="hidden" :value="dataForm.business_ip"/>
+              <input name="node_ip" type="hidden" :value="dataForm.node_ip"/>
             </h-upload>
             <span :title="dataForm.file">{{dataForm.file|formatFilename}}</span>
         </el-form-item>
