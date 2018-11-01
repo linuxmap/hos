@@ -82,20 +82,6 @@
     "menuCode": "113"
   },
   {
-    "path": "/cloud/add",
-    "component": "cloud/add",
-    "breadcrumb": ["menu.cloudList", "menu.cloudAdd"],
-    "router": ["/cloud", "/cloud/add"],
-    "menuCode": "113"
-  },
-  {
-    "path": "/cloud/edit",
-    "component": "cloud/edit",
-    "breadcrumb": ["menu.cloudList", "menu.cloudEdit"],
-    "router": ["/cloud", "/cloud/edit"],
-    "menuCode": "113"
-  },
-  {
     "path": "/user/list",
     "component": "user/list",
     "breadcrumb": ["menu.userList"],
