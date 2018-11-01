@@ -179,10 +179,6 @@
         queryParam.pageSize = this.pageSize;
         queryParam.pageNo = this.pageNo;
 
-
-        //配置页面首页默认传入云id
-        queryParam.cloudId = 'c6966a2c23bf4889aba0080880d87a55'
-
         if (!this.url) {
           return;
         }

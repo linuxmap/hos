@@ -34,7 +34,6 @@
   import pageTable from '@/components/pageTable'
   import util from '@/utils/util'
 
-
   export default {
     name: 'clusterList',
     components: { pageTable },

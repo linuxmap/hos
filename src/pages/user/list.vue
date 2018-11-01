@@ -124,7 +124,7 @@
           {user_name: this.selection[0].user_name,user_pin:pass})
           .then(res => {
             if (res.status) {
-                util.alert('重置成功','success');
+                util.alert('密码重置成功！'+ this.selection[0].user_name +'的新登录密码为12345678','success');
                 this.passDlg = false;
             } else {
                 util.alert(res.data);

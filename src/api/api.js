@@ -4,6 +4,7 @@ import { Message } from 'hui'
 import i18n from '@/i18n'
 import token from 'index@/libs/token'
 import HUI from 'hui'
+import router from '@/router'
 
 const http = axios.create({
   timeout: 20000,
@@ -16,13 +17,9 @@ http.interceptors.response.use(function (response) {
   // 系统未登录判断，跳转到登录页
   if (response.data.data === 'noLogin') {
     window.localStorage.removeItem('accessToken');
-    window.localStorage.removeItem('gCloudId');
-    window.localStorage.removeItem('gDeployMode');
-    window.localStorage.removeItem('gCloudType');
-    window.sessionStorage.removeItem('clouds');
-   // vm.$store.dispatch('setToken', null);
-   // vm.$store.dispatch('setMask', false);
-   // router.push({ path: '/login' });
+    vm.$store.dispatch('setToken', null);
+    vm.$store.dispatch('setMask', false);
+    router.push({ path: '/login' });
   }
   //没有权限
   if (response.data.data === 'noPermission' ){
@@ -41,10 +38,12 @@ http.interceptors.response.use(function (response) {
   if (response.data.status == false) {
     vm.$store.dispatch('setMask', false);
     if ( response.data.alert ) {
-      if (response.data.data == 'noLogin')
+      if (response.data.data == 'noLogin') {
         HUI.Message.error('登录超时');
-      else
+      } else {
         HUI.Message.error(response.data.data);
+      }
+
     }
   }
 

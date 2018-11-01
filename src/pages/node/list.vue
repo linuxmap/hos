@@ -65,7 +65,7 @@
               @change="chooseFile"
               :on-success="uploadSuccess">
               <input name="token" type="hidden" :value="$store.state.accessToken"/>
-              <input name="node_ip" type="hidden" :value="dataForm.server_ip"/>
+              <input name="node_ip" type="hidden" :value="dataForm.business_ip"/>
             </h-upload>
             <span :title="dataForm.file">{{dataForm.file|formatFilename}}</span>
         </el-form-item>
@@ -231,13 +231,6 @@
           return
         }
         const switchFn = {
-          'businessIp': () => {
-            return {
-              business_ip: this.selection[0].server_ip,
-              data_ip: this.selection[0].server_data_ip,
-              node_ip: this.selection[0].server_ip
-            }
-          },
           'upgrade': () => {
             return {file: '', node_ip: this.selection[0].server_ip}
           },
@@ -250,7 +243,19 @@
             return {login_pin: '', nodeIPs: this.selection.join(',')}
           }
         }
-        this.dataForm = (switchFn[name])()
+        if (name == 'businessIp') {
+          http.getRequest('/config/node/get_all_ip','post',{node_ip:this.selection[0].server_ip})
+            .then(res => {
+              this.dataForm = {
+                business_ip: res.data['bind_business_ip'],
+                data_ip: res.data['bind_replicate_ip'],
+                node_ip: this.selection[0].server_ip
+              }
+            });
+        } else {
+          this.dataForm = (switchFn[name])()
+        }
+
         this.showDialog(name)
       },
       showDialog (name) {
@@ -279,7 +284,6 @@
             }
             const action = switchFn[name]
             action && await action()
-            this.dialogVisible[name] = false
           } else {
             this.$message({type: 'warning', message: '请将表单填写完整'})
           }
@@ -287,10 +291,14 @@
       },
       async setBusinessDataIp () {
         this.loading = true
-        const result = await http.getRequest('/config/node/set_all_ip', 'post', this.dataForm)
+        const res = await http.getRequest('/config/node/set_all_ip', 'post', this.dataForm)
         this.loading = false
-        this.$message({type: 'success', message: result.data})
-        this.dialogVisible.businessIp = false
+
+        if (res.status) {
+            util.alert(res.data,'success');
+            this.dialogVisible.businessIp = false
+        }
+
       },
       handleUpgrade () {
         this.loading = true

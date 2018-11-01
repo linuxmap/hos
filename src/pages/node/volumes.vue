@@ -12,6 +12,7 @@
           <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteDevice')" :disabled="!selection.length">删除不在线设备</el-button>
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
+          :nopage="true"
           @select-change="handleSelectChange">
           <el-table-column prop="location" label="槽位号" width="60"></el-table-column>
           <el-table-column prop="device_name" label="名称" width="60"></el-table-column>
@@ -101,9 +102,11 @@
         }],
         currentId: 1,
         tableData: [],
-        listUrl: '',
+        listUrl: '/config/node/index_disk',
         selection: [],
-        queryForm: null,
+        queryForm: {
+          selected_server_ip: this.$route.query.server_ip
+        },
         loading: false,
         dialogVisible: false,
         dataForm: {},
@@ -130,13 +133,13 @@
     methods: {
       async getTreeData (serverIp) {
         this.loading = true
-        const res = await http.getRequest('/config/node/get_all_ip', 'post', {node_ip: serverIp})
-        const list = res.data.list || []
+        const res = await http.getRequest('/config/node/index_access')
+        const list = res.data.list || [];
         this.treeData[0].children = []
         list.forEach((item, index) => {
           item.id = index + 1
           item.label = item.server_ip + '/' + item.server_data_ip
-          if (item.server_ip === serverIp) {
+          if (item.bind_business_ip === serverIp) {
             this.currentId = item.id
           }
           this.treeData[0].children.push(item)
