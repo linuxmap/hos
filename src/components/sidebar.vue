@@ -40,7 +40,7 @@
       node-key="id"
       default-expand-all
       :default-checked-keys = "[1]"
-      @current-change="selectTreeNode"
+      @node-click="selectTreeNode"
       :show-checkbox="showCheckbox"
     ></el-tree>
   </page-sidebar>
