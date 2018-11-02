@@ -8,8 +8,8 @@ import { Utils } from 'dolphin_common'
 import token from 'index@/libs/token'
 // TODO: 后续考虑开发环境下也加载上下文，与生产环境保持一致
 // 开发态与生产环境下上下文不一样
-const path = process.env.NODE_ENV === 'production' ? '/template/static' : '/static'
-const context = process.env.NODE_ENV === 'production' ? 'template' : ''
+const path = process.env.NODE_ENV === 'production' ? '/static' : '/static'
+const context = process.env.NODE_ENV === 'production' ? '' : ''
 const REFRESH_BY_HEADER = 'pleaseRefreshByHeader'
 // 配置token
 token.set()
@@ -63,9 +63,7 @@ async function initApp (Vue, config) {
     try {
       // 获取用户信息之后，根据数据设置皮肤和多语言数据
       // 并将用户信息存储到store中
-      let data = await userinfo({noMsg: true})
-      await setSkin(Utils.getStorage('skin').color || data.data.skin)
-      store.commit('SET_USER_INFO', data.data)
+      await setSkin(Utils.getStorage('skin').color)
       try {
         // 设置多语言时，捕获获取多语言文件失败，
         // 失败后将语言设置为英语

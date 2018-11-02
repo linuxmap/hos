@@ -22,7 +22,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="setUser('userForm')">设置</el-button>
-          <el-button @click="resetForm('userForm')">重置</el-button>
+          <el-button @click="userForm=defUserForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -38,7 +38,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="download('keyForm')">下载</el-button>
-          <el-button @click="resetForm('keyForm')">重置</el-button>
+          <el-button @click="keyForm=defKeyForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -47,6 +47,8 @@
 
 <script>
   import validate from 'index@/utils/form-validate'
+  import http from 'index@/api/index'
+
   export default {
     components: {
     },
@@ -54,17 +56,10 @@
     data() {
       return {
         textType:'password',
-        userForm: {
-          userName: 'testwj',
-          customerName:'',
-          phone:'',
-          email:'',
-          userSize: '10'
-        },
-        keyForm: {
-          accessKey: '',
-          secretKey: ''
-        },
+        userForm: {},
+        keyForm: {},
+        defUserForm: {},
+        defKeyForm: {},
         userRules : {
           customerName: [
             {required: true, message: this.$t('config.validator.required'), trigger: 'blur'},
@@ -94,6 +89,27 @@
         }
       }
     },
+
+    created () {
+      //获取用户基本信息
+      http.getRequest('/config/gUser/getUserInfo')
+        .then( res => {
+          if (res.status) {
+              this.userForm = res.data;
+              this.defUserForm = util.extendDeep(this.userForm);
+          }
+        });
+
+      //获取用户密钥管理信息
+      http.getRequest('/config/gUser/getAksk')
+        .then( res => {
+          if (res.status) {
+            this.keyForm = res.data;
+            this.defKeyForm = util.extendDeep(this.keyForm);
+          }
+        });
+    },
+
     methods: {
       /**
        * 数字值校验

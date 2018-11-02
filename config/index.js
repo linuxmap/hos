@@ -13,7 +13,7 @@
 const SERVER_IP = 'http://10.192.66.25:5123'; //彭
 const path = require('path')
 
-const basePath = '/template/'
+const basePath = '/'
 
 module.exports = {
   dev: {
