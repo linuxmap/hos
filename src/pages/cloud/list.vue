@@ -47,18 +47,18 @@
         <el-input v-model="cloudForm.cloud_user"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="cloud_pin">
-        <el-input v-model="cloudForm.cloud_pin"></el-input>
+        <el-input v-model="cloudForm.cloud_pin" type="password"></el-input>
       </el-form-item>
       <el-form-item label="云存储访问key" prop="cloud_ak">
         <el-input v-model="cloudForm.cloud_ak"></el-input>
       </el-form-item>
       <el-form-item label="协议加密key" prop="cloud_sk">
-        <el-input  v-model="cloudForm.cloud_sk"></el-input>
+        <el-input  v-model="cloudForm.cloud_sk" type="password"></el-input>
       </el-form-item>
-      <el-form-item label="是否本云" prop="is_current_cloud">
+      <el-form-item label="是否本云">
         <el-radio-group v-model="cloudForm.is_current_cloud">
-          <el-radio value="1" label="1"></el-radio>
-          <el-radio value="0" label="0"></el-radio>
+          <el-radio label="1">是</el-radio>
+          <el-radio label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
@@ -81,6 +81,7 @@
     props: ['breadcrumbObj'],
     data () {
       return {
+        radio:0,
         listUrl: '/config/cloud/list',
         queryForm: null,
         dialogVisible: false,
