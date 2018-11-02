@@ -1,5 +1,5 @@
 <template>
-  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="showReturnIcon">
+  <page-container :breadcrumb="i18nBreadcrumb" :showReturnIcon="showReturnIcon" :returnEvent="returnEvent">
     <div v-show="showTable">
       <!-- 工具条 -->
       <div class="toolbar" ref="toolbar">
@@ -47,17 +47,19 @@
         <el-input v-model="cloudForm.cloud_user"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="cloud_pin">
-        <el-input v-model="cloudForm.cloud_pin" type="password"></el-input>
+        <el-input v-model="cloudForm.cloud_pin"></el-input>
       </el-form-item>
       <el-form-item label="云存储访问key" prop="cloud_ak">
         <el-input v-model="cloudForm.cloud_ak"></el-input>
       </el-form-item>
       <el-form-item label="协议加密key" prop="cloud_sk">
-        <el-input type="password" v-model="cloudForm.cloud_sk"></el-input>
+        <el-input  v-model="cloudForm.cloud_sk"></el-input>
       </el-form-item>
       <el-form-item label="是否本云" prop="is_current_cloud">
-        <el-radio class="radio" v-model="cloudForm.is_current_cloud" label="1">是</el-radio>
-        <el-radio class="radio" v-model="cloudForm.is_current_cloud" label="0">否</el-radio>
+        <el-radio-group v-model="cloudForm.is_current_cloud">
+          <el-radio value="1" label="1"></el-radio>
+          <el-radio value="0" label="0"></el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSubmit('cloudForm')">{{curForm == 'add' ? '创建' : '设置'}}</el-button>
@@ -122,6 +124,7 @@
             {validator: validates.utils_string, trigger: 'blur'}
           ]
         },
+        returnRouter:'', //点击返回跳转的页面
         curForm: 'add', //当前在激活的表单为创建还是修改
         editFormDefault: '' //默认编辑表单数据
       }
@@ -145,8 +148,12 @@
         this.curForm = 'edit';
         this.showTable = false;
         this.i18nBreadcrumb.push({'title':'修改'+row.cloud_id});
+
         this.showReturnIcon = true;
         this.cloudForm = row;
+        console.log(this.cloudForm);
+       /* this.cloudForm.cloud_pin = this.encrypt.decrypt(row.cloud_passwd);
+        this.cloudForm.cloud_sk = this.encrypt.decrypt(row.cloud_sk);*/
         this.cloudForm.cloud_pin = row.cloud_passwd;
         delete this.cloudForm.cloud_passwd;
         this.cloudForm.is_current_cloud = row.type;
@@ -157,7 +164,7 @@
       handleDelete (row) {
         let that = this;
         util.confirm(() => {
-          http.getRequest('/config/cloud/delete', 'post', {cloud_ip: row.cloud_ip}).then(res => {
+          http.getRequest('/config/cloud/delete', 'post', {cloud_id: row.cloud_id}).then(res => {
             util.alert(res.data, res.status ? 'success' : 'error');
             that.$refs.table.getData();
           })
@@ -174,16 +181,12 @@
              .then(res => {
                util.alert(res.data,res.status ? 'success' : 'error');
                this.$refs.table.getData();
+
+               this.showTable = true;
              });
          } else {
-           //判断密码和sk有无更改
-           if (this.cloudForm.cloud_pin != this.editFormDefault.cloud_pin) {
              this.cloudForm.cloud_pin = this.encrypt.encrypt(this.cloudForm.cloud_pin);
-           }
-
-           if (this.cloudForm.cloud_sk != this.editFormDefault.cloud_sk) {
              this.cloudForm.cloud_sk = this.encrypt.encrypt(this.cloudForm.cloud_sk);
-           }
 
            http.getRequest('/config/cloud/edit', 'post', this.cloudForm)
              .then(res => {
@@ -202,6 +205,11 @@
         } else {
           this.cloudForm = this.editFormDefault;
         }
+      },
+
+      returnEvent () {
+          this.showTable = true;
+          this.i18nBreadcrumb.pop();
       }
     }
   }

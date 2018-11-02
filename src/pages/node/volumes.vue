@@ -9,7 +9,7 @@
         <div class="toolbar" ref="toolbar">
           <el-button type="iconButton" icon="icons icon-format" @click="passDlg = true;optNow = 'systemFormat'">系统格式化</el-button>
           <el-button type="iconButton" icon="icons icon-format" @click="passDlg = true;optNow = 'volumeFormat'" :disabled="!selection.length">卷格式化</el-button>
-          <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteDevice')" :disabled="!selection.length">删除不在线设备</el-button>
+         <!-- <el-button type="iconButton" icon="h-icon-trashcan" @click="checkSelection('deleteDevice')" :disabled="!selection.length">删除不在线设备</el-button>-->
         </div>
         <page-table ref="table" :url="listUrl" :queryForm="queryForm" :noIndex="true" :select="true" :isSingleMode="true"
           :nopage="true"
