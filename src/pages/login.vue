@@ -185,7 +185,7 @@
 
                 if (res.status) {
                   // 登录成功后重置token
-                  token.set(res.data);
+                  token.set(res.data.token);
                   window.localStorage.setItem('user', this.signin.userName);
                   this.$router.push('/deployment')
                 } else {
